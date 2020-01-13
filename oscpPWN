@@ -1,0 +1,11 @@
+#!/usr/bin/python3.7
+from src.menu import parse,bcolors
+
+state = "main"
+while state != "exit":
+    try:
+        state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
+    except EOFError:
+        break
+
+exit()

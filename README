@@ -1,0 +1,5 @@
+OSCP exam helper tool.
+
+####### Setup guide #####
+pip3 install -r requirements.txt
+Python 3.7+ Required
