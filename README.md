@@ -2,8 +2,9 @@
 
 OSCP exam helper tool.
 
+** Python 3.7+ Required **
+
 ####### Setup guide #####
 pip3 install -r requirements.txt
-Python 3.7+ Required
-
+chmod +x oscpPWN
 ./oscpPWN
