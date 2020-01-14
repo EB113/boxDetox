@@ -31,11 +31,11 @@ def bof_unique(cmd=None):
             out = out + "\\x" + format((ord(chr(i))), "x").zfill(2)
     elif len(cmd) == 2:
         out = ""
-        badchars = cmd[1].split(",")
+        badchars = cmd[1].split(r"\x")
         for i in range(0,256):
-            tmp = "\\x" + format((ord(chr(i))), "x").zfill(2)
+            tmp = format((ord(chr(i))), "x").zfill(2)
             if tmp not in badchars :
-                out = out + tmp
+                out = out + "\\x" + tmp
     else:
         print("{}Usage: unique <empty||bad_char(\x0a),bad_char(\x0d),...>{}".format(bcolors.WARNING,bcolors.ENDC))
         return
