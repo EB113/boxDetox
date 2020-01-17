@@ -2,6 +2,7 @@ import sys,os,re
 import readline
 import pyfiglet
 import queue
+import struct
 
 from .miscellaneous.completer import *
 from .miscellaneous.config import Config,bcolors
@@ -56,7 +57,7 @@ def use(cmd=None):
         if os.path.isfile(Config.PATH + "/src/modules/" + cmd[1] + ".py"):
             module_state = cmd[1]
             module_class = switcher_module.get(module_state,None)
-            completer.update(module_option)
+            completer.update(module_option+global_option)
         else:
             print("{}Module not found!{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
@@ -99,6 +100,16 @@ def bof_offset(cmd=None):
         os.system("/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q " + cmd[1])
     else:
         print("{}Usage: offset <pattern>{}".format(bcolors.WARNING,bcolors.ENDC))
+
+def bof_lendian(cmd=None):
+    if len(cmd) == 2:
+        # CHECK IF ADDRESS
+        if bool(re.match("^[0-9a-zA-Z]+$",cmd[1])):
+            print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,struct.pack("<I",int("0x"+cmd[1],16))))
+        else:
+            print("{}Invalid Address!{}".format(bcolors.WARNING,bcolors.ENDC))
+    else:
+        print("{}Usage: lendian <address>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 def bof_nasm(cmd=None):
     if len(cmd) == 1:
@@ -145,7 +156,7 @@ def state(cmd=None):
     global menu_state
     global completer
     menu_state = cmd[0]
-    completer.update(get_options(menu_option,[]))
+    completer.update(get_options(menu_option,[])+global_option)
 
 def exit(cmd=None):
     global menu_state
@@ -182,12 +193,12 @@ def back(cmd=None):
     if len(cmd) == 1:
         if module_state == "":
             menu_state = get_parent(menu_option,("",False))[0]
-            completer.update(get_options(menu_option,[]))
+            completer.update(get_options(menu_option,[])+global_option)
         else:
             env_option = {}
             module_class = ""
             module_state = ""
-            completer.update(get_options(menu_option,[]))
+            completer.update(get_options(menu_option,[])+global_option)
     else:
         print("{}Usage: back{}".format(bcolors.WARNING,bcolors.ENDC))
 
@@ -214,25 +225,24 @@ def parse(cmd):
         return "exit"
 
 # OPTION VALUES
-global_option = ["help","ls"]
+global_option = ["help","ls","back"]
 menu_option = {
                     "main": {
                         "enum":{
                             "use":{},
-                            "back":{}
                             },
                         "bof" : {
                             "unique":{},
                             "pattern":{},
                             "offset":{},
+                            "lendian":{},
                             "nasm":{},
                             "notes":{},
-                            "back":{}
                             },
                         "exit":{}
                         }
                   }
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":state,"enum":state},"bof":{"unique":bof_unique,"pattern":bof_pattern,"offset":bof_offset,"nasm":bof_nasm,"notes":notes,"help":help,"ls":ls,"back":back},"enum":{"use":use,"back":back,"help":help,"ls":ls},"module":{"go":run,"get":get_opt,"set":set_opt,"help":help,"ls":ls,"back":back}}
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":state,"enum":state},"bof":{"unique":bof_unique,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"notes":notes,"help":help,"ls":ls,"back":back},"enum":{"use":use,"back":back,"help":help,"ls":ls},"module":{"go":run,"get":get_opt,"set":set_opt,"help":help,"ls":ls,"back":back}}
 menu_state   = "main"
 module_option = {
                     "get":{},
@@ -247,7 +257,7 @@ env_option = {}
 
 # NOTES
 switcher_cmd = {
-                "bof" : [r'!mona bytearray -cpb "\x00"',r'!mona compare -f bytearray.txt -a 00A5E9A8']
+                "bof" : [r'!mona bytearray -cpb "\x00"',r'!mona compare -f bytearray.txt -a esp',r'!mona jmp -r esp -cpb "\x00"']
             }
 
 # LOAD SETTINGS
@@ -259,7 +269,7 @@ watchdog = Monitor(procs)
 watchdog.start()
 
 # AUTOCOMPLETE SETUP
-completer = Completer(get_options(menu_option,[]))
+completer = Completer(get_options(menu_option,[])+global_option)
 readline.set_completer(completer.complete)
 readline.parse_and_bind('tab: complete')
 
