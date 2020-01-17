@@ -94,11 +94,11 @@ def bof_pattern(cmd=None):
         print("{}Usage: pattern <size>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 def bof_offset(cmd=None):
-    if len(cmd) == 3:
+    if len(cmd) == 2:
         # CHECK IF NUMBER
-        os.system("/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -l " + cmd[1] + " -q " + cmd[2])
+        os.system("/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q " + cmd[1])
     else:
-        print("{}Usage: offset <size> <pattern>{}".format(bcolors.WARNING,bcolors.ENDC))
+        print("{}Usage: offset <pattern>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 def bof_nasm(cmd=None):
     if len(cmd) == 1:
@@ -247,7 +247,7 @@ env_option = {}
 
 # NOTES
 switcher_cmd = {
-                "bof" : ['!mona bytearray -b ""','!mona compare -f c:\logs\3CTftpSvc\bytearray.txt -a 00A5E9A8']
+                "bof" : [r'!mona bytearray -cpb "\x00"',r'!mona compare -f bytearray.txt -a 00A5E9A8']
             }
 
 # LOAD SETTINGS
