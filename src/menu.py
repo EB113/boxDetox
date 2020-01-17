@@ -57,7 +57,7 @@ def use(cmd=None):
         if os.path.isfile(Config.PATH + "/src/modules/" + cmd[1] + ".py"):
             module_state = cmd[1]
             module_class = switcher_module.get(module_state,None)
-            completer.update(module_option+global_option)
+            completer.update([x for x in module_option.keys()]+global_option)
         else:
             print("{}Module not found!{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
@@ -107,7 +107,7 @@ def bof_lendian(cmd=None):
         if bool(re.match("^[0-9a-zA-Z]+$",cmd[1])):
             print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,struct.pack("<I",int("0x"+cmd[1],16))))
         else:
-            print("{}Invalid Address!{}".format(bcolors.WARNING,bcolors.ENDC))
+            print("{}Invalid Address!e.g:080414C3{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
         print("{}Usage: lendian <address>{}".format(bcolors.WARNING,bcolors.ENDC))
 
@@ -131,7 +131,7 @@ def get_options(d,options,id=False):
 def help(cmd=None):
     if len(cmd) == 1:
         print("{}Global Command List:{}".format(bcolors.WARNING,bcolors.ENDC))
-        for option in global_option:
+        for option in global_option.keys():
             print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,option))
     elif len(cmd) == 2:
         print("{}ToDo{}".format(bcolors.WARNING,bcolors.ENDC))
@@ -269,7 +269,7 @@ watchdog = Monitor(procs)
 watchdog.start()
 
 # AUTOCOMPLETE SETUP
-completer = Completer(get_options(menu_option,[])+global_option)
+completer = Completer(get_options(menu_option,[]))
 readline.set_completer(completer.complete)
 readline.parse_and_bind('tab: complete')
 

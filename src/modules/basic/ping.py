@@ -39,7 +39,7 @@ class Module_Ping(Module):
         out = []
         if bool(re.match(r'^([0-9]+\.){3}[0-9]+$',val)):
             out.append(val)
-        elif bool(re.match(r'^([0-9]+\.){3}[0-9]+\/[0-9]+$'),val):
+        elif bool(re.match(r'^([0-9]+\.){3}[0-9]+\/[0-9]+$',val)):
             for addr in netaddr.IPNetwork(val):
                 out.append(str(addr))
         return out
