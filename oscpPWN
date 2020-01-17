@@ -1,11 +1,17 @@
 #!/usr/bin/python3.7
-from src.menu import parse,bcolors
+from src.menu import parse,bcolors,watchdog
+import traceback
 
 state = "main"
 while state != "exit":
     try:
         state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
-    except EOFError:
+    except Exception as e:
+        #print("{}".format(e))
+        #print("{}".format(traceback.print_exc()))
         break
 
+watchdog.flag.set()
+watchdog.join()
+del watchdog
 exit()
