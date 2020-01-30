@@ -242,7 +242,7 @@ menu_option = {
                             "use":{},
                             },
                         "bof" : {
-                            "unique":{},
+                            "badchars":{},
                             "pattern":{},
                             "offset":{},
                             "lendian":{},
@@ -252,7 +252,7 @@ menu_option = {
                         "exit":{}
                         }
                   }
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":state,"enum":state},"bof":{"unique":bof_unique,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"notes":notes,"help":help,"ls":ls,"back":back},"enum":{"use":use,"back":back,"help":help,"ls":ls},"module":{"go":run,"get":get_opt,"set":set_opt,"help":help,"ls":ls,"back":back}}
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":state,"enum":state},"bof":{"badchars":bof_unique,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"notes":notes,"help":help,"ls":ls,"back":back},"enum":{"use":use,"back":back,"help":help,"ls":ls},"module":{"go":run,"get":get_opt,"set":set_opt,"help":help,"ls":ls,"back":back}}
 menu_state   = "main"
 module_option = {
                     "get":{},
