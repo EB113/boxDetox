@@ -72,21 +72,31 @@ def notes(cmd=None):
 
 def bof_unique(cmd=None):
     out = ""
-    if len(cmd) == 1:
+    if cmd != None and len(cmd) == 1:
         for i in range(0,256):
             out = out + "\\x" + format((ord(chr(i))), "x").zfill(2)
     elif len(cmd) == 2:
         out = ""
-        badchars = cmd[1].split(",")
+        badchars = cmd[1].split(r"\x")
         for i in range(0,256):
-            tmp = "\\x" + format((ord(chr(i))), "x").zfill(2)
+            tmp = format((ord(chr(i))), "x").zfill(2)
             if tmp not in badchars :
-                out = out + tmp
+                out = out + "\\x" + tmp
     else:
-        print("{}Usage: unique <empty||bad_char(\x0a),bad_char(\x0d),...>{}".format(bcolors.WARNING,bcolors.ENDC))
+        print("{}Usage: unique <empty||bad_char(\x0a)bad_char(\x0d)...>{}".format(bcolors.WARNING,bcolors.ENDC))
         return
-    print("{}".format(out))
-
+    print("\nbadchars =")
+    print("\"", end = "")
+    numChars = len(out)
+    for i in range(0,numChars):
+        if i % 64 == 0 and i != 0:
+            print("\"")
+            print("\"", end = "")
+        print(out[i], end = "")
+    #print("{}".format(out), end = "")
+    print("\";\n")
+    print("Number of characters: " + str(round(numChars/4)) + "\n")
+    
 def bof_pattern(cmd=None):
     if len(cmd) == 2:
         # CHECK IF NUMBER
