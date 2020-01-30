@@ -115,12 +115,15 @@ def bof_lendian(cmd=None):
     if len(cmd) == 2:
         # CHECK IF ADDRESS
         if bool(re.match("^[0-9a-zA-Z]+$",cmd[1])):
-            n=6
-            out=""
-            while(n > -2):
-                out+="\\x" + cmd[1][n]+cmd[1][n+1]
-                n-=2
-            print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,out))
+            n=len(cmd[1])-2
+            if n == 6 or n == 14:
+                out=""
+                while(n > -2):
+                    out+="\\x" + cmd[1][n]+cmd[1][n+1]
+                    n-=2
+                print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,out))
+            else:
+                print("{}Wrong address format! Use 64bit or 32bit address.{}".format(bcolors.WARNING,bcolors.ENDC))
         else:
             print("{}Invalid Address!e.g:080414C3{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
