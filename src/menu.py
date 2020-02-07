@@ -3,6 +3,7 @@ import readline
 import pyfiglet
 import queue
 import struct
+import clipboard
 
 from .miscellaneous.completer import *
 from .miscellaneous.config import Config,bcolors
@@ -85,17 +86,20 @@ def bof_unique(cmd=None):
     else:
         print("{}Usage: unique <empty||bad_char(\x0a)bad_char(\x0d)...>{}".format(bcolors.WARNING,bcolors.ENDC))
         return
-    print("\nbadchars =")
-    print("\"", end = "")
+    badcharcp = "badchars ="
+    badcharcp += "\n\""
     numChars = len(out)
     for i in range(0,numChars):
         if i % 64 == 0 and i != 0:
-            print("\"")
-            print("\"", end = "")
-        print(out[i], end = "")
+            badcharcp += "\"\n"
+            badcharcp += "\""
+        badcharcp += out[i]
     #print("{}".format(out), end = "")
-    print("\";\n")
+    badcharcp += "\";\n"
+    print(badcharcp)
+    clipboard.copy(badcharcp)
     print("Number of characters: " + str(round(numChars/4)) + "\n")
+    print("{}* Badchars copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
     
 def bof_pattern(cmd=None):
     if len(cmd) == 2:
