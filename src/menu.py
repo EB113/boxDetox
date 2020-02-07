@@ -100,7 +100,12 @@ def bof_unique(cmd=None):
 def bof_pattern(cmd=None):
     if len(cmd) == 2:
         # CHECK IF NUMBER
-        os.system("/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l " + cmd[1])
+        patterncm = ("/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l " + cmd[1])
+        print(patterncm + "\n")
+        patterncp = os.popen(patterncm).read()
+        print(patterncp)
+        os.system(patterncm +"| xclip -selection clipboard")
+        print("{}* Offset copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
         print("{}Usage: pattern <size>{}".format(bcolors.WARNING,bcolors.ENDC))
 
