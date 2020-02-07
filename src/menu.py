@@ -112,7 +112,12 @@ def bof_pattern(cmd=None):
 def bof_offset(cmd=None):
     if len(cmd) == 2:
         # CHECK IF NUMBER
-        os.system("/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q " + cmd[1])
+        offsetcm =("/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q " + cmd[1])
+        print(offsetcm + "\n")
+        offsetcp = os.popen(offsetcm).read()
+        print(offsetcp)
+        os.system(offsetcm + "|awk -F' ' '{print $6}' |xclip -selection clipboard")
+        print("{}* Offset copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
         print("{}Usage: offset <pattern>{}".format(bcolors.WARNING,bcolors.ENDC))
 
