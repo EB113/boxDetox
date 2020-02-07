@@ -120,7 +120,7 @@ def bof_offset(cmd=None):
         print(offsetcm + "\n")
         offsetcp = os.popen(offsetcm).read()
         print(offsetcp)
-        offsetpp = os.popen(offsetcm + "|awk -F' ' '{print $6}').read()
+        offsetpp = os.popen(offsetcm + "|awk -F' ' '{print $6}'").read()
         clipboard.copy(offsetpp)
         print("{}* Offset copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
