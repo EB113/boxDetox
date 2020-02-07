@@ -4,7 +4,6 @@ OSCP tool helper.
 #Setup guide#
  - Change src/miscellaneous/config.py {PATH} for $(pwd) value on the root folder.
 
-apt install xclip -y
 apt install python3-pip
 pip3 install -r requirements.txt
 
