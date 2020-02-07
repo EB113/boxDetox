@@ -291,7 +291,7 @@ env_option = {}
 
 # NOTES
 switcher_cmd = {
-                "bof" : [r'!mona bytearray -cpb "\x00"',r'!mona compare -f bytearray.txt -a esp',r'!mona jmp -r esp -cpb "\x00"']
+                "bof" : [r'!mona bytearray -b "\x00"',r'!mona compare -f bytearray.txt -a esp',r'!mona jmp -r esp -cpb "\x00"']
             }
 
 # LOAD SETTINGS
