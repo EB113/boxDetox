@@ -86,8 +86,7 @@ def bof_unique(cmd=None):
     else:
         print("{}Usage: unique <empty||bad_char(\x0a)bad_char(\x0d)...>{}".format(bcolors.WARNING,bcolors.ENDC))
         return
-    badcharcp = "badchars ="
-    badcharcp += "\n\""
+    badcharcp = "badchars =\n\""
     numChars = len(out)
     for i in range(0,numChars):
         if i % 64 == 0 and i != 0:
@@ -111,7 +110,7 @@ def bof_pattern(cmd=None):
         clipboard.copy(patterncp)
         print("{}* Offset copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
-        print("{}Usage: pattern <size>{}".format(bcolors.WARNING,bcolors.ENDC))
+        print("{}Usage: pattern <length>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 def bof_offset(cmd=None):
     if len(cmd) == 2:
