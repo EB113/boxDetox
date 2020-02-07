@@ -137,6 +137,8 @@ def bof_lendian(cmd=None):
                     out+="\\x" + cmd[1][n]+cmd[1][n+1]
                     n-=2
                 print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,out))
+                clipboard.copy(out)
+                print("{}* Lendian address copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
             else:
                 print("{}Wrong address format! Use 64bit or 32bit address.{}".format(bcolors.WARNING,bcolors.ENDC))
         else:
