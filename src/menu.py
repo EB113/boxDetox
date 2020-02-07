@@ -71,12 +71,17 @@ def notes(cmd=None):
     else:
         print("{}Usage: cmds".format(bcolors.WARNING,bcolors.ENDC))
 
-def bof_unique(cmd=None):
+def bof_badchars(cmd=None):
     out = ""
+    outFormat = "c"
     if cmd != None and len(cmd) == 1:
         for i in range(0,256):
             out = out + "\\x" + format((ord(chr(i))), "x").zfill(2)
-    elif len(cmd) == 2:
+    elif len(cmd) == 2 or len(cmd) == 3:
+        if len(cmd) == 3:
+        	outFormat = cmd[2]
+        elif len(cmd) == 2 and cmd[1][0] != "\\":
+        	outFormat = cmd[1]
         out = ""
         badchars = cmd[1].split(r"\x")
         for i in range(0,256):
@@ -84,18 +89,23 @@ def bof_unique(cmd=None):
             if tmp not in badchars :
                 out = out + "\\x" + tmp
     else:
-        print("{}Usage: unique <empty||bad_char(\x0a)bad_char(\x0d)...>{}".format(bcolors.WARNING,bcolors.ENDC))
+        print("{}Usage: badchars [\\x00\\x0a...] [c | python]{}".format(bcolors.WARNING,bcolors.ENDC))
         return
-    badcharcp = "badchars =\n\""
+    badcharcp = ""
     numChars = len(out)
     for i in range(0,numChars):
         if i % 64 == 0 and i != 0:
             badcharcp += "\"\n"
             badcharcp += "\""
         badcharcp += out[i]
-    #print("{}".format(out), end = "")
-    badcharcp += "\";\n"
-    print(badcharcp)
+    if outFormat == "c":
+    	badcharcp = "badchars =\n\"" + badcharcp + "\";\n"
+    elif outFormat == "python":
+    	badcharcp = "badchars = (\n\"" + badcharcp + "\")\n"
+    else:
+    	print("{}Invalid output format specified, defaulting to c\n(Accepted formats are \"c\" and \"python\"){}".format(bcolors.WARNING,bcolors.ENDC))
+    	badcharcp = "badchars =\n\"" + badcharcp + "\";\n"
+    print("\n" + badcharcp)
     clipboard.copy(badcharcp)
     print("Number of characters: " + str(round(numChars/4)) + "\n")
     print("{}* Badchars copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
@@ -276,7 +286,7 @@ menu_option = {
                         "exit":{}
                         }
                   }
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":state,"enum":state},"bof":{"badchars":bof_unique,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"notes":notes,"help":help,"ls":ls,"back":back},"enum":{"use":use,"back":back,"help":help,"ls":ls},"module":{"go":run,"get":get_opt,"set":set_opt,"help":help,"ls":ls,"back":back}}
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":state,"enum":state},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"notes":notes,"help":help,"ls":ls,"back":back},"enum":{"use":use,"back":back,"help":help,"ls":ls},"module":{"go":run,"get":get_opt,"set":set_opt,"help":help,"ls":ls,"back":back}}
 menu_state   = "main"
 module_option = {
                     "get":{},
