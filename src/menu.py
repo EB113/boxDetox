@@ -108,7 +108,7 @@ def bof_pattern(cmd=None):
         print(patterncm + "\n")
         patterncp = os.popen(patterncm).read()
         print(patterncp)
-        os.system(patterncm +"| xclip -selection clipboard")
+        clipboard.copy(patterncp)
         print("{}* Offset copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
         print("{}Usage: pattern <size>{}".format(bcolors.WARNING,bcolors.ENDC))
@@ -120,7 +120,8 @@ def bof_offset(cmd=None):
         print(offsetcm + "\n")
         offsetcp = os.popen(offsetcm).read()
         print(offsetcp)
-        os.system(offsetcm + "|awk -F' ' '{print $6}' |xclip -selection clipboard")
+        offsetpp = os.popen(offsetcm + "|awk -F' ' '{print $6}').read()
+        clipboard.copy(offsetpp)
         print("{}* Offset copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
     else:
         print("{}Usage: offset <pattern>{}".format(bcolors.WARNING,bcolors.ENDC))
