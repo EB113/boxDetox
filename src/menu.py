@@ -178,6 +178,8 @@ def bof_nops(cmd=None):
 		print("\n" + out + "\n")
 		clipboard.copy(out)
 		print("{}* Nops copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
+	else:
+		print("{}Usage: nops number{}".format(bcolors.WARNING,bcolors.ENDC))
 
 
 def get_options(d,options,id=False):
