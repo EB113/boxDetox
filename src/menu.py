@@ -2,17 +2,17 @@ import sys,os,re
 import readline
 import pyfiglet
 import queue
-import struct
 import clipboard
 
 from .miscellaneous.completer import *
 from .miscellaneous.config import Config,bcolors
 
-from .modules.monitor import Monitor
-from .modules.basic.ping import Module_Ping
+from .profiles.profiler		import Profiler
+from .modules.monitor		import Monitor
+from .modules.basic.ping	import Module_Ping
 
 ############### COMMAND LINE FUNCTIONS ##############
-def run(cmd=None):
+def module_run(cmd=None):
 	if module_class.validate(env_option):
 		if not procs.full():
 			procs.put((module_state,module_class(env_option)))
@@ -22,7 +22,7 @@ def run(cmd=None):
 		print("{}Wrong options! ToDo show option example forced class from Super.{}".format(bcolors.WARNING,bcolors.ENDC))
 	return
 
-def get_opt(cmd=None):
+def module_get_opt(cmd=None):
 	if len(cmd) == 1:
 		print("{}Module options:{}".format(bcolors.WARNING,bcolors.ENDC))
 		for option in module_class.opt.keys():
@@ -35,7 +35,7 @@ def get_opt(cmd=None):
 		print("{}Usage: get{}".format(bcolors.WARNING,bcolors.ENDC))
 	return
 
-def set_opt(cmd=None):
+def module_set_opt(cmd=None):
 	if len(cmd) == 3:
 		for option in module_class.opt.keys():
 			if cmd[1] == option:
@@ -44,25 +44,70 @@ def set_opt(cmd=None):
 		print("{}Usage: set <option> <value>{}".format(bcolors.WARNING,bcolors.ENDC))
 	return
 
-def use(cmd=None):
-	global module_class
-	global module_state
-	global completer
-	if len(cmd) == 1:
-		for r, d, f in os.walk(Config.PATH + "/src/modules"):
-			for file in f:
-				if bool(re.match(r"^[a-zA-Z0-9]+\.py$",file)) and (file[:-3] not in ["monitor","module"]):
-					print("{}[*] {}{}{}/{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,(r.split("modules"))[1][1:],file[:-3]))
-		print("{}Usage: use <module||empty>{}".format(bcolors.WARNING,bcolors.ENDC))
-	elif len(cmd)==2:
-		if os.path.isfile(Config.PATH + "/src/modules/" + cmd[1] + ".py"):
-			module_state = cmd[1]
-			module_class = switcher_module.get(module_state,None)
-			completer.update([x for x in module_option.keys()]+global_option)
+def enum_use(cmd=None):
+	if len(cmd)==2:
+		if bool(re.match(r"^modules\/.+",cmd[1])):
+			global module_class
+			global module_state
+			global completer
+			
+			if os.path.isfile(Config.PATH + "/src/" + cmd[1] + ".py"):
+				module_state = cmd[1]
+				module_class = switcher_module.get(module_state,None)
+				completer.update([x for x in module_option.keys()]+global_option)
+			else:
+				print("{}Module not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+		elif bool(re.match(r"^profiles\/.+",cmd[1])):
+			if os.path.isfile(Config.PATH + "/src/" + cmd[1] + ".tpl"):
+				try:
+					tpl = json.load(open(Config.PATH+"/src/"+cmd[1]+".tpl"))
+				except Exception as e:
+					print("{}File does not contain valid JSON!{}".format(bcolors.WARNING,bcolors.ENDC))
+				else:
+					try:
+						if Profiler.validate(tpl):
+							Profiler(tpl).start()
+						else:
+							print("{}File .tpl not in expected format!{}".format(bcolors.WARNING,bcolors.ENDC))
+					except Exception as e:
+						print("{}".format(e))
+						print("{}".format(traceback.print_exc()))
+			else:
+				print("{}Profile not found!{}".format(bcolors.WARNING,bcolors.ENDC))
 		else:
-			print("{}Module not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+			print("{}Invalid Module/Profile!{}".format(bcolors.WARNING,bcolors.ENDC))
+
+
 	else:
-		print("{}Usage: use <module||empty>{}".format(bcolors.WARNING,bcolors.ENDC))
+		print("{}Usage: use <Module||Profile>{}".format(bcolors.WARNING,bcolors.ENDC))
+
+
+def enum_search_aux(opt):
+
+	if opt == "modules":
+		ext = "\.py"
+		ext_cut = -3
+	else:
+		ext = "\.tpl"
+		ext_cut = -4
+
+	for r, d, f in os.walk(Config.PATH + "/src/"+opt):
+		for file in f:
+			if bool(re.match(r"^[a-zA-Z0-9]+"+ext+"$",file)) and (file[:-3] not in ["monitor","module","profiler","portscanner"]):
+				if r.split(opt)[1][1:] != "":
+					print("{}[*] {}{}{}/{}/{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,opt,(r.split(opt))[1][1:],file[:ext_cut]))
+				else:
+					print("{}[*] {}{}{}/{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,opt,file[:ext_cut]))
+
+def enum_search(cmd=None):
+	if len(cmd) == 1:
+		enum_search_aux("modules")
+		enum_search_aux("profiles")
+	elif len(cmd) == 2 and (cmd[1] == "modules" or cmd[1] == "profiles"):
+		enum_search_aux(cmd[1])
+	else:
+		print("{}Usage: list <module||profile||empty>{}".format(bcolors.WARNING,bcolors.ENDC))
+	return
 
 def notes(cmd=None):
 	if len(cmd) == 1:
@@ -109,7 +154,7 @@ def bof_badchars(cmd=None):
 	clipboard.copy(badcharcp)
 	print("Number of characters: " + str(round(numChars/4)) + "\n")
 	print("{}* Badchars copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
-	
+
 def bof_pattern(cmd=None):
 	if len(cmd) == 2:
 		# CHECK IF NUMBER
@@ -195,7 +240,7 @@ def get_options(d,options,id=False):
 def help(cmd=None):
 	if len(cmd) == 1:
 		print("{}Global Command List:{}".format(bcolors.WARNING,bcolors.ENDC))
-		for option in global_option.keys():
+		for option in global_option:
 			print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,option))
 	elif len(cmd) == 2:
 		print("{}ToDo{}".format(bcolors.WARNING,bcolors.ENDC))
@@ -292,8 +337,14 @@ def parse(cmd):
 global_option = ["help","ls","back"]
 menu_option = {
 					"main": {
-						"enum":{
+						"internal":{
+							"file_transfer":{},
+							"linux":{},
+							"windows":{}
+							},
+						"external":{
 							"use":{},
+							"search":{}
 							},
 						"bof" : {
 							"badchars":{},
@@ -307,14 +358,14 @@ menu_option = {
 						"exit":{}
 						}
 				  }
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":state,"enum":state},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":notes,"help":help,"ls":ls,"back":back},"enum":{"use":use,"back":back,"help":help,"ls":ls},"module":{"go":run,"get":get_opt,"set":set_opt,"help":help,"ls":ls,"back":back}}
-menu_state   = "main"
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":state,"external":state,"internal":state},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"nops":bof_nops,"notes":notes,"help":help,"ls":ls,"back":back},"external":{"use":enum_use,"search":enum_search,"back":back,"help":help,"ls":ls},"internal":{"back":back,"help":help,"ls":ls,"file_transfer":state,"linux":state,"windows":state},"module":{"go":module_run,"get":module_get_opt,"set":module_set_opt,"help":help,"ls":ls,"back":back},"windows":{"back":back,"help":help,"ls":ls},"linux":{"back":back,"help":help,"ls":ls},"file_transfer":{"back":back,"help":help,"ls":ls}}
+menu_state	 = "main"
 module_option = {
 					"get":{},
 					"set":{},
 					"go":{}
 				}
-switcher_module = {"basic/ping":Module_Ping}
+switcher_module = {"modules/basic/ping":Module_Ping}
 module_state = ""
 module_class = ""
 # MODULE ENVIRONMENTAL VALUES
