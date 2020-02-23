@@ -4,12 +4,12 @@ import traceback
 
 state = "main"
 while state != "exit":
-    try:
-        state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
-    except Exception as e:
-        #print("{}".format(e))
-        #print("{}".format(traceback.print_exc()))
-        break
+	try:
+		state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
+	except Exception as e:
+		#print("{}".format(e))
+		#print("{}".format(traceback.print_exc()))
+		break
 
 watchdog.flag.set()
 watchdog.join()
