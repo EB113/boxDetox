@@ -2,6 +2,8 @@ import threading
 import queue
 import time
 
+from ..menus.commons import State
+
 class Monitor(threading.Thread):
 
 	def __init__(self,queue):

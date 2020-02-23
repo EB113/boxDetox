@@ -1,17 +1,16 @@
+from . import commons
 import sys,os,re,json
 
 from ..miscellaneous.config import Config,bcolors
-from .module import module_class,module_state,switcher_module
+from .module import switcher_module
 
-def external_use(cmd=None):
+def external_use(cmd=None,state=None):
 	if len(cmd)==2:
 		if bool(re.match(r"^modules\/.+",cmd[1])):
-			global module_class
-			global module_state
 			
 			if os.path.isfile(Config.PATH + "/src/" + cmd[1] + ".py"):
-				module_state = cmd[1]
-				module_class = switcher_module.get(module_state,None)
+				state.module_state = cmd[1]
+				state.module_class = switcher_module.get(state.module_state,None)
 			else:
 				print("{}Module not found!{}".format(bcolors.WARNING,bcolors.ENDC))
 		elif bool(re.match(r"^profiles\/.+",cmd[1])):
@@ -39,7 +38,7 @@ def external_use(cmd=None):
 		print("{}Usage: use <Module||Profile>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 
-def external_search_aux(opt):
+def external_search_aux(opt,state=None):
 
 	if opt == "modules":
 		ext = "\.py"
@@ -56,7 +55,7 @@ def external_search_aux(opt):
 				else:
 					print("{}[*] {}{}{}/{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,opt,file[:ext_cut]))
 
-def external_search(cmd=None):
+def external_search(cmd=None,state=None):
 	if len(cmd) == 1:
 		external_search_aux("modules")
 		external_search_aux("profiles")
