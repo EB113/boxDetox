@@ -1,3 +1,7 @@
+import readline,json
+
+from .config import Config
+
 class Completer(object):
 
 	def __init__(self, options):
@@ -19,3 +23,4 @@ class Completer(object):
 
 	def update(self, options):
 		self.options = sorted(options)
+

@@ -1,14 +1,17 @@
 #!/usr/bin/python3.7
-from src.menu import parse,bcolors,watchdog
+
 import traceback
+
+from src.menus.menu import parse,watchdog
+from src.miscellaneous.config import bcolors
 
 state = "main"
 while state != "exit":
 	try:
 		state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
 	except Exception as e:
-		#print("{}".format(e))
-		#print("{}".format(traceback.print_exc()))
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))
 		break
 
 watchdog.flag.set()

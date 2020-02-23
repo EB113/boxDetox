@@ -7,5 +7,7 @@ src/modules/__pycache__
 src/modules/__pycache__/*
 src/profiles/__pycache__
 src/profiles/__pycache__/*
+src/menus/__pycache__
+src/menus/__pycache__/*
 *.swp
 *.swo
