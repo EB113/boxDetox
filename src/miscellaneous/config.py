@@ -13,5 +13,5 @@ class bcolors:
 class Config:
 	# COMMAND OPTION VALUES
 	EDITOR = "vim"
-	PATH = "/root/Documents/oscpPWN" 
+	PATH = "{PATH}" 
 	MAXTHREADS = 5
