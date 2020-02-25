@@ -9,8 +9,21 @@ class State:
 	global_option = ["help","ls","back"]
 	menu_option = {
 		"main": {
+			"shellZ":{
+				"linux_x86",
+				"windows_x86",
+				"php",
+				"asp",
+				"jsp"
+				},
 			"internal":{
-				"file_transfer":{},
+				"share":{
+					"smb":{},
+					"ftp":{},
+					"http":{},
+					"powershell":{},
+					"vbscript":{}
+					},
 				"linux":{},
 				"windows":{}
 			},
@@ -27,6 +40,13 @@ class State:
 				"nops":{},
 				"notes":{}
 			},
+			"buckets":{
+				"open":{},
+				"list":{},
+				"add":{},
+				"del":{}
+				},
+			"config":{},
 			"exit":{}
 		}
 	}
@@ -37,6 +57,20 @@ class State:
 				"go":{}
 			}
 	procs = queue.Queue(maxsize=Config.MAXTHREADS)
+	share_state = {
+			"smb":{
+				"status":False,
+				"pid":0
+			},
+			"ftp":{
+				"status":False,
+				"pid":0
+			},
+			"http":{
+				"status":False,
+				"pid":0
+			}
+		}
 
 	def __init__(self):
 		pass

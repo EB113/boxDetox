@@ -1,4 +1,4 @@
-import pyfiglet,readline
+import readline
 
 from ..miscellaneous.completer import Completer
 from ..miscellaneous.config import bcolors
@@ -11,6 +11,8 @@ from .bof import bof_badchars,bof_pattern,bof_offset,bof_lendian,bof_nasm,bof_no
 from .module import module_run,module_get,module_set
 from .external import external_use,external_search
 from .internal import *
+from .shellz import shellz_shell
+from .buckets import *
 
 def get_options(d,options,id=False):
 	global state
@@ -117,7 +119,7 @@ def parse(cmd):
 
 # OPTION VALUES
 state = State()
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":switch,"external":switch,"internal":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"help":help,"ls":ls,"back":back},"external":{"use":external_use,"search":external_search,"back":back,"help":help,"ls":ls},"internal":{"back":back,"help":help,"ls":ls,"file_transfer":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"help":help,"ls":ls,"back":back},"windows":{"back":back,"help":help,"ls":ls},"linux":{"back":back,"help":help,"ls":ls},"file_transfer":{"back":back,"help":help,"ls":ls}}
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":switch,"external":switch,"internal":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"help":help,"ls":ls,"back":back},"external":{"use":external_use,"search":external_search,"back":back,"help":help,"ls":ls},"internal":{"back":back,"help":help,"ls":ls,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"help":help,"ls":ls,"back":back},"windows":{"back":back,"help":help,"ls":ls},"linux":{"back":back,"help":help,"ls":ls},"share":{"back":back,"help":help,"ls":ls,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"linux_x86":shellz_shell,"windows_x86":shellz_shell,"php":shellz_shell,"asp":shellz_shell,"jsp":shellz_shell},"buckets":{"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
 
 # AUTOCOMPLETE SETUP
 completer = Completer(get_options(state.menu_option,[]))
@@ -128,5 +130,3 @@ readline.parse_and_bind('tab: complete')
 watchdog = Monitor(state.procs)
 watchdog.start()
 
-# BANNER
-print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("oscpPWN"),bcolors.ENDC))
