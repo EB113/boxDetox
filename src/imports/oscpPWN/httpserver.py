@@ -1,9 +1,15 @@
 import http.server
 import socketserver
+import signal, sys
 
-PORT = 8000
 
-Handler = http.server.SimpleHTTPRequestHandler
+def signal_handler(sig, frame):
+	sys.exit()
 
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-	httpd.serve_forever()
+def httpserver(PORT=80):
+
+	signal.signal(signal.SIGINT, signal_handler)
+
+	Handler = http.server.SimpleHTTPRequestHandler
+	with socketserver.TCPServer(("", PORT), Handler) as httpd:
+		httpd.serve_forever()

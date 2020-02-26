@@ -29,11 +29,11 @@ if len(sys.argv) == 1:
 	print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("oscpPWN"),bcolors.ENDC))	
 
 	# Get running PATH
-	Config.PATH = os.getcwd()
+	path = os.getcwd()
 	# Get directories under ./db/sessions
 	first = True
 	print("Sessions Available:")
-	for subdirs,dirs,files in os.walk(Config.PATH+"/db/sessions/"):
+	for subdirs,dirs,files in os.walk(path+"/db/sessions/"):
 		if first:
 			first = False
 			continue
@@ -44,11 +44,12 @@ if len(sys.argv) == 1:
 		exit()
 	# Setup files as directories, load configs
 	try:
-		if not os.path.isdir(Config.PATH+"/db/sessions/"+sessID):
-			os.mkdir(Config.PATH+"/db/sessions/"+sessID)
-			configExport(Config.PATH+"/db/sessions/"+sessID+"/config.py")
+		if not os.path.isdir(path+"/db/sessions/"+sessID):
+			os.mkdir(path+"/db/sessions/"+sessID)
+			configExport(path+"/db/sessions/"+sessID+"/config.py")
 		else:
-			configImport(Config.PATH+"/db/sessions/"+sessID+"/config.py")
+			configImport(path+"/db/sessions/"+sessID+"/config.py")
+		Config.PATH = path
 	except Exception as e:
 		print("{}".format(e))
 		print("{}".format(traceback.print_exc()))
@@ -72,8 +73,10 @@ if len(sys.argv) == 1:
 	watchdog.join()
 	del watchdog
 	try:
-		configExport(Config.PATH+"/db/sessions/"+sessID+"config.py")
-	except:
+		configExport(Config.PATH+"/db/sessions/"+sessID+"/config.py")
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))
 		print("{}Error saving session config file!{}".format(bcolors.WARNING,bcolors.ENDC))
 
 elif len(sys.argv) == 2:
