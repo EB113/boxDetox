@@ -1,0 +1,1 @@
+{"EDITOR": "vim", "MAXTHREADS": 5, "PATH": "/mnt/hgfs/Base/tmp/oscpPWN", "SESSID": ""}

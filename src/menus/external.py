@@ -4,6 +4,9 @@ import sys,os,re,json
 from ..miscellaneous.config import Config,bcolors
 from .module import switcher_module
 
+def external_shellz():
+    return
+
 def external_use(cmd=None,state=None):
 	if len(cmd)==2:
 		if bool(re.match(r"^modules\/.+",cmd[1])):

@@ -14,5 +14,6 @@ class Config:
 	# COMMAND OPTION VALUES
 	SESSID = ""
 	EDITOR = "vim"
-	PATH = "/root/Documents/oscpPWN" 
+	PATH = "" 
 	MAXTHREADS = 5
+	HOSTIP = "127.0.0.1"

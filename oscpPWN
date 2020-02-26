@@ -28,6 +28,8 @@ if len(sys.argv) == 1:
 	# BANNER
 	print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("oscpPWN"),bcolors.ENDC))	
 
+	# Get running PATH
+	Config.PATH = os.getcwd()
 	# Get directories under ./db/sessions
 	first = True
 	print("Sessions Available:")
