@@ -21,3 +21,6 @@ class Config:
     FTPPORT = "21"
     FTPUSER = "user"
     FTPPASS = "user"
+    SMBPORT = "445"
+    SMBUSER = "user"
+    SMBPASS = "user"

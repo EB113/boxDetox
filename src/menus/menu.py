@@ -37,12 +37,12 @@ def config(cmd=None,state=None):
         print("{}Usage: config <list|get {{option}}|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 def services(cmd=None,state=None):
-    print("{}Services:{}".format(bcolors.OKGREEN,bcolors.ENDC))
+    print("{}Services:{}".format(bcolors.WARNING,bcolors.ENDC))
     #for host in hosts
     #print("{}Usage: help <empty||cmd>{}".format(bcolors.OKBLUE,bcolors.ENDC))
 
 def hosts(cmd=None,state=None):
-    print("{}Hosts:{}".format(bcolors.OKGREEN,bcolors.ENDC))
+    print("{}Hosts:{}".format(bcolors.WARNING,bcolors.ENDC))
     #for host in hosts
     #print("{}Usage: help <empty||cmd>{}".format(bcolors.OKBLUE,bcolors.ENDC))
 

@@ -4,11 +4,7 @@ from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
 
-def signal_handler(sig, frame):
-    sys.exit()
-
-def ftpserver(HOSTIP="127.0.0.1",PORT=21,USER="user",PASS="user"):
-    signal.signal(signal.SIGINT, signal_handler)
+def ftpServer(HOSTIP="127.0.0.1",PORT=21,USER="user",PASS="user"):
     # Instantiate a dummy authorizer for managing 'virtual' users
     authorizer = DummyAuthorizer()
 
