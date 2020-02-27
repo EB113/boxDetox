@@ -6,7 +6,7 @@ class State:
     menu_state = "main"
     module_state = ""
     module_class = ""
-    global_option = ["help","ls","back"]
+    global_option = ["services","hosts","config","help","ls","back"]
     menu_option = {
         "main": {
             "internal":{
@@ -22,11 +22,11 @@ class State:
             },
             "external":{
                 "shellZ":{
-                    "linux_x86",
-                    "windows_x86",
-                    "php",
-                    "asp",
-                    "jsp"
+                    "linux_x86":{},
+                    "windows_x86":{},
+                    "php":{},
+                    "asp":{},
+                    "jsp":{}
                     },
                 "use":{},
                 "search":{}
@@ -46,7 +46,6 @@ class State:
                 "add":{},
                 "del":{}
                 },
-            "config":{},
             "exit":{}
         }
     }

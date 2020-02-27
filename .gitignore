@@ -10,5 +10,6 @@ src/profiles/__pycache__/*
 src/menus/__pycache__
 src/menus/__pycache__/*
 src/imports/impacket/*
+src/imports/oscpPWN/*
 *.swp
 *.swo

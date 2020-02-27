@@ -13,6 +13,14 @@ from .external import external_use,external_search,external_shellz
 from .internal import *
 from .buckets import *
 
+def config(cmd=None,state=None):
+	return
+def services(cmd=None,state=None):
+	return
+def hosts(cmd=None,state=None):
+	return
+
+
 def get_options(d,options,id=False):
 	global state
 
@@ -118,7 +126,7 @@ def parse(cmd):
 
 # OPTION VALUES
 state = State()
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":switch,"external":switch,"internal":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"help":help,"ls":ls,"back":back},"external":{"use":external_use,"search":external_search,"back":back,"help":help,"ls":ls},"internal":{"back":back,"help":help,"ls":ls,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"help":help,"ls":ls,"back":back},"windows":{"back":back,"help":help,"ls":ls},"linux":{"back":back,"help":help,"ls":ls},"share":{"back":back,"help":help,"ls":ls,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz},"buckets":{"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"bof":switch,"external":switch,"internal":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services},"external":{"shellZ":switch,"use":external_use,"search":external_search,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"internal":{"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services},"windows":{"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"linux":{"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"share":{"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"back":back,"help":help,"ls":ls,"config":config,"services":services,"hosts":hosts,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz},"buckets":{"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
 
 # AUTOCOMPLETE SETUP
 completer = Completer(get_options(state.menu_option,[]))
