@@ -17,3 +17,6 @@ class Config:
 	PATH = "" 
 	MAXTHREADS = 5
 	HOSTIP = "127.0.0.1"
+	FTPPORT = "21"
+	FTPUSER = "user"
+	FTPPASS = "user"
