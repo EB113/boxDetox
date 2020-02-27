@@ -1,7 +1,7 @@
 import readline
 
 from ..miscellaneous.completer import Completer
-from ..miscellaneous.config import bcolors
+from ..miscellaneous.config import bcolors, Config
 
 from ..profiles.profiler	import Profiler
 from ..modules.monitor		import Monitor
@@ -14,11 +14,37 @@ from .internal import *
 from .buckets import *
 
 def config(cmd=None,state=None):
-	return
+
+    if len(cmd) == 2 and cmd[1] == "list":
+        print("{}Configuration:{}".format(bcolors.OKGREEN,bcolors.ENDC))
+        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+        for member in members:
+            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,member,getattr(Config,member),bcolors.ENDC))
+    elif len(cmd) == 3 and cmd[1] == "get":
+        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+        if cmd[2] in members:
+            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,cmd[2],getattr(Config,cmd[2]),bcolors.ENDC))
+        else:
+            print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+    elif len(cmd) == 4 and cmd[1] == "set":
+        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+        if cmd[2] in members:
+            setattr(Config,cmd[2],cmd[3])
+            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,cmd[2],getattr(Config,cmd[2]),bcolors.ENDC))
+        else:
+            print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+    else:
+        print("{}Usage: config <list|get {{option}}|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
+
 def services(cmd=None,state=None):
-	return
+    print("{}Services:{}".format(bcolors.OKGREEN,bcolors.ENDC))
+    #for host in hosts
+    #print("{}Usage: help <empty||cmd>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+
 def hosts(cmd=None,state=None):
-	return
+    print("{}Hosts:{}".format(bcolors.OKGREEN,bcolors.ENDC))
+    #for host in hosts
+    #print("{}Usage: help <empty||cmd>{}".format(bcolors.OKBLUE,bcolors.ENDC))
 
 
 def get_options(d,options,id=False):
