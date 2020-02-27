@@ -22,16 +22,15 @@ def share_ftp(cmd=None,state=None):
             else:
                 try:
                     os.chdir(Config.PATH+"/db/shares")
-                    ftpserver(21)
+                    ftpserver(Config.HOSTIP,Config.FTPPORT,Config.FTPUSER,Config.FTPPASS)
                     return
                 except Exception as e:
                     print("{}".format(e))
                     print("{}".format(traceback.print_exc()))
                     print("{}Address already in use!{}".format(bcolors.WARNING,bcolors.ENDC))
-
         elif cmd[1] == "stop":
             if State.share_state["ftp"]["status"]:
-                os.kill(State.share_state["ftp"]["pid"], signal.SIGINT)
+                os.kill(State.share_state["ftp"]["pid"], signal.SIGKILL)
                 State.share_state["ftp"]["status"] = False
                 State.share_state["ftp"]["pid"] = 0
                 print("{}FTP Server Stopped!{}".format(bcolors.OKGREEN,bcolors.ENDC))
@@ -42,7 +41,6 @@ def share_ftp(cmd=None,state=None):
                 print("{}FTP Server Active!{}".format(bcolors.OKGREEN,bcolors.ENDC))
             else:
                 print("{}FTP Server Inactive!{}".format(bcolors.WARNING,bcolors.ENDC))
-            
         elif cmd[1] == "cmd":
             print("{}echo open {} {} > ftp.txt{}".format(bcolors.OKBLUE,Config.HOSTIP,Config.FTPPORT,bcolors.ENDC))
             print("{}echo USER {} {} >> ftp.txt{}".format(bcolors.OKBLUE,Config.FTPUSER,Config.FTPPASS,bcolors.ENDC))
@@ -70,7 +68,7 @@ def share_http(cmd=None,state=None):
             else:
                 try:
                     os.chdir(Config.PATH+"/db/shares")
-                    httpserver(4444)
+                    httpserver(Config.HTTPPORT)
                     return
                 except Exception as e:
                     print("{}".format(e))
