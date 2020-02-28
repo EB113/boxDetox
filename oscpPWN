@@ -9,80 +9,86 @@ from src.miscellaneous.config import bcolors, Config
 
 # Export Session Config Values to JSON
 def configExport(pathOUT):
-	cfg = {}
-	members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
-	for member in members:
-		cfg[member] = getattr(Config,member)
-	fd = open(pathOUT,"w")
-	fd.write(json.dumps(cfg))
-	fd.close()
+    cfg = {}
+    members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+    for member in members:
+        cfg[member] = getattr(Config,member)
+    fd = open(pathOUT,"w")
+    fd.write(json.dumps(cfg))
+    fd.close()
 # Import JSON values to Config
 def configImport(pathIN):
-	fd = open(pathIN,"r")
-	cfg = json.loads(fd.read())
-	fd.close()
-	for k,v in cfg.items():
-		setattr(Config,k,v)
+    fd = open(pathIN,"r")
+    cfg = json.loads(fd.read())
+    fd.close()
+    for k,v in cfg.items():
+        setattr(Config,k,v)
+    
+# Get running PATH
+path = os.getcwd()
 
 if len(sys.argv) == 1:
-	# BANNER
-	print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("oscpPWN"),bcolors.ENDC))	
+    # BANNER
+    print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("oscpPWN"),bcolors.ENDC))   
 
-	# Get running PATH
-	path = os.getcwd()
-	# Get directories under ./db/sessions
-	first = True
-	print("Sessions Available:")
-	for subdirs,dirs,files in os.walk(path+"/db/sessions/"):
-		if first:
-			first = False
-			continue
-		print("[*] {}".format(subdirs.split("/")[-1]))
-	try:
-		sessID = input("Choose/Create a Session:\n>>> ")
-	except:
-		exit()
-	# Setup files as directories, load configs
-	try:
-		if not os.path.isdir(path+"/db/sessions/"+sessID):
-			os.mkdir(path+"/db/sessions/"+sessID)
-			configExport(path+"/db/sessions/"+sessID+"/config.py")
-		else:
-			configImport(path+"/db/sessions/"+sessID+"/config.py")
-		Config.PATH = path
-	except Exception as e:
-		print("{}".format(e))
-		print("{}".format(traceback.print_exc()))
-		print("{}Error initiating session! Check {}/db/sessions permissions.{}".format(bcolors.WARNING,Config.PATH,bcolors.ENDC))
-		exit()
-		
-	from src.menus.menu import parse,watchdog
-	
-	# Start main loop
-	Config.SESSID = sessID	
-	state = "main"
-	while state != "exit":
-		try:
-			state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
-		except Exception as e:
-			print("{}".format(e))
-			print("{}".format(traceback.print_exc()))
-			break
+    # Get directories under ./db/sessions
+    first = True
+    print("Sessions Available:")
+    for subdirs,dirs,files in os.walk(path+"/db/sessions/"):
+        if first:
+            first = False
+            continue
+        session = subdirs.split("/db/sessions/")
+        session = session[1].split("/")
+        if len(session) == 1:
+            print("[*] {}".format(session[0]))
+    try:
+        sessID = input("Choose/Create a Session:\n>>> ")
+    except:
+        exit()
+    # Setup files as directories, load configs
+    try:
+        if not os.path.isdir(path+"/db/sessions/"+sessID):
+            os.mkdir(path+"/db/sessions/"+sessID)
+            os.mkdir(path+"/db/sessions/"+sessID+"/profiles")
+            os.mkdir(path+"/db/sessions/"+sessID+"/modules")
+            configExport(path+"/db/sessions/"+sessID+"/config.py")
+        else:
+            configImport(path+"/db/sessions/"+sessID+"/config.py")
+        Config.PATH = path
+    except Exception as e:
+        print("{}".format(e))
+        print("{}".format(traceback.print_exc()))
+        print("{}Error initiating session! Check {}/db/sessions permissions.{}".format(bcolors.WARNING,Config.PATH,bcolors.ENDC))
+        exit()
+        
+    from src.menus.menu import parse,watchdog
+    
+    # Start main loop
+    Config.SESSID = sessID  
+    state = "main"
+    while state != "exit":
+        try:
+            state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
+        except Exception as e:
+            print("{}".format(e))
+            print("{}".format(traceback.print_exc()))
+            break
 
-	watchdog.flag.set()
-	watchdog.join()
-	del watchdog
-	try:
-		configExport(Config.PATH+"/db/sessions/"+sessID+"/config.py")
-	except Exception as e:
-		print("{}".format(e))
-		print("{}".format(traceback.print_exc()))
-		print("{}Error saving session config file!{}".format(bcolors.WARNING,bcolors.ENDC))
+    watchdog.flag.set()
+    watchdog.join()
+    del watchdog
+    try:
+        configExport(Config.PATH+"/db/sessions/"+sessID+"/config.py")
+    except Exception as e:
+        print("{}".format(e))
+        print("{}".format(traceback.print_exc()))
+        print("{}Error saving session config file!{}".format(bcolors.WARNING,bcolors.ENDC))
 
 elif len(sys.argv) == 2:
-	if sys.argv[1] == "config":
-		os.system(Config.EDITOR+" "+Config.PATH+"/src/miscellaneous/config.py")
+    if sys.argv[1] == "config":
+        os.system(Config.EDITOR+" "+path+"/src/miscellaneous/config.py")
 else:
-	print("{}Oy, Wat u Doink m8! ./oscpPWN or ./oscpPWN config{}".format(bcolors.WARNING,bcolors.ENDC))
+    print("{}Oy, Wat u Doink m8! ./oscpPWN or ./oscpPWN config{}".format(bcolors.WARNING,bcolors.ENDC))
 
 exit()

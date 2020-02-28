@@ -1,17 +1,17 @@
 import readline
 
-from ..miscellaneous.completer import Completer
-from ..miscellaneous.config import bcolors, Config
+from src.miscellaneous.completer import Completer
+from src.miscellaneous.config import bcolors, Config
 
-from ..profiles.profiler	import Profiler
-from ..modules.monitor		import Monitor
+from src.profiles.profiler	import Profiler
+from src.modules.monitor		import Monitor
 
-from .commons import State
-from .bof import bof_badchars,bof_pattern,bof_offset,bof_lendian,bof_nasm,bof_nops,bof_notes
-from .module import module_run,module_get,module_set
-from .external import external_use,external_search,external_shellz
-from .internal import *
-from .buckets import *
+from src.menus.commons import State
+from src.menus.bof import bof_badchars,bof_pattern,bof_offset,bof_lendian,bof_nasm,bof_nops,bof_notes
+from src.menus.module import module_run,module_get,module_set
+from src.menus.external import external_use,external_search,external_shellz
+from src.menus.internal import *
+from src.menus.buckets import *
 
 def config(cmd=None,state=None):
 

@@ -3,11 +3,11 @@
 import os, signal,traceback
 import time
 
-from ..miscellaneous.config import Config,bcolors
-from .commons import State
-from ..imports.oscpPWN.httpserver import httpServer
-from ..imports.oscpPWN.ftpserver import ftpServer
-from ..imports.oscpPWN.smbserver import smbServer
+from src.miscellaneous.config import Config,bcolors
+from src.menus.commons import State
+from src.shares.httpserver import httpServer
+from src.shares.ftpserver import ftpServer
+from src.shares.smbserver import smbServer
 
 def share_smb(cmd=None,state=None):
     if len(cmd) == 2:
@@ -106,7 +106,7 @@ def share_http(cmd=None,state=None):
             else:
                 try:
                     os.chdir(Config.PATH+"/db/shares")
-                    httpServer(Config.HTTPPORT)
+                    httpServer(Config.HOSTIP,Config.HTTPPORT)
                     return
                 except Exception as e:
                     print("{}".format(e))

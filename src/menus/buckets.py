@@ -1,6 +1,6 @@
 import os
 
-from ..miscellaneous.config import bcolors, Config
+from src.miscellaneous.config import bcolors, Config
 
 def buckets_open(cmd=None,state=None):
 	if len(cmd) == 2:

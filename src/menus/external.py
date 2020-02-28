@@ -1,9 +1,10 @@
-from . import commons
 import sys,os,re,json
 import clipboard
 
-from ..miscellaneous.config import Config,bcolors
-from .module import switcher_module
+from src.miscellaneous.config import Config,bcolors
+from src.menus.module import switcher_module
+from src.profiles.profiler import Profiler
+from src.menus import commons
 
 shellz_notes = ["Spawn TTY shell https://netsec.ws/?p=337"]
 

@@ -1,8 +1,8 @@
 import threading
 import netaddr,os,re
 
-from ...miscellaneous.config import bcolors
-from ..module import Module
+from src.miscellaneous.config import bcolors
+from src.modules.module import Module
 
 import time
 

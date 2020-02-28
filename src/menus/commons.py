@@ -1,6 +1,6 @@
 import queue
 
-from ..miscellaneous.config import Config
+from src.miscellaneous.config import Config
 
 class State:
 	menu_state = "main"

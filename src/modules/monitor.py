@@ -2,7 +2,7 @@ import threading
 import queue
 import time
 
-from ..menus.commons import State
+from src.menus.commons import State
 
 class Monitor(threading.Thread):
 
