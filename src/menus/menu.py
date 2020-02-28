@@ -1,4 +1,4 @@
-import readline
+import re,readline
 
 from src.miscellaneous.completer import Completer
 from src.miscellaneous.config import bcolors, Config
@@ -13,38 +13,67 @@ from src.menus.external import external_use,external_search,external_shellz
 from src.menus.internal import *
 from src.menus.buckets import *
 
+from src.parsers.nmap_xml import *
+
 def config(cmd=None,state=None):
 
-    if len(cmd) == 2 and cmd[1] == "list":
-        print("{}Configuration:{}".format(bcolors.OKGREEN,bcolors.ENDC))
-        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
-        for member in members:
-            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,member,getattr(Config,member),bcolors.ENDC))
-    elif len(cmd) == 3 and cmd[1] == "get":
-        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
-        if cmd[2] in members:
-            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,cmd[2],getattr(Config,cmd[2]),bcolors.ENDC))
-        else:
-            print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
-    elif len(cmd) == 4 and cmd[1] == "set":
-        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
-        if cmd[2] in members:
-            setattr(Config,cmd[2],cmd[3])
-            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,cmd[2],getattr(Config,cmd[2]),bcolors.ENDC))
-        else:
-            print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
-    else:
-        print("{}Usage: config <list|get {{option}}|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
+	if len(cmd) == 2 and cmd[1] == "list":
+		print("{}Configuration:{}".format(bcolors.OKGREEN,bcolors.ENDC))
+		members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+		for member in members:
+			print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,member,getattr(Config,member),bcolors.ENDC))
+	elif len(cmd) == 3 and cmd[1] == "get":
+		members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+		if cmd[2] in members:
+			print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,cmd[2],getattr(Config,cmd[2]),bcolors.ENDC))
+		else:
+			print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+	elif len(cmd) == 4 and cmd[1] == "set":
+		members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+		if cmd[2] in members:
+			setattr(Config,cmd[2],cmd[3])
+			print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,cmd[2],getattr(Config,cmd[2]),bcolors.ENDC))
+		else:
+			print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+	else:
+		print("{}Usage: config <list|get {{option}}|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 def services(cmd=None,state=None):
-    print("{}Services:{}".format(bcolors.WARNING,bcolors.ENDC))
-    #for host in hosts
-    #print("{}Usage: help <empty||cmd>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+	filters = ["profile","ip","port"]
+	if len(cmd) == 2:
+		if cmd[1] == "filters":
+			print(filters)
+			return
+		elif cmd[1] == "help":
+			print("{}Usage: services <filters||e.g:profile=prof||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+			return
+
+	filters_valid = {}
+	for filt in cmd[1:]:
+		if re.match("^[a-z]+\=[a-zA-Z0-9]+$",filt):
+			filt_split = filt.split("=")
+			if filt_split[0] in filters:
+				filters_valid[filt_split[0]]=filt_split[1]
+
+	print("{}Services:{}".format(bcolors.WARNING,bcolors.ENDC))
+	for root,dirs,files in os.walk(Config.PATH+"/db/sessions/"+Config.SESSID):
+		if root.split("/")[-1] == "portscan":
+			if "profile" in filters_valid and root.find("profiles/"+filters_valid["profile"]+"/") == -1:
+				continue
+			if "ip" in filters_valid and root.find("/"+filters_valid["ip"]+"/") == -1:
+				continue
+			for f in files:
+				if re.match("^[a-zA-Z0-9_.]+\.xml$",f):
+					data = parse_xml(root+"/"+f)
+					print_data(data)
+					del data
 
 def hosts(cmd=None,state=None):
-    print("{}Hosts:{}".format(bcolors.WARNING,bcolors.ENDC))
-    #for host in hosts
-    #print("{}Usage: help <empty||cmd>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+	#data = parse_xml(Config.PATH+"/db/sessions/unique_name/127.0.0.1/portscan/nmap.xml.xml")
+	print("{}Hosts:{}".format(bcolors.WARNING,bcolors.ENDC))
+	#list_ip_addresses(data)
+	#for addr in addrs:
+	#	print("{}[*]{}".format(bcolors.OKBLUE,bcolors.ENDC))
 
 
 def get_options(d,options,id=False):
@@ -155,11 +184,10 @@ state = State()
 switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"bof":switch,"external":switch,"internal":switch,"buckets":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services},"external":{"shellZ":switch,"use":external_use,"search":external_search,"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"internal":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services},"windows":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"linux":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"share":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"services":services,"hosts":hosts,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz,"notes":external_shellz},"buckets":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
 
 # AUTOCOMPLETE SETUP
-completer = Completer(get_options(state.menu_option,[]))
+completer = Completer(get_options(state.menu_option,[])+state.global_option)
 readline.set_completer(completer.complete)
 readline.parse_and_bind('tab: complete')
 
 # PROCESS MONITOR
 watchdog = Monitor(state.procs)
 watchdog.start()
-
