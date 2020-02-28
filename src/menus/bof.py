@@ -1,7 +1,7 @@
 import sys,os,re
 import clipboard
 
-from ..miscellaneous.config import bcolors
+from src.miscellaneous.config import bcolors
 
 def bof_badchars(cmd=None,state=None):
 	out = ""

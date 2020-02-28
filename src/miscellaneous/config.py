@@ -1,4 +1,3 @@
-
 ############ OUTPUT GRAPHICS ################
 class bcolors:
 	HEADER = '\033[95m'
@@ -12,6 +11,16 @@ class bcolors:
 
 class Config:
 	# COMMAND OPTION VALUES
+	SESSID = ""
 	EDITOR = "vim"
-	PATH = "{PATH}" 
+	PATH = "" 
 	MAXTHREADS = 5
+	HOSTIP = "127.0.0.1"
+	HTTPPORT = "80"
+	FTPPORT = "21"
+	FTPUSER = "user"
+	FTPPASS = "user"
+	SMBPORT = "445"
+	SMBUSER = "user"
+	SMBPASS = "user"
+	SHELLPORT = "80"

@@ -1,3 +1,5 @@
+from src.modules.module import Module
+
 class PortScanner(Module):
 
 	def __init__(self):

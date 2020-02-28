@@ -1,6 +1,6 @@
 import readline,json
 
-from .config import Config
+from src.miscellaneous.config import Config
 
 class Completer(object):
 

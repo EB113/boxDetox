@@ -1,8 +1,8 @@
 import threading
 import netaddr,os,re
 
-from ...miscellaneous.config import bcolors
-from .portscanner import PortScanner
+from src.miscellaneous.config import bcolors
+from src.modules.portscan.portscanner import PortScanner
 
 import time
 
@@ -30,7 +30,7 @@ class Module_Basic(PortScanner):
 		self.opt_dict = opt_dict
 
 	def getPorts(path):
-		return ["80"]
+		return ["80","443"]
 
 	# Validating user module options
 	def validate(opt_dict):

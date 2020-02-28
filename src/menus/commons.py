@@ -1,20 +1,35 @@
 import queue
 
-from ..miscellaneous.config import Config
+from src.miscellaneous.config import Config
 
 class State:
 	menu_state = "main"
+	bucket_state = ""
 	module_state = ""
 	module_class = ""
-	global_option = ["help","ls","back"]
+	global_option = ["services","hosts","config","help","ls","back","exit"]
 	menu_option = {
 		"main": {
 			"internal":{
-				"file_transfer":{},
+				"share":{
+					"smb":{},
+					"ftp":{},
+					"http":{},
+					"powershell":{},
+					"vbscript":{}
+					},
 				"linux":{},
 				"windows":{}
 			},
 			"external":{
+				"shellZ":{
+					"linux_x86":{},
+					"windows_x86":{},
+					"php":{},
+					"asp":{},
+					"jsp":{},
+					"notes":{}
+					},
 				"use":{},
 				"search":{}
 			},
@@ -27,7 +42,12 @@ class State:
 				"nops":{},
 				"notes":{}
 			},
-			"exit":{}
+			"buckets":{
+				"open":{},
+				"list":{},
+				"add":{},
+				"del":{}
+				}
 		}
 	}
 	env_option = {}
@@ -37,6 +57,20 @@ class State:
 				"go":{}
 			}
 	procs = queue.Queue(maxsize=Config.MAXTHREADS)
+	share_state = {
+			"smb":{
+				"status":False,
+				"pid":0
+			},
+			"ftp":{
+				"status":False,
+				"pid":0
+			},
+			"http":{
+				"status":False,
+				"pid":0
+			}
+		}
 
 	def __init__(self):
 		pass

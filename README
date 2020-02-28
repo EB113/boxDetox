@@ -2,12 +2,11 @@ OSCP tool helper.
 
 ** Python 3.7+ Required **
 #Setup guide#
- - Change src/miscellaneous/config.py {PATH} for $(pwd) value on the root folder.
-
 apt install python3-pip
 pip3 install -r requirements.txt
 
 chmod +x oscpPWN
+ln -sf {PATH}/oscpPWN /usr/bin/oscpPWN
 
-./oscpPWN
+oscpPWN
 

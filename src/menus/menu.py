@@ -1,16 +1,51 @@
-import pyfiglet,readline
+import readline
 
-from ..miscellaneous.completer import Completer
-from ..miscellaneous.config import bcolors
+from src.miscellaneous.completer import Completer
+from src.miscellaneous.config import bcolors, Config
 
-from ..profiles.profiler	import Profiler
-from ..modules.monitor		import Monitor
+from src.profiles.profiler	import Profiler
+from src.modules.monitor		import Monitor
 
-from .commons import State
-from .bof import bof_badchars,bof_pattern,bof_offset,bof_lendian,bof_nasm,bof_nops,bof_notes
-from .module import module_run,module_get,module_set
-from .external import external_use,external_search
-from .internal import *
+from src.menus.commons import State
+from src.menus.bof import bof_badchars,bof_pattern,bof_offset,bof_lendian,bof_nasm,bof_nops,bof_notes
+from src.menus.module import module_run,module_get,module_set
+from src.menus.external import external_use,external_search,external_shellz
+from src.menus.internal import *
+from src.menus.buckets import *
+
+def config(cmd=None,state=None):
+
+    if len(cmd) == 2 and cmd[1] == "list":
+        print("{}Configuration:{}".format(bcolors.OKGREEN,bcolors.ENDC))
+        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+        for member in members:
+            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,member,getattr(Config,member),bcolors.ENDC))
+    elif len(cmd) == 3 and cmd[1] == "get":
+        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+        if cmd[2] in members:
+            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,cmd[2],getattr(Config,cmd[2]),bcolors.ENDC))
+        else:
+            print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+    elif len(cmd) == 4 and cmd[1] == "set":
+        members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+        if cmd[2] in members:
+            setattr(Config,cmd[2],cmd[3])
+            print("{}[*] {} -> {}{}".format(bcolors.OKBLUE,cmd[2],getattr(Config,cmd[2]),bcolors.ENDC))
+        else:
+            print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+    else:
+        print("{}Usage: config <list|get {{option}}|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
+
+def services(cmd=None,state=None):
+    print("{}Services:{}".format(bcolors.WARNING,bcolors.ENDC))
+    #for host in hosts
+    #print("{}Usage: help <empty||cmd>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+
+def hosts(cmd=None,state=None):
+    print("{}Hosts:{}".format(bcolors.WARNING,bcolors.ENDC))
+    #for host in hosts
+    #print("{}Usage: help <empty||cmd>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+
 
 def get_options(d,options,id=False):
 	global state
@@ -117,7 +152,7 @@ def parse(cmd):
 
 # OPTION VALUES
 state = State()
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"bof":switch,"external":switch,"internal":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"help":help,"ls":ls,"back":back},"external":{"use":external_use,"search":external_search,"back":back,"help":help,"ls":ls},"internal":{"back":back,"help":help,"ls":ls,"file_transfer":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"help":help,"ls":ls,"back":back},"windows":{"back":back,"help":help,"ls":ls},"linux":{"back":back,"help":help,"ls":ls},"file_transfer":{"back":back,"help":help,"ls":ls}}
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"bof":switch,"external":switch,"internal":switch,"buckets":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services},"external":{"shellZ":switch,"use":external_use,"search":external_search,"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"internal":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services},"windows":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"linux":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"share":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"services":services,"hosts":hosts,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz,"notes":external_shellz},"buckets":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
 
 # AUTOCOMPLETE SETUP
 completer = Completer(get_options(state.menu_option,[]))
@@ -128,5 +163,3 @@ readline.parse_and_bind('tab: complete')
 watchdog = Monitor(state.procs)
 watchdog.start()
 
-# BANNER
-print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("oscpPWN"),bcolors.ENDC))

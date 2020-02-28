@@ -1,8 +1,8 @@
 import queue
 
-from .commons import State
-from ..miscellaneous.config import Config,bcolors
-from ..modules.basic.ping import Module_Ping
+from src.menus.commons import State
+from src.miscellaneous.config import Config,bcolors
+from src.modules.basic.ping import Module_Ping
 
 def module_run(cmd=None,state=None):
 	if state.module_class.validate(state.env_option):
