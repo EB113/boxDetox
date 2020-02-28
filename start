@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+if [ "$#" -ne 1 ]; then
+	echo "./start <name>"
+else
+	SESSION=$1
+	tmux start-server
+
+	tmux has-session -t $SESSION &> /dev/null
+	if [ $? != 0 ]
+	then
+		tmux new-session -d -s $SESSION
+
+		tmux new-window -t $SESSION:0 -n oscpPWN
+		tmux rename-window -t $SESSION:0 "oscpPWN"
+		tmux send-keys -t $SESSION:0 "oscpPWN" Enter
+		tmux send-keys -t $SESSION:0 "lab" Enter
+
+		tmux split-window -h -t $SESSION:0
+		tmux split-window -v -t $SESSION:0.0
+		tmux send-keys -t $SESSION:0.1 "msfconsole" Enter
+		tmux send-keys -t $SESSION:0.1 "use exploit/multi/handler" Enter
+	fi
+	tmux attach-session -d -t $SESSION
+fi
+
+
