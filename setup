@@ -1,0 +1,6 @@
+apt install python3-pip
+pip3 install -r requirements.txt
+
+chmod +x oscpPWN
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+ln -sf $DIR/oscpPWN /usr/bin/oscpPWN
