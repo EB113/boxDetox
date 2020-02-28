@@ -1,1 +1,1 @@
-{"EDITOR": "vim", "FTPPASS": "user", "FTPPORT": "21", "FTPUSER": "user", "HOSTIP": "127.0.0.1", "HTTPPORT": "80", "MAXTHREADS": 5, "PATH": "/root/Documents/oscpPWN", "SESSID": "new", "SHELLPORT": "80", "SMBPASS": "user", "SMBPORT": "445", "SMBUSER": "user"}
+{"EDITOR": "vim", "FTPPASS": "user", "FTPPORT": "21", "FTPUSER": "user", "HOSTIP": "127.0.0.1", "HTTPPORT": "80", "MAXTHREADS": 5, "PATH": "/mnt/hgfs/Base/tmp/oscpPWN", "SESSID": "new", "SHELLPORT": "80", "SMBPASS": "user", "SMBPORT": "445", "SMBUSER": "user"}

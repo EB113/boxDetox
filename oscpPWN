@@ -39,7 +39,7 @@ if len(sys.argv) == 1:
 			continue
 		print("[*] {}".format(subdirs.split("/")[-1]))
 	try:
-		sessID = input("Choose/Create a Session:")
+		sessID = input("Choose/Create a Session:\n>>> ")
 	except:
 		exit()
 	# Setup files as directories, load configs

@@ -7,7 +7,7 @@ class State:
 	bucket_state = ""
 	module_state = ""
 	module_class = ""
-	global_option = ["services","hosts","config","help","ls","back"]
+	global_option = ["services","hosts","config","help","ls","back","exit"]
 	menu_option = {
 		"main": {
 			"internal":{
@@ -47,8 +47,7 @@ class State:
 				"list":{},
 				"add":{},
 				"del":{}
-				},
-			"exit":{}
+				}
 		}
 	}
 	env_option = {}
