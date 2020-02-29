@@ -1,10 +1,10 @@
 import threading
 import netaddr,os,re
-
-from src.miscellaneous.config import bcolors
-from src.modules.portscan.portscanner import PortScanner
-
 import time
+
+from src.miscellaneous.config import bcolors,Config
+from src.modules.portscan.portscanner import PortScanner
+from src.parsers.nmap_xml import *
 
 def target(val=None):
 	if val is None:
@@ -24,7 +24,7 @@ class Module_TCPCommon(PortScanner):
 
 	opt = {"target":target}#,"outfile":outfile}#{"target":target,"output":flag}
 
-	def __init__(self,opt_dict):
+	def __init__(self,opt_dict,save_location):
 		threading.Thread.__init__(self)
 		super().__init__()
 		self.opt_dict = opt_dict
@@ -33,6 +33,11 @@ class Module_TCPCommon(PortScanner):
 		return ["80","443"]
 
 	def printData(data=None):
+		if data != None and type(data) = dict and len(data)>0:
+			for ip,v in data.items():
+			print(data)
+	
+	def storeData(self,data=None):
 		print(data)
 	
 	# Validating user module options
@@ -45,14 +50,14 @@ class Module_TCPCommon(PortScanner):
 			valid = False
 		return valid
 		
-	def targets(self,val=None):
-		out = []
-		if bool(re.match(r'^([0-9]+\.){3}[0-9]+$',val)):
-			out.append(val)
-		elif bool(re.match(r'^([0-9]+\.){3}[0-9]+\/[0-9]+$',val)):
-			for addr in netaddr.IPNetwork(val):
-				out.append(str(addr))
-		return out
-
 	def run(self):
+		lst = Module_TCPCommon.targets(self.opt_dict)
+		fn = Config.PATH+"/db/sessions/"+Config.SESSID+"/tmp.xml"
+		self.data = {}
+		for ip in lst:
+			fn = Config.PATH+
+			os.system("nmap -sT -sV -T4 "+ip+" -oX "+fn)
+			data = nmap_xml.parse_xml(fn)
+			self.data[ip] = data
+
 		return

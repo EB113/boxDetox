@@ -42,16 +42,7 @@ class Module_Ping(Module):
 	def printData(data=None):
 		print(data)
 
-	def targets(self,val=None):
-		out = []
-		if bool(re.match(r'^([0-9]+\.){3}[0-9]+$',val)):
-			out.append(val)
-		elif bool(re.match(r'^([0-9]+\.){3}[0-9]+\/[0-9]+$',val)):
-			for addr in netaddr.IPNetwork(val):
-				out.append(str(addr))
-		return out
-	
-	def store(self):
+	def storeData(self):
 		if self.save_location == "module":
 			if "regular" not in State.moduleData:
 				State.moduleData["regular"] = {}
@@ -74,7 +65,7 @@ class Module_Ping(Module):
 						State.profileData[self.profile_tag]["regular"][ip][self.profile_port]["Module_Ping"] = self.data[ip]
 
 	def run(self):
-		lst = self.targets(self.opt_dict["target"])
+		lst = Module_Ping.targets(self.opt_dict["target"])
 		self.data = {}
 		for ip in lst:
 			if not self.flag.is_set():
@@ -96,5 +87,5 @@ class Module_Ping(Module):
 			else:
 				break
 		#Store Data for Global query
-		self.store()
+		self.storeData()
 		return

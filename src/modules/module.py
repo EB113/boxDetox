@@ -1,4 +1,5 @@
 import threading
+import re
 
 class Module(threading.Thread):
 
@@ -12,3 +13,17 @@ class Module(threading.Thread):
 	@staticmethod
 	def printData(data):
 		raise NotImplementedError
+
+	def storeData(self,data):
+		raise NotImplementedError
+	
+	@staticmethod
+	def targets(val):
+		out = []
+		if val != None and type(val) == str:
+			if bool(re.match(r'^([0-9]+\.){3}[0-9]+$',val)):
+				out.append(val)
+			elif bool(re.match(r'^([0-9]+\.){3}[0-9]+\/[0-9]+$',val)):
+				for addr in netaddr.IPNetwork(val):
+					out.append(str(addr))
+		return out

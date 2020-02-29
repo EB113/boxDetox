@@ -1,4 +1,4 @@
-import re,readline,sys
+import re,readline,sys,importlib
 
 from src.miscellaneous.completer import Completer
 from src.miscellaneous.config import bcolors, Config
@@ -41,16 +41,16 @@ def profiles(cmd=None,state=None):
 	filters = ["tag","name","ip","port","type"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
-		print("{}Usage: services <e.g:profile=prof ip=127.0.0.1||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		print("{}Usage: services <e.g:profile=prof ip=127.0.0.1||help||clear>{}".format(bcolors.OKBLUE,bcolors.ENDC))
 		return
-	elif len(cmd) == 2 and cmd[1] == "reset":
+	elif len(cmd) == 2 and cmd[1] == "clear":
 		State.profileData = {}
 		print("{}Profile data cleared!{}".format(bcolors.OKBLUE,bcolors.ENDC))
 		return
 
 	filters_valid = {}
 	for filt in cmd[1:]:
-		if re.match("^[a-z]+\=[a-zA-Z0-9]+$",filt):
+		if re.match("^[a-z]+\=[a-zA-Z0-9._-]+$",filt):
 			filt_split = filt.split("=")
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]
@@ -67,7 +67,7 @@ def profiles(cmd=None,state=None):
 			for ip,port_list in type_list["portscan"].items():
 				if "ip" in filters_valid and filters_valid["ip"] != ip:
 					continue
-				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
 				for port,mod_list in port_list.items():
 					if "port" in filters_valid and filters_valid["port"] != port:
 						continue
@@ -87,7 +87,7 @@ def profiles(cmd=None,state=None):
 			for ip,port_list in type_list["regular"].items():
 				if "ip" in filters_valid and filters_valid["ip"] != ip:
 					continue
-				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
 				for port,mod_list in port_list.items():
 					if "port" in filters_valid and filters_valid["port"] != port:
 						continue
@@ -101,20 +101,19 @@ def modules(cmd=None,state=None):
 	filters = ["name","ip","type"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
-		print("{}Usage: modules <e.g:name=Module_Ping ip=127.0.0.1||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		print("{}Usage: modules <e.g:name=Module_Ping ip=127.0.0.1||help||clear>{}".format(bcolors.OKBLUE,bcolors.ENDC))
 		return
-	elif len(cmd) == 2 and cmd[1] == "reset":
+	elif len(cmd) == 2 and cmd[1] == "clear":
 		State.moduleData = {"portscan":{},"regular":{}}
 		print("{}Module data cleared!{}".format(bcolors.OKBLUE,bcolors.ENDC))
 		return
 
 	filters_valid = {}
 	for filt in cmd[1:]:
-		if re.match("^[a-z]+\=[a-zA-Z0-9.]+$",filt):
+		if re.match("^[a-z]+\=[a-zA-Z0-9._-]+$",filt):
 			filt_split = filt.split("=")
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]
-	
 	print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
 	print("{}Modules Data{}".format(bcolors.WARNING,bcolors.ENDC))
 	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "portscan"):
@@ -127,7 +126,7 @@ def modules(cmd=None,state=None):
 			for ip,v in d.items():
 				if "ip" in filters_valid and filters_valid["ip"] != ip:
 					continue
-				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
 				print(v)
 	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
 				
@@ -141,7 +140,11 @@ def modules(cmd=None,state=None):
 			for ip,v in d.items():
 				if "ip" in filters_valid and filters_valid["ip"] != ip:
 					continue
-				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				module = ""
+				for root,subdirs,dirs in os.walk(Config.PATH+"/src/modules/"):
+					
+					module = importlib.import_module("src.modules.")
 				print(v)
 	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
 
@@ -154,7 +157,7 @@ def services(cmd=None,state=None):
 
 	filters_valid = {}
 	for filt in cmd[1:]:
-		if re.match("^[a-z]+\=[a-zA-Z0-9]+$",filt):
+		if re.match("^[a-z]+\=[a-zA-Z0-9._-]+$",filt):
 			filt_split = filt.split("=")
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]
@@ -169,7 +172,7 @@ def services(cmd=None,state=None):
 			for ip,v in d.items():
 				if "ip" in filters_valid and filters_valid["ip"] != ip:
 					continue
-				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
 				print(v)
 	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
 
@@ -202,7 +205,7 @@ def hosts(cmd=None,state=None):
 
 	filters_valid = {}
 	for filt in cmd[1:]:
-		if re.match("^[a-z]+\=[a-zA-Z0-9]+$",filt):
+		if re.match("^[a-z]+\=[a-zA-Z0-9._-]+$",filt):
 			filt_split = filt.split("=")
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]

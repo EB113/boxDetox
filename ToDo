@@ -1,6 +1,9 @@
-1 - internal share
-2 - shellz
-3 - buckets
-4 - windows/linux privesc
-5 - Cleanup Profiler
-6 - Global Cleanup
+1 - Dynamic call printData on filters
+2 - Portscanners(4)
+3 - global cmd save status
+4 - Fix Autocompleter (State)
+5 - Enum modules for most common ports
+6 - shellz
+7 - buckets
+8 - windows/linux privesc
+9 - Global Cleanup
