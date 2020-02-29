@@ -4,9 +4,11 @@
 if [ "$#" -ne 1 ]; then
 	echo "./start <name>"
 else
+	service postgresql start
+
 	SESSION=$1
 	tmux start-server
-
+	
 	tmux has-session -t $SESSION &> /dev/null
 	if [ $? != 0 ]
 	then
