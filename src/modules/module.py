@@ -6,5 +6,9 @@ class Module(threading.Thread):
 		self.flag = threading.Event()
 	
 	@staticmethod
-	def validate(self):
+	def validate(opt_dict):
+		raise NotImplementedError
+	
+	@staticmethod
+	def printData(data):
 		raise NotImplementedError

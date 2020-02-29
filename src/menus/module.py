@@ -7,7 +7,7 @@ from src.modules.basic.ping import Module_Ping
 def module_run(cmd=None,state=None):
 	if state.module_class.validate(state.env_option):
 		if not state.procs.full():
-			state.procs.put((state.module_state,state.module_class(state.env_option)))
+			state.procs.put((state.module_state,state.module_class(state.env_option,"module")))
 		else:
 			print("{}Too many module tasks!{}".format(bcolors.WARNING,bcolors.ENDC))
 	else:

@@ -5,6 +5,7 @@ import sys,os,json
 import socket
 
 from src.miscellaneous.config import bcolors, Config
+from src.menus.commons import State
 
 # Check if oscpPWN logger is on!
 def checkLogger():
@@ -18,21 +19,68 @@ def checkLogger():
 
 # Export Session Config Values to JSON
 def configExport(pathOUT):
-	cfg = {}
-	members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
-	for member in members:
-		cfg[member] = getattr(Config,member)
-	fd = open(pathOUT,"w")
-	fd.write(json.dumps(cfg))
-	fd.close()
+	try:
+		cfg = {}
+		members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+		for member in members:
+			cfg[member] = getattr(Config,member)
+		fd = open(pathOUT,"w")
+		fd.write(json.dumps(cfg))
+		fd.close()
+	except:
+		print("{}Error exporting config.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
+		pass
+		
 # Import JSON values to Config
 def configImport(pathIN):
-	fd = open(pathIN,"r")
-	cfg = json.loads(fd.read())
-	fd.close()
-	for k,v in cfg.items():
-		setattr(Config,k,v)
+	try:
+		fd = open(pathIN,"r")
+		cfg = json.loads(fd.read())
+		fd.close()
+		for k,v in cfg.items():
+			setattr(Config,k,v)
+	except:
+		print("{}Error importing config.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
+		pass
 	
+# Export Session State.moduleData Values to JSON
+def moduleExport(pathOUT):
+	try:
+		fd = open(pathOUT,"w")
+		fd.write(json.dumps(State.moduleData))
+		fd.close()
+	except:
+		print("{}Error exporting module.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
+		pass
+# Import JSON values to State.moduleData
+def moduleImport(pathIN):
+	try:
+		fd = open(pathIN,"r")
+		State.moduleData = json.loads(fd.read())
+		fd.close()
+	except:
+		print("{}Error importing module.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
+		pass
+
+# Export Session State.profileData Values to JSON
+def profileExport(pathOUT):
+	try:
+		fd = open(pathOUT,"w")
+		fd.write(json.dumps(State.profileData))
+		fd.close()
+	except:
+		print("{}Error exporting profile.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
+		pass
+# Import JSON values to State.profileData
+def profileImport(pathIN):
+	try:
+		fd = open(pathIN,"r")
+		State.profileData = json.loads(fd.read())
+		fd.close()
+	except:
+		print("{}Error importing profile.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
+		pass
+
 # Get running PATH
 path = os.getcwd()
 
@@ -55,15 +103,20 @@ if len(sys.argv) == 1:
 		sessID = input("Choose/Create a Session:\n>>> ")
 	except:
 		exit()
+	
 	# Setup files as directories, load configs
 	try:
 		if not os.path.isdir(path+"/db/sessions/"+sessID):
+			print("{}Configuring Session Data...{}".format(bcolors.OKGREEN,bcolors.ENDC))
 			os.mkdir(path+"/db/sessions/"+sessID)
-			os.mkdir(path+"/db/sessions/"+sessID+"/profiles")
-			os.mkdir(path+"/db/sessions/"+sessID+"/modules")
-			configExport(path+"/db/sessions/"+sessID+"/config.py")
+			configExport(path+"/db/sessions/"+sessID+"/config.json")
+			moduleExport(path+"/db/sessions/"+sessID+"/module.json")
+			profileExport(path+"/db/sessions/"+sessID+"/profile.json")
 		else:
-			configImport(path+"/db/sessions/"+sessID+"/config.py")
+			print("{}Importing Session Data...{}".format(bcolors.OKGREEN,bcolors.ENDC))
+			configImport(path+"/db/sessions/"+sessID+"/config.json")
+			moduleImport(path+"/db/sessions/"+sessID+"/module.json")
+			profileImport(path+"/db/sessions/"+sessID+"/profile.json")
 		Config.PATH = path
 	except Exception as e:
 		print("{}".format(e))
@@ -75,6 +128,8 @@ if len(sys.argv) == 1:
 	status = checkLogger()
 	if status:
 		Config.LOGGERSTATUS = "True"
+		print("{}Listening IP: {}{}".format(bcolors.OKGREEN,Config.LOGGERIP,bcolors.ENDC))	
+		print("{}Listening Port: {}{}".format(bcolors.OKGREEN,Config.LOGGERPORT,bcolors.ENDC))	
 	else:
 		Config.LOGGERSTATUS = "False"	
 	print("{}Status:{}{}".format(bcolors.OKGREEN,status,bcolors.ENDC))	
@@ -97,11 +152,13 @@ if len(sys.argv) == 1:
 	watchdog.join()
 	del watchdog
 	try:
-		configExport(Config.PATH+"/db/sessions/"+sessID+"/config.py")
+		configExport(Config.PATH+"/db/sessions/"+sessID+"/config.json")
+		moduleExport(Config.PATH+"/db/sessions/"+sessID+"/module.json")
+		profileExport(Config.PATH+"/db/sessions/"+sessID+"/profile.json")
 	except Exception as e:
 		print("{}".format(e))
 		print("{}".format(traceback.print_exc()))
-		print("{}Error saving session config file!{}".format(bcolors.WARNING,bcolors.ENDC))
+		print("{}Error saving session data!{}".format(bcolors.WARNING,bcolors.ENDC))
 
 elif len(sys.argv) == 2:
 	if sys.argv[1] == "config":

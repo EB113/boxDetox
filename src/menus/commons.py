@@ -7,7 +7,7 @@ class State:
 	bucket_state = ""
 	module_state = ""
 	module_class = ""
-	global_option = ["services","hosts","config","help","ls","back","exit"]
+	global_option = ["profiles","modules","services","hosts","config","help","ls","back","exit"]
 	menu_option = {
 		"main": {
 			"internal":{
@@ -71,6 +71,8 @@ class State:
 				"pid":0
 			}
 		}
+	moduleData = {"portscan":{},"regular":{}}
+	profileData = {}
 
 	def __init__(self):
 		pass

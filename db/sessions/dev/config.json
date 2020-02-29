@@ -1,0 +1,1 @@
+{"EDITOR": "vim", "FTPPASS": "user", "FTPPORT": "21", "FTPUSER": "user", "HOSTIP": "127.0.0.1", "HTTPPORT": "80", "LOGGERIP": "127.0.0.1", "LOGGERPORT": "9999", "LOGGERSTATUS": false, "MAXMODULES": 5, "MAXPROFILES": 2, "PATH": "/opt/oscpPWN", "SESSID": "dev", "SHELLPORT": "80", "SMBPASS": "user", "SMBPORT": "445", "SMBUSER": "user", "VERBOSE": "True"}

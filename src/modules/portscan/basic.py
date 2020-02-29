@@ -20,24 +20,27 @@ def outfile():
 def flag(val=None):
 	return True
 
-class Module_Basic(PortScanner):
+class Module_TCPCommon(PortScanner):
 
-	opt = {"target":target,"outfile":outfile}#{"target":target,"output":flag}
+	opt = {"target":target}#,"outfile":outfile}#{"target":target,"output":flag}
 
 	def __init__(self,opt_dict):
 		threading.Thread.__init__(self)
 		super().__init__()
 		self.opt_dict = opt_dict
 
-	def getPorts(path):
+	def getPorts(data=None):
 		return ["80","443"]
 
+	def printData(data=None):
+		print(data)
+	
 	# Validating user module options
 	def validate(opt_dict):
 		valid = True
-		if len(opt_dict.keys()) == len(Module_Ping.opt.keys()):
+		if len(opt_dict.keys()) == len(Module_TCPCommon.opt.keys()):
 			for k,v in opt_dict.items():
-				valid = valid and Module_Ping.opt.get(k,None)(v)
+				valid = valid and Module_TCPCommon.opt.get(k,None)(v)
 		else:
 			valid = False
 		return valid

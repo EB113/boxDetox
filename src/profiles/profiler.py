@@ -127,7 +127,7 @@ class Profiler(threading.Thread):
                 self.tpl["portscan"][portscan]["outfile"] = path_updated
                 try:
                     portscan_class = getattr(portscan_module, self.tpl["portscan"][portscan]["name"])
-                    portscan_class({**self.tpl["globals"],**self.tpl["portscan"][portscan]}).start()
+                    portscan_class({**self.tpl["globals"],**self.tpl["portscan"][portscan]},"profile",self.tpl["tag"]).start()
                 except:
                     print("Error Portscan!")
                     return
@@ -149,7 +149,7 @@ class Profiler(threading.Thread):
                                 variables["outfile"] = path_updated
                                 module = ("src/" + name).replace("/",".")
                                 imported_module = import_module(module)
-                                getattr(imported_module, variables["name"])({**self.tpl["globals"],**variables}).start()
+                                getattr(imported_module, variables["name"])({**self.tpl["globals"],**variables},"profile",self.tpl["tag"],port).start()
 
                 except Exception as e:
                     print("{}".format(e))

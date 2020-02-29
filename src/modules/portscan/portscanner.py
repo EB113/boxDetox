@@ -6,5 +6,9 @@ class PortScanner(Module):
 		super().__init__()
 
 	@staticmethod
-	def getPorts(self):
+	def getPorts(data):
+		raise NotImplementedError
+
+	@staticmethod
+	def printData(data):
 		raise NotImplementedError

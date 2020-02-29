@@ -25,6 +25,8 @@ class ClientThread(threading.Thread):
 		self.conn.close()
 
 print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("oscpPWN"),bcolors.ENDC))
+print("{}Listening IP: {}{}".format(bcolors.OKGREEN,Config.LOGGERIP,bcolors.ENDC))
+print("{}Listening Port: {}{}".format(bcolors.OKGREEN,Config.LOGGERPORT,bcolors.ENDC))
 
 try:
 	print_lock = threading.Lock()

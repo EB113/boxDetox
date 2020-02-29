@@ -37,15 +37,16 @@ def config(cmd=None,state=None):
 	else:
 		print("{}Usage: config <list|get {{option}}|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
 
-def services(cmd=None,state=None):
-	filters = ["profile","ip","port"]
-	if len(cmd) == 2:
-		if cmd[1] == "filters":
-			print(filters)
-			return
-		elif cmd[1] == "help":
-			print("{}Usage: services <filters||e.g:profile=prof||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
-			return
+def profiles(cmd=None,state=None):
+	filters = ["tag","name","ip","port","type"]
+	if len(cmd) == 2 and cmd[1] == "help":
+		print("Filters: {}".format(filters))
+		print("{}Usage: services <e.g:profile=prof ip=127.0.0.1||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		return
+	elif len(cmd) == 2 and cmd[1] == "reset":
+		State.profileData = {}
+		print("{}Profile data cleared!{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		return
 
 	filters_valid = {}
 	for filt in cmd[1:]:
@@ -54,26 +55,178 @@ def services(cmd=None,state=None):
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]
 
-	print("{}Services:{}".format(bcolors.WARNING,bcolors.ENDC))
-	for root,dirs,files in os.walk(Config.PATH+"/db/sessions/"+Config.SESSID):
-		if root.split("/")[-1] == "portscan":
-			if "profile" in filters_valid and root.find("profiles/"+filters_valid["profile"]+"/") == -1:
+	print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+	print("{}Profiles Data{}".format(bcolors.WARNING,bcolors.ENDC))
+	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "portscan"):
+		print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		print("{}Type: Portscan{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		for tag,type_list in State.profileData.items():
+			if "tag" in filters_valid and filters_valid["tag"] != t:
 				continue
-			if "ip" in filters_valid and root.find("/"+filters_valid["ip"]+"/") == -1:
+			print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
+			for ip,port_list in type_list["portscan"].items():
+				if "ip" in filters_valid and filters_valid["ip"] != ip:
+					continue
+				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				for port,mod_list in port_list.items():
+					if "port" in filters_valid and filters_valid["port"] != port:
+						continue
+					for mod,data in mod_list.items():
+						if "name" in filters_valid and filters_valid["name"] != mod:
+							continue
+						print(v)
+	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+
+	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "regular"):
+		print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		print("{}Type: Regular{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		for tag,type_list in State.profileData.items():
+			if "tag" in filters_valid and filters_valid["tag"] != t:
 				continue
-			for f in files:
-				if re.match("^[a-zA-Z0-9_.]+\.xml$",f):
-					data = parse_xml(root+"/"+f)
-					print_data(data)
-					del data
+			print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
+			for ip,port_list in type_list["regular"].items():
+				if "ip" in filters_valid and filters_valid["ip"] != ip:
+					continue
+				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				for port,mod_list in port_list.items():
+					if "port" in filters_valid and filters_valid["port"] != port:
+						continue
+					for mod,data in mod_list.items():
+						if "name" in filters_valid and filters_valid["name"] != mod:
+							continue
+						print(v)
+	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+
+def modules(cmd=None,state=None):
+	filters = ["name","ip","type"]
+	if len(cmd) == 2 and cmd[1] == "help":
+		print("Filters: {}".format(filters))
+		print("{}Usage: modules <e.g:name=Module_Ping ip=127.0.0.1||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		return
+	elif len(cmd) == 2 and cmd[1] == "reset":
+		State.moduleData = {"portscan":{},"regular":{}}
+		print("{}Module data cleared!{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		return
+
+	filters_valid = {}
+	for filt in cmd[1:]:
+		if re.match("^[a-z]+\=[a-zA-Z0-9.]+$",filt):
+			filt_split = filt.split("=")
+			if filt_split[0] in filters:
+				filters_valid[filt_split[0]]=filt_split[1]
+	
+	print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+	print("{}Modules Data{}".format(bcolors.WARNING,bcolors.ENDC))
+	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "portscan"):
+		print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		print("{}Type: Portscan{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		for m,d in State.moduleData["portscan"].items():
+			if "name" in filters_valid and filters_valid["name"] != m:
+				continue
+			print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
+			for ip,v in d.items():
+				if "ip" in filters_valid and filters_valid["ip"] != ip:
+					continue
+				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				print(v)
+	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+				
+	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "regular"):
+		print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		print("{}Type: Regular{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		for m,d in State.moduleData["regular"].items():
+			if "name" in filters_valid and filters_valid["name"] != m:
+				continue
+			print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
+			for ip,v in d.items():
+				if "ip" in filters_valid and filters_valid["ip"] != ip:
+					continue
+				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				print(v)
+	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+
+def services(cmd=None,state=None):
+	filters = ["type","module","profile","ip","port"]
+	if len(cmd) == 2 and cmd[1] == "help":
+		print("Filters: {}".format(filters))
+		print("{}Usage: services <e.g:profile=prof ip=127.0.0.1||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		return
+
+	filters_valid = {}
+	for filt in cmd[1:]:
+		if re.match("^[a-z]+\=[a-zA-Z0-9]+$",filt):
+			filt_split = filt.split("=")
+			if filt_split[0] in filters:
+				filters_valid[filt_split[0]]=filt_split[1]
+
+	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "modules"):
+		print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+		print("{}Modules Data{}".format(bcolors.WARNING,bcolors.ENDC))
+		for m,d in State.moduleData["portscan"].items():
+			if "name" in filters_valid and filters_valid["name"] != m:
+				continue
+			print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
+			for ip,v in d.items():
+				if "ip" in filters_valid and filters_valid["ip"] != ip:
+					continue
+				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				print(v)
+	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+
+	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "profiles"):
+		print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+		print("{}Profiles Data{}".format(bcolors.WARNING,bcolors.ENDC))
+		for tag,type_list in State.profileData.items():
+			if "tag" in filters_valid and filters_valid["tag"] != t:
+				continue
+			print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
+			for ip,port_list in type_list["portscan"].items():
+				if "ip" in filters_valid and filters_valid["ip"] != ip:
+					continue
+				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+				for port,mod_list in port_list.items():
+					if "port" in filters_valid and filters_valid["port"] != port:
+						continue
+					for mod,data in mod_list.items():
+						if "name" in filters_valid and filters_valid["name"] != mod:
+							continue
+						print(v)
+	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
 
 def hosts(cmd=None,state=None):
-	#data = parse_xml(Config.PATH+"/db/sessions/unique_name/127.0.0.1/portscan/nmap.xml.xml")
-	print("{}Hosts:{}".format(bcolors.WARNING,bcolors.ENDC))
-	#list_ip_addresses(data)
-	#for addr in addrs:
-	#	print("{}[*]{}".format(bcolors.OKBLUE,bcolors.ENDC))
+	filters = ["module","profile","port"]
+	if len(cmd) == 2 and cmd[1] == "help":
+		print("Filters: {}".format(filters))
+		print("{}Usage: hosts <e.g:profile=prof port=80||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		return
 
+	filters_valid = {}
+	for filt in cmd[1:]:
+		if re.match("^[a-z]+\=[a-zA-Z0-9]+$",filt):
+			filt_split = filt.split("=")
+			if filt_split[0] in filters:
+				filters_valid[filt_split[0]]=filt_split[1]
+	print("{}Hosts Data{}".format(bcolors.WARNING,bcolors.ENDC))
+	hosts_array = []
+
+	for m,d in State.moduleData["portscan"].items():
+		for ip in d:
+	   		if ip not in hosts_array:
+   				hosts_array.append(ip)
+	for m,d in State.moduleData["regular"].items():
+		for ip in d:
+			if ip not in hosts_array:
+				hosts_array.append(ip)
+	for p,d in State.profileData.items():
+		for ip in d["portscan"]:
+			if ip not in hosts_array:
+				hosts_array.append(ip)
+		for ip in d["regular"]:
+			if ip not in hosts_array:
+				hosts_array.append(ip)
+
+	for host in hosts_array:
+		print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,host,bcolors.ENDC))
 
 def get_options(d,options,id=False):
 	global state
@@ -180,7 +333,7 @@ def parse(cmd):
 
 # OPTION VALUES
 state = State()
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"bof":switch,"external":switch,"internal":switch,"buckets":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services},"external":{"shellZ":switch,"use":external_use,"search":external_search,"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"internal":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services},"windows":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"linux":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services},"share":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"services":services,"hosts":hosts,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz,"notes":external_shellz},"buckets":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"bof":switch,"external":switch,"internal":switch,"buckets":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"external":{"shellZ":switch,"use":external_use,"search":external_search,"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"internal":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"windows":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"linux":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"share":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"services":services,"modules":modules,"profiles":profiles,"hosts":hosts,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz,"notes":external_shellz},"buckets":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
 
 # AUTOCOMPLETE SETUP
 completer = Completer(get_options(state.menu_option,[])+state.global_option)

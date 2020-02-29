@@ -33,3 +33,5 @@ class Config:
 	LOGGERIP 	 = "127.0.0.1"
 	LOGGERPORT   = "9999"
 	LOGGERSTATUS = "True"
+
+	VERBOSE = "True"
