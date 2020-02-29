@@ -13,14 +13,23 @@ class Config:
 	# COMMAND OPTION VALUES
 	SESSID = ""
 	EDITOR = "vim"
-	PATH = "" 
-	MAXTHREADS = 5
-	HOSTIP = "127.0.0.1"
+	PATH   = "" 
+
+	#CONCURRENCY THROTTLING
+	MAXMODULES  = 5
+	MAXPROFILES = 2 #ToDo
+	
+	HOSTIP   = "127.0.0.1"
 	HTTPPORT = "80"
-	FTPPORT = "21"
-	FTPUSER = "user"
-	FTPPASS = "user"
-	SMBPORT = "445"
-	SMBUSER = "user"
-	SMBPASS = "user"
+	FTPPORT  = "21"
+	FTPUSER  = "user"
+	FTPPASS  = "user"
+	SMBPORT  = "445"
+	SMBUSER  = "user"
+	SMBPASS  = "user"
+	
 	SHELLPORT = "80"
+	
+	LOGGERIP 	 = "127.0.0.1"
+	LOGGERPORT   = "9999"
+	LOGGERSTATUS = "True"

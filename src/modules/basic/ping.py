@@ -1,7 +1,7 @@
-import threading
+import threading,socket
 import netaddr,os,re
 
-from src.miscellaneous.config import bcolors
+from src.miscellaneous.config import Config,bcolors
 from src.modules.module import Module
 
 import time
@@ -52,5 +52,13 @@ class Module_Ping(Module):
 				out = proc.read()
 				proc.close()
 				if "bytes from" in out:
-					print("{}[*]{} {}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,ip))
+					if Config.LOGGERSTATUS == "True":
+						with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+							s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
+							try:
+								s.sendall((bcolors.OKBLUE+"[*]"+bcolors.ENDC+" "+bcolors.BOLD+ip+bcolors.ENDC).encode())	
+							finally:
+								s.close()
+					else:
+						print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,ip,bcolors.ENDC))
 		return

@@ -56,7 +56,7 @@ class State:
 				"set":{},
 				"go":{}
 			}
-	procs = queue.Queue(maxsize=Config.MAXTHREADS)
+	procs = queue.Queue(maxsize=Config.MAXMODULES)
 	share_state = {
 			"smb":{
 				"status":False,

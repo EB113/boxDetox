@@ -1,8 +1,7 @@
-import re,readline
+import re,readline,sys
 
 from src.miscellaneous.completer import Completer
 from src.miscellaneous.config import bcolors, Config
-
 from src.profiles.profiler	import Profiler
 from src.modules.monitor		import Monitor
 
@@ -17,7 +16,7 @@ from src.parsers.nmap_xml import *
 
 def config(cmd=None,state=None):
 
-	if len(cmd) == 2 and cmd[1] == "list":
+	if len(cmd) == 2 and cmd[1] == "get":
 		print("{}Configuration:{}".format(bcolors.OKGREEN,bcolors.ENDC))
 		members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
 		for member in members:

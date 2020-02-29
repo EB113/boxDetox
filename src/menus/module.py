@@ -9,7 +9,7 @@ def module_run(cmd=None,state=None):
 		if not state.procs.full():
 			state.procs.put((state.module_state,state.module_class(state.env_option)))
 		else:
-			print("{}Too many tasks! ToDo dynamic task value manipulation.{}".format(bcolors.WARNING,bcolors.ENDC))
+			print("{}Too many module tasks!{}".format(bcolors.WARNING,bcolors.ENDC))
 	else:
 		print("{}Wrong options! ToDo show option example forced class from Super.{}".format(bcolors.WARNING,bcolors.ENDC))
 	return
