@@ -10,3 +10,30 @@ ln -sf {PATH}/oscpPWN /usr/bin/oscpPWN
 
 oscpPWN
 
+-------------------------------------
+This tool intends to aid in exam by reducing painfull stuff.
+This is not a problem solver tool.
+
+Features:
+	- Buffer Overflow Helper
+	- Enumeration Automation Helper (Modules will not be made available.Try Harder and make them yourself, follow the examples!)
+	- File Sharing Helper
+	- Buckets to keep track of cracked passwords and notes
+	- Priv Esc Helper (Text Notes)
+
+The main goal is to allow the user to create their own enumeration by using python scripts.
+
+Enumeration Automation:
+Relevant Classes:
+	- Module
+	- Portscan (Specfic type of Module)
+	- Profile
+Relevant Files:
+	- test.tpl (json structure to automate enumeration, user specifies a portscan module and specifies which modules run on specific ports. Modules only run if port is open.)
+
+Examples:
+	- Module_Ping (Inheritance of Module)
+	- Module_TCPCommon (Inheritance of Portscan)
+
+ToDo...
+
