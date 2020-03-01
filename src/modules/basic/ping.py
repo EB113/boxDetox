@@ -39,8 +39,11 @@ class Module_Ping(Module):
 			valid = False
 		return valid
 	
-	def printData(data=None):
-		print(data)
+	def printData(data=None,conn=None):
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True" and conn != None:
+			conn.sendall((bcolors.OKBLUE+bcolors.BOLD+data+bcolors.ENDC+"\n").encode())	
+		if Config.CLIENTVERBOSE == "True":
+			print("{}{}{}{}".format(bcolors.OKBLUE,bcolors.BOLD,data,bcolors.ENDC))
 
 	def storeData(self):
 		if self.save_location == "module":
@@ -75,14 +78,14 @@ class Module_Ping(Module):
 				if "bytes from" in out:
 					self.data[ip]=ip
 					if Config.VERBOSE == "True":
-						if Config.LOGGERSTATUS == "True":
+						if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
 							with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 								s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
 								try:
 									s.sendall((bcolors.OKBLUE+"[*]"+bcolors.ENDC+" "+bcolors.BOLD+ip+bcolors.ENDC).encode())	
 								finally:
 									s.close()
-						else:
+						if Config.CLIENTVERBOSE == "True":
 							print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,ip,bcolors.ENDC))
 			else:
 				break

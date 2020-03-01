@@ -1,4 +1,5 @@
-import re,readline,sys,importlib
+import re,readline,sys,importlib,socket
+import time
 
 from src.miscellaneous.completer import Completer
 from src.miscellaneous.config import bcolors, Config
@@ -7,12 +8,19 @@ from src.modules.monitor		import Monitor
 
 from src.menus.commons import State
 from src.menus.bof import bof_badchars,bof_pattern,bof_offset,bof_lendian,bof_nasm,bof_nops,bof_notes
-from src.menus.module import module_run,module_get,module_set
+from src.menus.module import module_run,module_get,module_set,switcher_module
 from src.menus.external import external_use,external_search,external_shellz
 from src.menus.internal import *
 from src.menus.buckets import *
 
 from src.parsers.nmap_xml import *
+
+
+def getKey(dictionary,val):
+	for k,v in dictionary.items():
+		if v == val:
+			return k
+	return None
 
 def config(cmd=None,state=None):
 
@@ -55,47 +63,109 @@ def profiles(cmd=None,state=None):
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]
 
-	print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
-	print("{}Profiles Data{}".format(bcolors.WARNING,bcolors.ENDC))
-	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "portscan"):
-		print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
-		print("{}Type: Portscan{}".format(bcolors.OKBLUE,bcolors.ENDC))
-		for tag,type_list in State.profileData.items():
-			if "tag" in filters_valid and filters_valid["tag"] != t:
-				continue
-			print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
-			for ip,port_list in type_list["portscan"].items():
-				if "ip" in filters_valid and filters_valid["ip"] != ip:
-					continue
-				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
-				for port,mod_list in port_list.items():
-					if "port" in filters_valid and filters_valid["port"] != port:
-						continue
-					for mod,data in mod_list.items():
-						if "name" in filters_valid and filters_valid["name"] != mod:
-							continue
-						print(v)
-	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
 
-	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "regular"):
-		print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
-		print("{}Type: Regular{}".format(bcolors.OKBLUE,bcolors.ENDC))
-		for tag,type_list in State.profileData.items():
-			if "tag" in filters_valid and filters_valid["tag"] != t:
-				continue
-			print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
-			for ip,port_list in type_list["regular"].items():
-				if "ip" in filters_valid and filters_valid["ip"] != ip:
+	s = None
+	if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
+	try:
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+			print("{}Profiles Data{}".format(bcolors.WARNING,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+			s.sendall((bcolors.WARNING+"Profiles Data"+bcolors.ENDC+"\n").encode())
+
+		if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "portscan"):
+		
+			if Config.CLIENTVERBOSE == "True":
+				print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+				print("{}Type: Portscan{}".format(bcolors.OKBLUE,bcolors.ENDC))
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+				s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.OKBLUE+"Type: Portscan"+bcolors.ENDC+"\n").encode())
+			
+			for tag,type_list in State.profileData.items():
+				if "tag" in filters_valid and filters_valid["tag"] != t:
 					continue
-				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
-				for port,mod_list in port_list.items():
-					if "port" in filters_valid and filters_valid["port"] != port:
+				if Config.CLIENTVERBOSE == "True":
+					print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
+				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+					s.sendall((bcolors.OKBLUE+"Tag: "+t+bcolors.ENDC+"\n").encode())
+				
+				for ip,port_list in type_list["portscan"].items():
+					if "ip" in filters_valid and filters_valid["ip"] != ip:
 						continue
-					for mod,data in mod_list.items():
-						if "name" in filters_valid and filters_valid["name"] != mod:
+					#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+					for port,mod_list in port_list.items():
+						if "port" in filters_valid and filters_valid["port"] != port:
 							continue
-						print(v)
-	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+						for mod,data in mod_list.items():
+							if "name" in filters_valid and filters_valid["name"] != mod:
+								continue
+							
+							if Config.CLIENTVERBOSE == "True":
+								print("{}Name: {}{}".format(bcolors.OKBLUE,mod,bcolors.ENDC))
+							if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+								s.sendall((bcolors.OKBLUE+"Name: "+mod+bcolors.ENDC+"\n").encode())
+							
+							module_path = getKey(switcher_module,mod)
+							if module_path != None:
+								module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),mod)
+								module_class.printData(data,s)
+		
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
+
+
+		if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "regular"):
+		
+			if Config.CLIENTVERBOSE == "True":
+				print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+				print("{}Type: Regular{}".format(bcolors.OKBLUE,bcolors.ENDC))
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+				s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.OKBLUE+"Type: Regular"+bcolors.ENDC+"\n").encode())
+			
+			
+			for tag,type_list in State.profileData.items():
+				if "tag" in filters_valid and filters_valid["tag"] != t:
+					continue
+				if Config.CLIENTVERBOSE == "True":
+					print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
+				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+					s.sendall((bcolors.OKBLUE+"Tag: "+t+bcolors.ENDC+"\n").encode())
+				
+				for ip,port_list in type_list["regular"].items():
+					if "ip" in filters_valid and filters_valid["ip"] != ip:
+						continue
+					#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+					for port,mod_list in port_list.items():
+						if "port" in filters_valid and filters_valid["port"] != port:
+							continue
+						for mod,data in mod_list.items():
+							if "name" in filters_valid and filters_valid["name"] != mod:
+								continue
+							
+							if Config.CLIENTVERBOSE == "True":
+								print("{}Name: {}{}".format(bcolors.OKBLUE,mod,bcolors.ENDC))
+							if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+								s.sendall((bcolors.OKBLUE+"Name: "+mod+bcolors.ENDC+"\n").encode())
+							
+							module_path = getKey(switcher_module,mod)
+							if module_path != None:
+								module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),mod)
+								module_class.printData(data,s)
+		
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+	finally:
+		if s != None:
+			s.close()
 
 def modules(cmd=None,state=None):
 	filters = ["name","ip","type"]
@@ -114,39 +184,83 @@ def modules(cmd=None,state=None):
 			filt_split = filt.split("=")
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]
-	print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
-	print("{}Modules Data{}".format(bcolors.WARNING,bcolors.ENDC))
-	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "portscan"):
-		print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
-		print("{}Type: Portscan{}".format(bcolors.OKBLUE,bcolors.ENDC))
-		for m,d in State.moduleData["portscan"].items():
-			if "name" in filters_valid and filters_valid["name"] != m:
-				continue
-			print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
-			for ip,v in d.items():
-				if "ip" in filters_valid and filters_valid["ip"] != ip:
+	s = None
+	if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
+	try:
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+			print("{}Modules Data{}".format(bcolors.WARNING,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+			s.sendall((bcolors.WARNING+"Modules Data"+bcolors.ENDC+"\n").encode())
+	
+		if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "portscan"):
+			if Config.CLIENTVERBOSE == "True":
+				print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+				print("{}Type: Portscan{}".format(bcolors.OKBLUE,bcolors.ENDC))
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+				s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.OKBLUE+"Type: Portscan"+bcolors.ENDC+"\n").encode())
+			
+			for m,d in State.moduleData["portscan"].items():
+				if "name" in filters_valid and filters_valid["name"] != m:
 					continue
-				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
-				print(v)
-	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
 				
-	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "regular"):
-		print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
-		print("{}Type: Regular{}".format(bcolors.OKBLUE,bcolors.ENDC))
-		for m,d in State.moduleData["regular"].items():
-			if "name" in filters_valid and filters_valid["name"] != m:
-				continue
-			print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
-			for ip,v in d.items():
-				if "ip" in filters_valid and filters_valid["ip"] != ip:
+				if Config.CLIENTVERBOSE == "True":
+					print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
+				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+					s.sendall((bcolors.OKBLUE+"Name: "+m+bcolors.ENDC+"\n").encode())
+				
+				for ip,v in d.items():
+					if "ip" in filters_valid and filters_valid["ip"] != ip:
+						continue
+					#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+					module_path = getKey(switcher_module,m)
+					if module_path != None:
+						module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),m)
+						module_class.printData(v,s)
+		
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				
+		if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "regular"):
+			if Config.CLIENTVERBOSE == "True":
+				print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+				print("{}Type: Regular{}".format(bcolors.OKBLUE,bcolors.ENDC))
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+				s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.OKBLUE+"Type: Regular"+bcolors.ENDC+"\n").encode())
+			
+			for m,d in State.moduleData["regular"].items():
+				if "name" in filters_valid and filters_valid["name"] != m:
 					continue
-				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
-				module = ""
-				for root,subdirs,dirs in os.walk(Config.PATH+"/src/modules/"):
-					
-					module = importlib.import_module("src.modules.")
-				print(v)
-	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+				
+				if Config.CLIENTVERBOSE == "True":
+					print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
+				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+					s.sendall((bcolors.OKBLUE+"Name: "+m+bcolors.ENDC+"\n").encode())
+				
+				for ip,v in d.items():
+					if "ip" in filters_valid and filters_valid["ip"] != ip:
+						continue
+					#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+					module_path = getKey(switcher_module,m)
+					if module_path != None:
+						module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),m)
+						module_class.printData(v,s)
+		
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+	finally:
+		if s != None:
+			s.close()
+
 
 def services(cmd=None,state=None):
 	filters = ["type","module","profile","ip","port"]
@@ -162,39 +276,86 @@ def services(cmd=None,state=None):
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]
 
-	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "modules"):
-		print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
-		print("{}Modules Data{}".format(bcolors.WARNING,bcolors.ENDC))
-		for m,d in State.moduleData["portscan"].items():
-			if "name" in filters_valid and filters_valid["name"] != m:
-				continue
-			print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
-			for ip,v in d.items():
-				if "ip" in filters_valid and filters_valid["ip"] != ip:
+	s = None
+	if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
+	try:
+		if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "modules"):
+			if Config.CLIENTVERBOSE == "True":
+				print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+				print("{}Modules Data{}".format(bcolors.WARNING,bcolors.ENDC))
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+				s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.WARNING+"Modules Data"+bcolors.ENDC+"\n").encode())
+		
+			for m,d in State.moduleData["portscan"].items():
+				if "name" in filters_valid and filters_valid["name"] != m:
 					continue
-				#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
-				print(v)
-	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
-
-	if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "profiles"):
-		print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
-		print("{}Profiles Data{}".format(bcolors.WARNING,bcolors.ENDC))
-		for tag,type_list in State.profileData.items():
-			if "tag" in filters_valid and filters_valid["tag"] != t:
-				continue
-			print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
-			for ip,port_list in type_list["portscan"].items():
-				if "ip" in filters_valid and filters_valid["ip"] != ip:
-					continue
-				print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
-				for port,mod_list in port_list.items():
-					if "port" in filters_valid and filters_valid["port"] != port:
+				
+				if Config.CLIENTVERBOSE == "True":
+					print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
+				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+					s.sendall((bcolors.OKBLUE+"Name: "+m+bcolors.ENDC+"\n").encode())
+				
+				for ip,v in d.items():
+					if "ip" in filters_valid and filters_valid["ip"] != ip:
 						continue
-					for mod,data in mod_list.items():
-						if "name" in filters_valid and filters_valid["name"] != mod:
+					#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+					module_path = getKey(switcher_module,m)
+					if module_path != None:
+						module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),m)
+						module_class.printData(v,s)
+		
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
+
+		if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "profiles"):
+			if Config.CLIENTVERBOSE == "True":
+				print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+				print("{}Profiles Data{}".format(bcolors.WARNING,bcolors.ENDC))
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+				s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.WARNING+"Profiles Data"+bcolors.ENDC+"\n").encode())
+			
+			for tag,type_list in State.profileData.items():
+				if "tag" in filters_valid and filters_valid["tag"] != t:
+					continue
+				if Config.CLIENTVERBOSE == "True":
+					print("{}Tag: {}{}".format(bcolors.OKBLUE,tag,bcolors.ENDC))
+				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+					s.sendall((bcolors.OKBLUE+"Tag: "+tag+bcolors.ENDC+"\n").encode())
+				
+				for ip,port_list in type_list["portscan"].items():
+					if "ip" in filters_valid and filters_valid["ip"] != ip:
+						continue
+					#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
+					for port,mod_list in port_list.items():
+						if "port" in filters_valid and filters_valid["port"] != port:
 							continue
-						print(v)
-	print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
+						for mod,data in mod_list.items():
+							if "name" in filters_valid and filters_valid["name"] != mod:
+								continue
+				
+							if Config.CLIENTVERBOSE == "True":
+								print("{}Name: {}{}".format(bcolors.OKBLUE,mod,bcolors.ENDC))
+							if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+								s.sendall((bcolors.OKBLUE+"Name: "+mod+bcolors.ENDC+"\n").encode())
+				
+							module_path = getKey(switcher_module,mod)
+							if module_path != None:
+								module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),mod)
+								module_class.printData(data,s)
+		
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+	finally:
+		if s != None:
+			s.close()
 
 def hosts(cmd=None,state=None):
 	filters = ["module","profile","port"]
@@ -209,7 +370,6 @@ def hosts(cmd=None,state=None):
 			filt_split = filt.split("=")
 			if filt_split[0] in filters:
 				filters_valid[filt_split[0]]=filt_split[1]
-	print("{}Hosts Data{}".format(bcolors.WARNING,bcolors.ENDC))
 	hosts_array = []
 
 	for m,d in State.moduleData["portscan"].items():
@@ -228,8 +388,26 @@ def hosts(cmd=None,state=None):
 			if ip not in hosts_array:
 				hosts_array.append(ip)
 
-	for host in hosts_array:
-		print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,host,bcolors.ENDC))
+	s = None
+	if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
+	try:
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+			print("{}Hosts Data{}".format(bcolors.WARNING,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+			s.sendall((bcolors.WARNING+"Hosts Data"+bcolors.ENDC+"\n").encode())
+		
+		for host in hosts_array:
+			if Config.CLIENTVERBOSE == "True":
+				print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,host,bcolors.ENDC))
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+				s.sendall((bcolors.OKBLUE+"[*]"+bcolors.ENDC+" "+bcolors.BOLD+host+bcolors.ENDC+"\n").encode())
+	finally:
+		if s != None:
+			s.close()
 
 def get_options(d,options,id=False):
 	global state

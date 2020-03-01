@@ -11,7 +11,7 @@ class Module(threading.Thread):
 		raise NotImplementedError
 	
 	@staticmethod
-	def printData(data):
+	def printData(data,conn=None):
 		raise NotImplementedError
 
 	def storeData(self,data):
