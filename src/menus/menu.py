@@ -1,5 +1,5 @@
 import re,readline,sys,importlib,socket
-import time
+import time,json
 
 from src.miscellaneous.completer import Completer
 from src.miscellaneous.config import bcolors, Config
@@ -14,6 +14,108 @@ from src.menus.internal import *
 from src.menus.buckets import *
 
 from src.parsers.nmap_xml import *
+
+# Export Session Config Values to JSON
+def configExport(pathOUT):
+	try:
+		cfg = {}
+		members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
+		for member in members:
+			cfg[member] = getattr(Config,member)
+		fd = open(pathOUT,"w")
+		fd.write(json.dumps(cfg))
+		fd.close()
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))	
+		print("{}Error exporting config.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
+		pass
+
+# Import JSON values to Config
+def configImport(pathIN):
+	try:
+		fd = open(pathIN,"r")
+		cfg = json.loads(fd.read())
+		fd.close()
+		for k,v in cfg.items():
+			setattr(Config,k,v)
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))	
+		print("{}Error importing config.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
+		pass
+
+# Export Session State.moduleData Values to JSON
+def moduleExport(pathOUT):
+	try:
+		fd = open(pathOUT,"w")
+		fd.write(json.dumps(State.moduleData))
+		fd.close()
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))	
+		print("{}Error exporting module.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
+		pass
+# Import JSON values to State.moduleData
+def moduleImport(pathIN):
+	try:
+		fd = open(pathIN,"r")
+		State.moduleData = json.loads(fd.read())
+		fd.close()
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))	
+		print("{}Error importing module.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
+		pass
+
+# Export Session State.profileData Values to JSON
+def profileExport(pathOUT):
+	try:
+		fd = open(pathOUT,"w")
+		fd.write(json.dumps(State.profileData))
+		fd.close()
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))	
+		print("{}Error exporting profile.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
+		pass
+# Import JSON values to State.profileData
+def profileImport(pathIN):
+	try:
+		fd = open(pathIN,"r")
+		State.profileData = json.loads(fd.read())
+		fd.close()
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))	
+		print("{}Error importing profile.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
+		pass
+
+def save(cmd=None,state=None):
+	session = ""
+	if len(cmd) == 2:
+		session = cmd[1]
+	elif len(cmd) == 1:
+		session = Config.SESSID
+	else:
+		print("{}Usage: save <empty||session_name>{}".format(bcolors.WARNING,bcolors.ENDC))
+		return
+
+	configExport(Config.PATH+"/db/sessions/"+session+"/config.json")
+	moduleExport(Config.PATH+"/db/sessions/"+session+"/module.json")
+	profileExport(Config.PATH+"/db/sessions/"+session+"/profile.json")
+
+def load(cmd=None,state=None):
+	if len(cmd) == 2:
+		path = Config.PATH+"/db/sessions/"+cmd[1]
+		if os.path.isdir(path) and os.path.isfile(path+"/config.json") and os.path.isfile(path+"/module.json") and os.path.isfile(path+"/profile.json"):
+			configImport(path+"/config.json")
+			moduleImport(path+"/module.json")
+			profileImport(path+"/profile.json")
+		else:
+			print("{}Session not found!{}".format(bcolors.WARNING,bcolors.ENDC))
+	else:
+		print("{}Usage: load <session_name>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 
 def getKey(dictionary,val):
@@ -43,7 +145,7 @@ def config(cmd=None,state=None):
 		else:
 			print("{}Config value not found!{}".format(bcolors.WARNING,bcolors.ENDC))
 	else:
-		print("{}Usage: config <list|get {{option}}|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
+		print("{}Usage: config <get <empty||{{option}}>|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
 
 def profiles(cmd=None,state=None):
 	filters = ["tag","name","ip","port","type"]
@@ -91,28 +193,21 @@ def profiles(cmd=None,state=None):
 				if Config.CLIENTVERBOSE == "True":
 					print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
 				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
-					s.sendall((bcolors.OKBLUE+"Tag: "+t+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.OKBLUE+"Tag: "+tag+bcolors.ENDC+"\n").encode())
 				
-				for ip,port_list in type_list["portscan"].items():
-					if "ip" in filters_valid and filters_valid["ip"] != ip:
-						continue
-					#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
-					for port,mod_list in port_list.items():
-						if "port" in filters_valid and filters_valid["port"] != port:
+				for mod,ip_list in type_list["portscan"].items():
+					if Config.CLIENTVERBOSE == "True":
+						print("{}Name: {}{}".format(bcolors.OKBLUE,mod,bcolors.ENDC))
+					if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+						s.sendall((bcolors.OKBLUE+"Name: "+mod+bcolors.ENDC+"\n").encode())
+		
+					for ip,data in ip_list.items():
+						if "ip" in filters_valid and filters_valid["ip"] != ip:
 							continue
-						for mod,data in mod_list.items():
-							if "name" in filters_valid and filters_valid["name"] != mod:
-								continue
-							
-							if Config.CLIENTVERBOSE == "True":
-								print("{}Name: {}{}".format(bcolors.OKBLUE,mod,bcolors.ENDC))
-							if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
-								s.sendall((bcolors.OKBLUE+"Name: "+mod+bcolors.ENDC+"\n").encode())
-							
-							module_path = getKey(switcher_module,mod)
-							if module_path != None:
-								module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),mod)
-								module_class.printData(data,s)
+						module_path = getKey(switcher_module,mod)
+						if module_path != None:
+							module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),mod)
+							module_class.printData(data,s)
 		
 		if Config.CLIENTVERBOSE == "True":
 			print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
@@ -136,7 +231,7 @@ def profiles(cmd=None,state=None):
 				if Config.CLIENTVERBOSE == "True":
 					print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
 				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
-					s.sendall((bcolors.OKBLUE+"Tag: "+t+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.OKBLUE+"Tag: "+tag+bcolors.ENDC+"\n").encode())
 				
 				for ip,port_list in type_list["regular"].items():
 					if "ip" in filters_valid and filters_valid["ip"] != ip:
@@ -405,6 +500,11 @@ def hosts(cmd=None,state=None):
 				print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,host,bcolors.ENDC))
 			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
 				s.sendall((bcolors.OKBLUE+"[*]"+bcolors.ENDC+" "+bcolors.BOLD+host+bcolors.ENDC+"\n").encode())
+		
+		if Config.CLIENTVERBOSE == "True":
+			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+			s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
 	finally:
 		if s != None:
 			s.close()
@@ -514,7 +614,7 @@ def parse(cmd):
 
 # OPTION VALUES
 state = State()
-switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"bof":switch,"external":switch,"internal":switch,"buckets":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"external":{"shellZ":switch,"use":external_use,"search":external_search,"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"internal":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"windows":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"linux":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles},"share":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"services":services,"modules":modules,"profiles":profiles,"hosts":hosts,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz,"notes":external_shellz},"buckets":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
+switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"bof":switch,"external":switch,"internal":switch,"buckets":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"external":{"shellZ":switch,"use":external_use,"search":external_search,"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"internal":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"windows":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"linux":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"share":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"services":services,"modules":modules,"profiles":profiles,"hosts":hosts,"load":load,"save":save,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz,"notes":external_shellz},"buckets":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
 
 # AUTOCOMPLETE SETUP
 completer = Completer(get_options(state.menu_option,[])+state.global_option)

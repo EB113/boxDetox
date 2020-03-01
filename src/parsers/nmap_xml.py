@@ -182,3 +182,15 @@ def print_data(data):
 	print("{0:15} {1:8} {2:15}\n".format('IP', 'PORT', 'SERVICE'))
 	for row in data:
 		print("{0:15} {1:8} {2:15}".format(row[0], row[4], row[5]))
+
+def parseNmapData(data):
+	"""Prints the data to the terminal."""
+	out = "{0:15} {1:8} {2:15}\n\n".format('IP', 'PORT', 'SERVICE')
+	for row in data:
+		out += "{0:15} {1:8} {2:15}\n".format(row[0], row[4], row[5])
+	return out
+def parseNmapPort(data):
+	ports = []
+	for row in data:
+		ports.append(row[4])
+	return ports

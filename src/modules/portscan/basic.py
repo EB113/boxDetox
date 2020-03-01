@@ -1,10 +1,11 @@
-import threading
+import socket,threading
 import netaddr,os,re
-import time
+import time,traceback
 
 from src.miscellaneous.config import bcolors,Config
 from src.modules.portscan.portscanner import PortScanner
-from src.parsers.nmap_xml import *
+from src.menus.commons import State
+from src.parsers.nmap_xml import parse_xml,parseNmapData,parseNmapPort
 
 def target(val=None):
 	if val is None:
@@ -24,21 +25,25 @@ class Module_TCPCommon(PortScanner):
 
 	opt = {"target":target}#,"outfile":outfile}#{"target":target,"output":flag}
 
-	def __init__(self,opt_dict,save_location):
+	def __init__(self,opt_dict,save_location,module_name,profile_tag=None,profile_port=None):
 		threading.Thread.__init__(self)
-		super().__init__()
-		self.opt_dict = opt_dict
+		super().__init__(opt_dict,save_location,module_name,profile_tag,profile_port)
 
-	def getPorts(data=None):
-		return ["80","443"]
+	def getPorts(tag,ip):
+		data = State.profileData[tag]["portscan"][Module_TCPCommon.getName()][ip]
+		return parseNmapPort(data)
 
-	def printData(data=None):
-		if data != None and type(data) = dict and len(data)>0:
-			for ip,v in data.items():
-			print(data)
-	
-	def storeData(self,data=None):
-		print(data)
+	def getName():
+		return "Module_TCPCommon"
+
+	def printData(data=None,conn=None):
+		if data != None and type(data) == list and len(data)>0:
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True" and conn != None:
+				parsed_data = parseNmapData(data)
+				conn.sendall((bcolors.OKBLUE+bcolors.BOLD+parsed_data+bcolors.ENDC+"\n").encode())
+			if Config.CLIENTVERBOSE == "True":
+				parsed_data = parseNmapData(data)
+				print("{}{}{}{}".format(bcolors.OKBLUE,bcolors.BOLD,parsed_data,bcolors.ENDC))
 	
 	# Validating user module options
 	def validate(opt_dict):
@@ -51,13 +56,33 @@ class Module_TCPCommon(PortScanner):
 		return valid
 		
 	def run(self):
-		lst = Module_TCPCommon.targets(self.opt_dict)
-		fn = Config.PATH+"/db/sessions/"+Config.SESSID+"/tmp.xml"
-		self.data = {}
-		for ip in lst:
-			fn = Config.PATH+
-			os.system("nmap -sT -sV -T4 "+ip+" -oX "+fn)
-			data = nmap_xml.parse_xml(fn)
-			self.data[ip] = data
+		try:
+			lst = Module_TCPCommon.targets(self.opt_dict["target"])
+			fn = Config.PATH+"/db/sessions/"+Config.SESSID+"/tmp.xml"
+			data = {}
+			for ip in lst:
+				try:
+					os.system("nmap -sT -sV -T4 "+ip+" -oX "+fn+" 1>/dev/null")
+					nmap_data = parse_xml(fn)
+				except Exception as e:
+					print("{}".format(e))
+					print("{}".format(traceback.print_exc()))
 
+				data[ip] = nmap_data
+			self.storeDataPortscan(data)
+			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+				with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+					s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
+					try:
+						for val in data.values():
+							Module_TCPCommon.printData(val,s)
+					finally:
+						s.close()
+			if Config.CLIENTVERBOSE == "True":
+				for val in data.values():
+					Module_TCPCommon.printData(val)
+
+		except Exception as e:
+			print("{}".format(e))
+			print("{}".format(traceback.print_exc()))
 		return

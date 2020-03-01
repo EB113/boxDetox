@@ -1,11 +1,12 @@
 #!/usr/bin/python3.7
 
 import traceback,pyfiglet
-import sys,os,json
+import sys,os
 import socket
 
 from src.miscellaneous.config import bcolors, Config
-from src.menus.commons import State
+from src.menus.menu import configExport,configImport,moduleExport,moduleImport,profileExport,profileImport
+
 
 # Check if oscpPWN logger is on!
 def checkLogger():
@@ -16,70 +17,6 @@ def checkLogger():
 		return True
 	except:
 		return False
-
-# Export Session Config Values to JSON
-def configExport(pathOUT):
-	try:
-		cfg = {}
-		members = [attr for attr in dir(Config) if not callable(getattr(Config, attr)) and not attr.startswith("__")]
-		for member in members:
-			cfg[member] = getattr(Config,member)
-		fd = open(pathOUT,"w")
-		fd.write(json.dumps(cfg))
-		fd.close()
-	except:
-		print("{}Error exporting config.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
-		pass
-		
-# Import JSON values to Config
-def configImport(pathIN):
-	try:
-		fd = open(pathIN,"r")
-		cfg = json.loads(fd.read())
-		fd.close()
-		for k,v in cfg.items():
-			setattr(Config,k,v)
-	except:
-		print("{}Error importing config.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
-		pass
-	
-# Export Session State.moduleData Values to JSON
-def moduleExport(pathOUT):
-	try:
-		fd = open(pathOUT,"w")
-		fd.write(json.dumps(State.moduleData))
-		fd.close()
-	except:
-		print("{}Error exporting module.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
-		pass
-# Import JSON values to State.moduleData
-def moduleImport(pathIN):
-	try:
-		fd = open(pathIN,"r")
-		State.moduleData = json.loads(fd.read())
-		fd.close()
-	except:
-		print("{}Error importing module.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
-		pass
-
-# Export Session State.profileData Values to JSON
-def profileExport(pathOUT):
-	try:
-		fd = open(pathOUT,"w")
-		fd.write(json.dumps(State.profileData))
-		fd.close()
-	except:
-		print("{}Error exporting profile.json file! File path:{}{}".format(bcolors.WARNING,pathOUT,bcolors.ENDC))
-		pass
-# Import JSON values to State.profileData
-def profileImport(pathIN):
-	try:
-		fd = open(pathIN,"r")
-		State.profileData = json.loads(fd.read())
-		fd.close()
-	except:
-		print("{}Error importing profile.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
-		pass
 
 # Get running PATH
 path = os.getcwd()
@@ -109,6 +46,7 @@ if len(sys.argv) == 1:
 		if not os.path.isdir(path+"/db/sessions/"+sessID):
 			print("{}Configuring Session Data...{}".format(bcolors.OKGREEN,bcolors.ENDC))
 			os.mkdir(path+"/db/sessions/"+sessID)
+			os.mkdir(path+"/db/sessions/"+sessID+"/profiles")
 			configExport(path+"/db/sessions/"+sessID+"/config.json")
 			moduleExport(path+"/db/sessions/"+sessID+"/module.json")
 			profileExport(path+"/db/sessions/"+sessID+"/profile.json")

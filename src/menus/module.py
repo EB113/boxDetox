@@ -7,7 +7,7 @@ from src.modules.basic.ping import Module_Ping
 def module_run(cmd=None,state=None):
 	if state.module_class.validate(state.env_option):
 		if not state.procs.full():
-			state.procs.put((state.module_state,state.module_class(state.env_option,"module")))
+			state.procs.put((state.module_state,state.module_class(state.env_option,"module",state.module_class.getName())))
 		else:
 			print("{}Too many module tasks!{}".format(bcolors.WARNING,bcolors.ENDC))
 	else:
@@ -36,4 +36,4 @@ def module_set(cmd=None,state=None):
 		print("{}Usage: set <option> <value>{}".format(bcolors.WARNING,bcolors.ENDC))
 	return
 
-switcher_module = {"modules/basic/ping":"Module_Ping"}
+switcher_module = {"modules/basic/ping":"Module_Ping","modules/portscan/basic":"Module_TCPCommon"}

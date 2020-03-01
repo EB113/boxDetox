@@ -1,11 +1,11 @@
 {
 	"tag":"unique_name",
 	"globals":{
-		"target":"127.0.0.1"
+		"target":"192.168.232.137"
 		},
 	"portscan":{
 		"modules/portscan/basic":{
-			"name":"Module_Basic"
+			"name":"Module_TCPCommon"
 			}
 	},
 	"ports":{

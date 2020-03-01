@@ -3,7 +3,6 @@ import netaddr,os,re
 
 from src.miscellaneous.config import Config,bcolors
 from src.modules.module import Module
-from src.menus.commons import State
 
 import time
 
@@ -21,13 +20,9 @@ class Module_Ping(Module):
 
 	opt = {"target":target}#{"target":target,"output":flag}
 
-	def __init__(self,opt_dict,save_location,profile_tag=None,profile_port=None):
+	def __init__(self,opt_dict,save_location,module_name,profile_tag=None,profile_port=None):
 		threading.Thread.__init__(self)
-		super().__init__()
-		self.opt_dict = opt_dict
-		self.save_location = save_location
-		self.profile_tag = profile_tag
-		self.profile_port = profile_port
+		super().__init__(opt_dict,save_location,module_name,profile_tag,profile_port)
 
 	# Validating user module options
 	def validate(opt_dict):
@@ -39,56 +34,37 @@ class Module_Ping(Module):
 			valid = False
 		return valid
 	
+	def getName():
+		return "Module_Ping"
+	
 	def printData(data=None,conn=None):
 		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True" and conn != None:
 			conn.sendall((bcolors.OKBLUE+bcolors.BOLD+data+bcolors.ENDC+"\n").encode())	
 		if Config.CLIENTVERBOSE == "True":
 			print("{}{}{}{}".format(bcolors.OKBLUE,bcolors.BOLD,data,bcolors.ENDC))
 
-	def storeData(self):
-		if self.save_location == "module":
-			if "regular" not in State.moduleData:
-				State.moduleData["regular"] = {}
-			if "Module_Ping" not in State.moduleData["regular"]:
-				State.moduleData["regular"]["Module_Ping"] = {}
-			for ip in self.data:
-				State.moduleData["regular"]["Module_Ping"][ip] = self.data[ip]
-		elif self.save_location == "profile":
-			if self.profile_tag != None:
-				if self.profile_tag not in State.profileData:
-					State.profileData[self.profile_tag] = {}
-				if self.profile_port != None:
-					if "regular" not in State.moduleData[self.profile_tag]:
-						State.moduleData[self.profile_tag]["regular"] = {}
-					for ip in self.data:
-						if ip not in State.profileData[self.profile_tag]["regular"]:
-							State.profileData[self.profile_tag]["regular"][ip] = {}
-						if self.profile_port not in State.profileData[self.profile_tag]["regular"][ip]:
-							State.profileData[self.profile_tag]["regular"][ip][self.profile_port] = {}
-						State.profileData[self.profile_tag]["regular"][ip][self.profile_port]["Module_Ping"] = self.data[ip]
-
 	def run(self):
 		lst = Module_Ping.targets(self.opt_dict["target"])
-		self.data = {}
+		data = {}
 		for ip in lst:
 			if not self.flag.is_set():
 				proc = os.popen("ping -c 1 " + ip)
 				out = proc.read()
 				proc.close()
 				if "bytes from" in out:
-					self.data[ip]=ip
-					if Config.VERBOSE == "True":
-						if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
-							with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-								s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
-								try:
-									s.sendall((bcolors.OKBLUE+"[*]"+bcolors.ENDC+" "+bcolors.BOLD+ip+bcolors.ENDC).encode())	
-								finally:
-									s.close()
-						if Config.CLIENTVERBOSE == "True":
-							print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,ip,bcolors.ENDC))
+					data[ip]=ip
+
+					if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+						with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+							s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
+							try:
+								s.sendall((bcolors.OKBLUE+"[*]"+bcolors.ENDC+" "+bcolors.BOLD+ip+bcolors.ENDC).encode())	
+							finally:
+								s.close()
+					if Config.CLIENTVERBOSE == "True":
+						print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,ip,bcolors.ENDC))
 			else:
 				break
 		#Store Data for Global query
-		self.storeData()
+		self.storeDataRegular(data)
 		return
