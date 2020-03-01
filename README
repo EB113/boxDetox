@@ -35,5 +35,13 @@ Examples:
 	- Module_Ping (Inheritance of Module)
 	- Module_TCPCommon (Inheritance of Portscan)
 
-ToDo...
+Data Filtering:
+Global Cmds:
+	- profiles (filters data from runned profiles, type "profiles help" for filter list, e.g profiles type=portscan)
+	- modules (filters data from runned modules, type "modules help" for filter list, e.g modules type=regular)
+	- services (filters data from runned portscan modules, either via manual or via tpl file, type "services help" for filter list, e.g services ip=127.0.0.1)
+	- hosts (filters ips from global data, type "hosts help" e.g hosts module=Module_Ping)
+
+
+WIP..
 
