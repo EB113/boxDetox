@@ -75,7 +75,3 @@ class State:
 		}
 	moduleData = {"portscan":{},"regular":{}}
 	profileData = {}
-
-	def __init__(self):
-		pass
-

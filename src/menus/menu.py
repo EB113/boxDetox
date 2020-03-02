@@ -91,7 +91,7 @@ def profileImport(pathIN):
 		print("{}Error importing profile.json file! File path:{}{}".format(bcolors.WARNING,pathIN,bcolors.ENDC))
 		pass
 
-def save(cmd=None,state=None):
+def save(cmd=None):
 	session = ""
 	if len(cmd) == 2:
 		session = cmd[1]
@@ -105,7 +105,7 @@ def save(cmd=None,state=None):
 	moduleExport(Config.PATH+"/db/sessions/"+session+"/module.json")
 	profileExport(Config.PATH+"/db/sessions/"+session+"/profile.json")
 
-def load(cmd=None,state=None):
+def load(cmd=None):
 	if len(cmd) == 2:
 		path = Config.PATH+"/db/sessions/"+cmd[1]
 		if os.path.isdir(path) and os.path.isfile(path+"/config.json") and os.path.isfile(path+"/module.json") and os.path.isfile(path+"/profile.json"):
@@ -124,7 +124,7 @@ def getKey(dictionary,val):
 			return k
 	return None
 
-def config(cmd=None,state=None):
+def config(cmd=None):
 
 	if len(cmd) == 2 and cmd[1] == "get":
 		print("{}Configuration:{}".format(bcolors.OKGREEN,bcolors.ENDC))
@@ -147,7 +147,7 @@ def config(cmd=None,state=None):
 	else:
 		print("{}Usage: config <get <empty||{{option}}>|set {{option}} {{value}}>{}".format(bcolors.WARNING,bcolors.ENDC))
 
-def profiles(cmd=None,state=None):
+def profiles(cmd=None):
 	filters = ["tag","name","ip","port","type"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
@@ -262,7 +262,7 @@ def profiles(cmd=None,state=None):
 		if s != None:
 			s.close()
 
-def modules(cmd=None,state=None):
+def modules(cmd=None):
 	filters = ["name","ip","type"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
@@ -357,7 +357,7 @@ def modules(cmd=None,state=None):
 			s.close()
 
 
-def services(cmd=None,state=None):
+def services(cmd=None):
 	filters = ["type","module","profile","ip"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
@@ -447,7 +447,7 @@ def services(cmd=None,state=None):
 		if s != None:
 			s.close()
 
-def hosts(cmd=None,state=None):
+def hosts(cmd=None):
 	filters = ["module","profile"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
@@ -511,60 +511,60 @@ def get_options(d,options,id=False):
 	for k,v in d.items():
 		if id == True:
 			options.append(k)
-		elif k == state.menu_state:
+		elif k == State.menu_state:
 			options = get_options(v,options,True)
 		elif isinstance(v, dict):
 			options = get_options(v,options)
 	return options
 
-def help(cmd=None,state=None):
+def help(cmd=None):
 	if len(cmd) == 1:
 		print("{}Global Command List:{}".format(bcolors.WARNING,bcolors.ENDC))
-		for option in state.global_option:
+		for option in State.global_option:
 			print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,option))
 	elif len(cmd) == 2:
 		print("{}ToDo{}".format(bcolors.WARNING,bcolors.ENDC))
 	else:
 		print("{}Usage: help <empty||cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
 
-def ls(cmd=None,state=None):
+def ls(cmd=None):
 	if len(cmd) == 1:
 		print("{}Menu Command List:{}".format(bcolors.WARNING,bcolors.ENDC))
 		options = []
-		if state.module_state == "":
-			options = get_options(state.menu_option,[])
+		if State.module_state == "":
+			options = get_options(State.menu_option,[])
 		else:
-			options = state.module_option
+			options = State.module_option
 		for option in options:
 			print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,option))
 	else:
 		print("{}Usage: ls{}".format(bcolors.WARNING,bcolors.ENDC))
 
 
-def switch(cmd=None,state=None):
+def switch(cmd=None):
 	global completer
 	
-	state.menu_state = cmd[0]
-	del state.actual_option[:]
+	State.menu_state = cmd[0]
+	del State.actual_option[:]
 	if cmd[0]=="external":
-		state.actual_option = get_options(state.menu_option,[])+state.global_option+state.config_option+list(switcher_module.keys())
+		State.actual_option = get_options(State.menu_option,[])+State.global_option+State.config_option+list(switcher_module.keys())
 	else:
-		state.actual_option = get_options(state.menu_option,[])+state.global_option+state.config_option
+		State.actual_option = get_options(State.menu_option,[])+State.global_option+State.config_option
 
-def exit(cmd=None,state=None):
+def exit(cmd=None):
 	if len(cmd) == 1:
-		state.menu_state = "exit"
+		State.menu_state = "exit"
 	else:
 		print("{}Usage: exit{}".format(bcolors.WARNING,bcolors.ENDC))
 
 
-def invalid(cmds=None,state=None):
+def invalid(cmds=None):
 	print("{}Invalid Command! Use help/ls for options.{}".format(bcolors.WARNING,bcolors.ENDC))
 
 def get_parent(d,t):
 	out = t
 	for k,v in d.items():
-		if k == state.menu_state:
+		if k == State.menu_state:
 			return ("",True)
 		elif isinstance(v, dict) and len(v) > 0 and out[1] != True:
 			tmp = get_parent(v,t)
@@ -574,52 +574,52 @@ def get_parent(d,t):
 				out = tmp
 	return out
 
-def back(cmd=None,state=None):
+def back(cmd=None):
 	global completer
 
 	if len(cmd) == 1:
-		del state.actual_option[:]
-		if state.module_state == "":
-			state.menu_state = get_parent(state.menu_option,("",False))[0]
-			state.actual_option = get_options(state.menu_option,[])+state.global_option+state.config_option
+		del State.actual_option[:]
+		if State.module_state == "":
+			State.menu_state = get_parent(State.menu_option,("",False))[0]
+			State.actual_option = get_options(State.menu_option,[])+State.global_option+State.config_option
 		else:
-			state.env_option = {}
-			state.module_class = ""
-			state.module_state = ""
-			state.actual_option = get_options(state.menu_option,[])+state.global_option+state.config_option
+			State.env_option = {}
+			State.module_class = ""
+			State.module_state = ""
+			State.actual_option = get_options(State.menu_option,[])+State.global_option+State.config_option
 	else:
 		print("{}Usage: back{}".format(bcolors.WARNING,bcolors.ENDC))
 
 
 def parse(cmd):
 	if cmd == "":
-		if state.module_state != "":
-			return state.module_state
+		if State.module_state != "":
+			return State.module_state
 		else:
-			return state.menu_state
+			return State.menu_state
 	if not (cmd is None):
 		values = cmd.split()
 
-		if state.module_state == "":
-			switcher_menu[state.menu_state].get(values[0], invalid)(values,state)
-			completer.update(state.actual_option)
-			return state.menu_state
+		if State.module_state == "":
+			switcher_menu[State.menu_state].get(values[0], invalid)(values)
+			completer.update(State.actual_option)
+			return State.menu_state
 		else:
-			switcher_menu["module"].get(values[0], invalid)(values,state)
-			completer.update([x for x in state.module_option.keys()]+state.global_option+state.config_option)
-			return state.module_state
+			switcher_menu["module"].get(values[0], invalid)(values)
+			completer.update([x for x in State.module_option.keys()]+State.global_option+State.config_option)
+			return State.module_state
 	else:
 		return "exit"
 
 # OPTION VALUES
-state = State()
+#state = State()
 switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"bof":switch,"external":switch,"internal":switch,"buckets":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"external":{"shellZ":switch,"use":external_use,"search":external_search,"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"internal":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"windows":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"linux":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"share":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"services":services,"modules":modules,"profiles":profiles,"hosts":hosts,"load":load,"save":save,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz,"notes":external_shellz},"buckets":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
 
 # AUTOCOMPLETE SETUP
-completer = Completer(get_options(state.menu_option,[])+state.global_option+state.config_option)
+completer = Completer(get_options(State.menu_option,[])+State.global_option+State.config_option)
 readline.set_completer(completer.complete)
 readline.parse_and_bind('tab: complete')
 
 # PROCESS MONITOR
-watchdog = Monitor(state.procs)
+watchdog = Monitor(State.procs)
 watchdog.start()

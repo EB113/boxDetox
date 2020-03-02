@@ -150,7 +150,8 @@ class Profiler(threading.Thread):
 						if port in self.tpl["ports"]:
 							for name,variables in self.tpl["ports"][port].items():
 								# QUEUE for Threads
-								while len(procList) >= Config.MAXPROFILE:
+								while len(procList) >= Config.MAXPROFILES:
+									print("Bump!")
 									if timeout_counter > Config.PROFILETIMEOUT:
 										raise Exception("Profile Timeout!")
 									timeout_counter = timeout_counter + timeout_iter

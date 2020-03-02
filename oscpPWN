@@ -72,7 +72,7 @@ if len(sys.argv) == 1:
 		Config.LOGGERSTATUS = "False"	
 	print("{}Status:{}{}".format(bcolors.OKGREEN,status,bcolors.ENDC))	
 	
-	from src.menus.menu import parse,watchdog,state
+	from src.menus.menu import parse,watchdog
 	
 	# Start main loop
 	Config.SESSID = sessID	

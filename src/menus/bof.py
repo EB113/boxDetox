@@ -3,7 +3,7 @@ import clipboard
 
 from src.miscellaneous.config import bcolors
 
-def bof_badchars(cmd=None,state=None):
+def bof_badchars(cmd=None):
 	out = ""
 	outFormat = "c"
 	if cmd != None and len(cmd) == 1:
@@ -42,7 +42,7 @@ def bof_badchars(cmd=None,state=None):
 	print("Number of characters: " + str(round(numChars/4)) + "\n")
 	print("{}* Badchars copied to clipboard{}".format(bcolors.WARNING,bcolors.ENDC))
 
-def bof_pattern(cmd=None,state=None):
+def bof_pattern(cmd=None):
 	if len(cmd) == 2:
 		# CHECK IF NUMBER
 		patterncm = ("/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l " + cmd[1])
@@ -54,7 +54,7 @@ def bof_pattern(cmd=None,state=None):
 	else:
 		print("{}Usage: pattern <length>{}".format(bcolors.WARNING,bcolors.ENDC))
 
-def bof_offset(cmd=None,state=None):
+def bof_offset(cmd=None):
 	if len(cmd) == 2:
 		# CHECK IF NUMBER
 		offsetcm =("/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q " + cmd[1])
@@ -67,7 +67,7 @@ def bof_offset(cmd=None,state=None):
 	else:
 		print("{}Usage: offset <pattern>{}".format(bcolors.WARNING,bcolors.ENDC))
 
-def bof_lendian(cmd=None,state=None):
+def bof_lendian(cmd=None):
 	if len(cmd) == 2:
 		# CHECK IF ADDRESS
 		if bool(re.match("^[0-9a-zA-Z]+$",cmd[1])):
@@ -94,7 +94,7 @@ def bof_nasm(cmd=None):
 	else:
 		print("{}Usage: nasm{}".format(bcolors.WARNING,bcolors.ENDC))
 
-def bof_nops(cmd=None,state=None):
+def bof_nops(cmd=None):
 	num = 1
 	if len(cmd) == 1:
 		print("{}How many nops do you want?{}".format(bcolors.WARNING,bcolors.ENDC))
@@ -114,7 +114,7 @@ def bof_nops(cmd=None,state=None):
 		print("{}Usage: nops number{}".format(bcolors.WARNING,bcolors.ENDC))
 
 
-def bof_notes(cmd=None,state=None):
+def bof_notes(cmd=None):
 	if len(cmd) == 1:
 		for item in switcher_notes.keys():
 			print("{}[*] {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,item))

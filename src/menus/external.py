@@ -4,8 +4,7 @@ import clipboard, importlib
 from src.miscellaneous.config import Config,bcolors
 from src.menus.module import switcher_module
 from src.profiles.profiler import Profiler
-from src.menus import commons
-from src.menus.menu import state
+from src.menus.commons import State
 
 shellz_notes = ["Spawn TTY shell https://netsec.ws/?p=337"]
 
@@ -41,10 +40,10 @@ def external_use(cmd=None,state=None):
 		if bool(re.match(r"^modules\/.+",cmd[1])):
 			
 			if os.path.isfile(Config.PATH + "/src/" + cmd[1] + ".py") and cmd[1] in switcher_module:
-				state.module_state = cmd[1]
-				state.module_class = getattr(importlib.import_module(("src/"+cmd[1]).replace("/",".")),switcher_module.get(state.module_state,None))
-				del state.actual_option[:]
-				state.actual_option = state.module_option+state.global_option+state.config_option
+				State.module_state = cmd[1]
+				State.module_class = getattr(importlib.import_module(("src/"+cmd[1]).replace("/",".")),switcher_module.get(State.module_state,None))
+				del State.actual_option[:]
+				State.actual_option = list(State.module_option.keys())+State.global_option+State.config_option
 				#Check if class was found!
 			else:
 				print("{}Module not found!{}".format(bcolors.WARNING,bcolors.ENDC))

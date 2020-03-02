@@ -2,7 +2,7 @@ import os
 
 from src.miscellaneous.config import bcolors, Config
 
-def buckets_open(cmd=None,state=None):
+def buckets_open(cmd=None):
 	if len(cmd) == 2:
 		for subdirs,dirs,files in os.walk(Config.PATH+"/db/buckets"):
 			print(subdirs)
@@ -12,7 +12,7 @@ def buckets_open(cmd=None,state=None):
 	else:
 		print("{}Usage: back{}".format(bcolors.WARNING,bcolors.ENDC))
 
-def buckets_list(cmd=None,state=None):
+def buckets_list(cmd=None):
 	first = True
 	if len(cmd) == 1:
 		for subdirs,dirs,files in os.walk(Config.PATH+"/db/buckets"):
@@ -24,14 +24,14 @@ def buckets_list(cmd=None,state=None):
 	else:
 		print("{}Usage: back{}".format(bcolors.WARNING,bcolors.ENDC))
 	
-def buckets_add(cmd=None,state=None):
+def buckets_add(cmd=None):
 	if not os.path.isdir(Config.PATH+"/db/buckets/"+cmd[1]):
 		try:
 			os.mkdir(Config.PATH+"/db/buckets/"+cmd[1])
 		except:
 			print("{}Check {} permissions!{}".format(bcolors.WARNING,Config.PATH+"/db/buckets",bcolors.ENDC))
 			
-def buckets_del(cmd=None,state=None):
+def buckets_del(cmd=None):
 	if os.path.isdir(Config.PATH+"/db/buckets/"+cmd[1]):
 		try:
 			for subdirs,dirs,files in os.walk(Config.PATH+"/db/buckets"+cmd[1]):
