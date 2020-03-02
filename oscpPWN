@@ -72,14 +72,14 @@ if len(sys.argv) == 1:
 		Config.LOGGERSTATUS = "False"	
 	print("{}Status:{}{}".format(bcolors.OKGREEN,status,bcolors.ENDC))	
 	
-	from src.menus.menu import parse,watchdog
+	from src.menus.menu import parse,watchdog,state
 	
 	# Start main loop
 	Config.SESSID = sessID	
-	state = "main"
-	while state != "exit":
+	action = "main"
+	while action != "exit":
 		try:
-			state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
+			action = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+action+"]>>> " + bcolors.ENDC))
 		except Exception as e:
 			print("{}".format(e))
 			print("{}".format(traceback.print_exc()))

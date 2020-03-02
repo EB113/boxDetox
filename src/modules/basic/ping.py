@@ -67,4 +67,5 @@ class Module_Ping(Module):
 				break
 		#Store Data for Global query
 		self.storeDataRegular(data)
+		time.sleep(10)
 		return

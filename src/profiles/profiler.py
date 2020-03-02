@@ -135,6 +135,10 @@ class Profiler(threading.Thread):
 					print("{}".format(traceback.print_exc()))
 					print("Error Portscan!")
 					return
+				
+				procList = []
+				timeout_counter = 0
+				timeout_iter = 1
 
 				try:
 					for port in portscan_class.getPorts(self.tpl["tag"],ip):
@@ -145,6 +149,18 @@ class Profiler(threading.Thread):
 							pass
 						if port in self.tpl["ports"]:
 							for name,variables in self.tpl["ports"][port].items():
+								# QUEUE for Threads
+								while len(procList) >= Config.MAXPROFILE:
+									if timeout_counter > Config.PROFILETIMEOUT:
+										raise Exception("Profile Timeout!")
+									timeout_counter = timeout_counter + timeout_iter
+									time.sleep(timeout_iter)
+									for proc in procList[:]:
+										if not proc.isAlive():
+											procList.remove(proc)
+								timeout_counter = 0
+								timeout_iter =1
+
 								if not self.flag.is_set():
 									path_updated = path_updated + "/" + variables["name"]
 									try:
@@ -155,7 +171,9 @@ class Profiler(threading.Thread):
 									module = ("src/" + name).replace("/",".")
 									imported_module = import_module(module)
 									regular_class = getattr(imported_module, variables["name"])
-									regular_class({**self.tpl["globals"],**variables},"profile",regular_class.getName(),self.tpl["tag"],port).start()
+									regular = regular_class({**self.tpl["globals"],**variables},"profile",regular_class.getName(),self.tpl["tag"],port)
+									regular.start()
+									procList.append(regular)
 
 				except Exception as e:
 					print("{}".format(e))

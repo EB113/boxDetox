@@ -7,7 +7,9 @@ class State:
 	bucket_state = ""
 	module_state = ""
 	module_class = ""
+	actual_option = []
 	global_option = ["profiles","modules","services","hosts","config","load","save","help","ls","back","exit"]
+	config_option = ["SESSID","EDITOR","PATH","MAXMODULES","MAXPROFILES","MAXPROFILES","HTTPPORT","FTPPORT","FTPUSER","FTPPASS","SMBPORT","SMBUSER","SMBPASS","SHELLPORT","LOGGERIP","LOGGERPORT","LOGGERSTATUS","LOGGERVERBOSE","CLIENTVERBOSE"]
 	menu_option = {
 		"main": {
 			"internal":{

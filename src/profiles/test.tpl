@@ -13,8 +13,32 @@
 			"modules/basic/ping":{
 				"name":"Module_Ping"
 				},
-			"modules/basic/pingnew":{
-				"name":"Module_PingNew"
+			"modules/basic/ping1":{
+				"name":"Module_Ping1"
+				},
+			"modules/basic/ping2":{
+				"name":"Module_Ping2"
+				},
+			"modules/basic/ping3":{
+				"name":"Module_Ping3"
+				},
+			"modules/basic/ping4":{
+				"name":"Module_Ping4"
+				},
+			"modules/basic/ping5":{
+				"name":"Module_Ping5"
+				},
+			"modules/basic/ping6":{
+				"name":"Module_Ping6"
+				},
+			"modules/basic/ping7":{
+				"name":"Module_Ping7"
+				},
+			"modules/basic/ping8":{
+				"name":"Module_Ping8"
+				},
+			"modules/basic/ping9":{
+				"name":"Module_Ping9"
 				}
 			},
 		"443":{

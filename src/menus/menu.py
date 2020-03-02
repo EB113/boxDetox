@@ -545,7 +545,11 @@ def switch(cmd=None,state=None):
 	global completer
 	
 	state.menu_state = cmd[0]
-	completer.update(get_options(state.menu_option,[])+state.global_option)
+	del state.actual_option[:]
+	if cmd[0]=="external":
+		state.actual_option = get_options(state.menu_option,[])+state.global_option+state.config_option+list(switcher_module.keys())
+	else:
+		state.actual_option = get_options(state.menu_option,[])+state.global_option+state.config_option
 
 def exit(cmd=None,state=None):
 	if len(cmd) == 1:
@@ -574,14 +578,15 @@ def back(cmd=None,state=None):
 	global completer
 
 	if len(cmd) == 1:
+		del state.actual_option[:]
 		if state.module_state == "":
 			state.menu_state = get_parent(state.menu_option,("",False))[0]
-			completer.update(get_options(state.menu_option,[])+state.global_option)
+			state.actual_option = get_options(state.menu_option,[])+state.global_option+state.config_option
 		else:
 			state.env_option = {}
 			state.module_class = ""
 			state.module_state = ""
-			completer.update(get_options(state.menu_option,[])+state.global_option)
+			state.actual_option = get_options(state.menu_option,[])+state.global_option+state.config_option
 	else:
 		print("{}Usage: back{}".format(bcolors.WARNING,bcolors.ENDC))
 
@@ -597,13 +602,11 @@ def parse(cmd):
 
 		if state.module_state == "":
 			switcher_menu[state.menu_state].get(values[0], invalid)(values,state)
-		else:
-			switcher_menu["module"].get(values[0], invalid)(values,state)
-
-		if state.module_state == "":
+			completer.update(state.actual_option)
 			return state.menu_state
 		else:
-			completer.update([x for x in state.module_option.keys()]+state.global_option)
+			switcher_menu["module"].get(values[0], invalid)(values,state)
+			completer.update([x for x in state.module_option.keys()]+state.global_option+state.config_option)
 			return state.module_state
 	else:
 		return "exit"
@@ -613,7 +616,7 @@ state = State()
 switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"bof":switch,"external":switch,"internal":switch,"buckets":switch},"bof":{"badchars":bof_badchars,"pattern":bof_pattern,"offset":bof_offset,"lendian":bof_lendian,"nasm":bof_nasm,"nops":bof_nops,"notes":bof_notes,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"external":{"shellZ":switch,"use":external_use,"search":external_search,"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"internal":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"share":switch,"linux":switch,"windows":switch},"module":{"go":module_run,"get":module_get,"set":module_set,"exit":exit,"help":help,"ls":ls,"back":back,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"windows":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"linux":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save},"share":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"smb":internal_share,"ftp":internal_share,"http":internal_share,"powershell":internal_share,"vbscript":internal_share},"shellZ":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"services":services,"modules":modules,"profiles":profiles,"hosts":hosts,"load":load,"save":save,"linux_x86":external_shellz,"windows_x86":external_shellz,"php":external_shellz,"asp":external_shellz,"jsp":external_shellz,"notes":external_shellz},"buckets":{"exit":exit,"back":back,"help":help,"ls":ls,"config":config,"hosts":hosts,"services":services,"modules":modules,"profiles":profiles,"load":load,"save":save,"open":buckets_open,"list":buckets_list,"add":buckets_add,"del":buckets_del}}
 
 # AUTOCOMPLETE SETUP
-completer = Completer(get_options(state.menu_option,[])+state.global_option)
+completer = Completer(get_options(state.menu_option,[])+state.global_option+state.config_option)
 readline.set_completer(completer.complete)
 readline.parse_and_bind('tab: complete')
 
