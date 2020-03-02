@@ -36,4 +36,4 @@ def module_set(cmd=None,state=None):
 		print("{}Usage: set <option> <value>{}".format(bcolors.WARNING,bcolors.ENDC))
 	return
 
-switcher_module = {"modules/basic/ping":"Module_Ping","modules/portscan/basic":"Module_TCPCommon"}
+switcher_module = {"modules/basic/ping":"Module_Ping","modules/basic/pingnew":"Module_PingNew","modules/portscan/basic":"Module_TCPCommon"}

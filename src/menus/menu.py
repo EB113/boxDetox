@@ -151,7 +151,7 @@ def profiles(cmd=None,state=None):
 	filters = ["tag","name","ip","port","type"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
-		print("{}Usage: services <e.g:profile=prof ip=127.0.0.1||help||clear>{}".format(bcolors.OKBLUE,bcolors.ENDC))
+		print("{}Usage: profiles <e.g:profile=prof ip=127.0.0.1||help||clear>{}".format(bcolors.OKBLUE,bcolors.ENDC))
 		return
 	elif len(cmd) == 2 and cmd[1] == "clear":
 		State.profileData = {}
@@ -191,7 +191,7 @@ def profiles(cmd=None,state=None):
 				if "tag" in filters_valid and filters_valid["tag"] != t:
 					continue
 				if Config.CLIENTVERBOSE == "True":
-					print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
+					print("{}Tag: {}{}".format(bcolors.OKBLUE,tag,bcolors.ENDC))
 				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
 					s.sendall((bcolors.OKBLUE+"Tag: "+tag+bcolors.ENDC+"\n").encode())
 				
@@ -229,7 +229,7 @@ def profiles(cmd=None,state=None):
 				if "tag" in filters_valid and filters_valid["tag"] != t:
 					continue
 				if Config.CLIENTVERBOSE == "True":
-					print("{}Tag: {}{}".format(bcolors.OKBLUE,t,bcolors.ENDC))
+					print("{}Tag: {}{}".format(bcolors.OKBLUE,tag,bcolors.ENDC))
 				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
 					s.sendall((bcolors.OKBLUE+"Tag: "+tag+bcolors.ENDC+"\n").encode())
 				
@@ -358,7 +358,7 @@ def modules(cmd=None,state=None):
 
 
 def services(cmd=None,state=None):
-	filters = ["type","module","profile","ip","port"]
+	filters = ["type","module","profile","ip"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
 		print("{}Usage: services <e.g:profile=prof ip=127.0.0.1||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
@@ -416,34 +416,29 @@ def services(cmd=None,state=None):
 				s.sendall((bcolors.WARNING+"Profiles Data"+bcolors.ENDC+"\n").encode())
 			
 			for tag,type_list in State.profileData.items():
-				if "tag" in filters_valid and filters_valid["tag"] != t:
+				if "profile" in filters_valid and filters_valid["profile"] != t:
 					continue
 				if Config.CLIENTVERBOSE == "True":
 					print("{}Tag: {}{}".format(bcolors.OKBLUE,tag,bcolors.ENDC))
 				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
 					s.sendall((bcolors.OKBLUE+"Tag: "+tag+bcolors.ENDC+"\n").encode())
 				
-				for ip,port_list in type_list["portscan"].items():
-					if "ip" in filters_valid and filters_valid["ip"] != ip:
+				for mod,ip_list in type_list["portscan"].items():
+					if "module" in filters_valid and filters_valid["module"] != t:
 						continue
-					#print("{}---->Host: {}{}".format(bcolors.OKBLUE,ip,bcolors.ENDC))
-					for port,mod_list in port_list.items():
-						if "port" in filters_valid and filters_valid["port"] != port:
-							continue
-						for mod,data in mod_list.items():
-							if "name" in filters_valid and filters_valid["name"] != mod:
-								continue
-				
-							if Config.CLIENTVERBOSE == "True":
-								print("{}Name: {}{}".format(bcolors.OKBLUE,mod,bcolors.ENDC))
-							if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
-								s.sendall((bcolors.OKBLUE+"Name: "+mod+bcolors.ENDC+"\n").encode())
-				
-							module_path = getKey(switcher_module,mod)
-							if module_path != None:
-								module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),mod)
-								module_class.printData(data,s)
+					if Config.CLIENTVERBOSE == "True":
+						print("{}Name: {}{}".format(bcolors.OKBLUE,mod,bcolors.ENDC))
+					if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
+						s.sendall((bcolors.OKBLUE+"Name: "+mod+bcolors.ENDC+"\n").encode())
 		
+					for ip,data in ip_list.items():
+						if "ip" in filters_valid and filters_valid["ip"] != ip:
+							continue
+						module_path = getKey(switcher_module,mod)
+						if module_path != None:
+							module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),mod)
+							module_class.printData(data,s)
+
 		if Config.CLIENTVERBOSE == "True":
 			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
 		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
@@ -453,7 +448,7 @@ def services(cmd=None,state=None):
 			s.close()
 
 def hosts(cmd=None,state=None):
-	filters = ["module","profile","port"]
+	filters = ["module","profile"]
 	if len(cmd) == 2 and cmd[1] == "help":
 		print("Filters: {}".format(filters))
 		print("{}Usage: hosts <e.g:profile=prof port=80||help>{}".format(bcolors.OKBLUE,bcolors.ENDC))
@@ -475,11 +470,12 @@ def hosts(cmd=None,state=None):
 		for ip in d:
 			if ip not in hosts_array:
 				hosts_array.append(ip)
-	for p,d in State.profileData.items():
-		for ip in d["portscan"]:
-			if ip not in hosts_array:
-				hosts_array.append(ip)
-		for ip in d["regular"]:
+	for tag,type_list in State.profileData.items():
+		for mod,ip_list in type_list["portscan"].items():
+			for ip,data in ip_list.items():
+				if ip not in hosts_array:
+					hosts_array.append(ip)
+		for ip in type_list["regular"]:
 			if ip not in hosts_array:
 				hosts_array.append(ip)
 

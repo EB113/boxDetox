@@ -12,6 +12,9 @@
 		"80":{
 			"modules/basic/ping":{
 				"name":"Module_Ping"
+				},
+			"modules/basic/pingnew":{
+				"name":"Module_PingNew"
 				}
 			},
 		"443":{

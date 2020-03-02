@@ -143,18 +143,19 @@ class Profiler(threading.Thread):
 							os.mkdir(path_updated)
 						except FileExistsError:
 							pass
-						for name,variables in self.tpl["ports"][port].items():
-							if not self.flag.is_set():
-								path_updated = path_updated + "/" + variables["name"]
-								try:
-									os.mkdir(path_updated)
-								except FileExistsError:
-									pass
-								variables["outfile"] = path_updated
-								module = ("src/" + name).replace("/",".")
-								imported_module = import_module(module)
-								regular_class = getattr(imported_module, variables["name"])
-								regular_class({**self.tpl["globals"],**variables},"profile",regular_class.getName(),self.tpl["tag"],port).start()
+						if port in self.tpl["ports"]:
+							for name,variables in self.tpl["ports"][port].items():
+								if not self.flag.is_set():
+									path_updated = path_updated + "/" + variables["name"]
+									try:
+										os.mkdir(path_updated)
+									except FileExistsError:
+										pass
+									variables["outfile"] = path_updated
+									module = ("src/" + name).replace("/",".")
+									imported_module = import_module(module)
+									regular_class = getattr(imported_module, variables["name"])
+									regular_class({**self.tpl["globals"],**variables},"profile",regular_class.getName(),self.tpl["tag"],port).start()
 
 				except Exception as e:
 					print("{}".format(e))

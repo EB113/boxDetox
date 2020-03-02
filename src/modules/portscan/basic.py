@@ -62,7 +62,7 @@ class Module_TCPCommon(PortScanner):
 			data = {}
 			for ip in lst:
 				try:
-					os.system("nmap -sT -sV -T4 "+ip+" -oX "+fn+" 1>/dev/null")
+					os.system("nmap -sT -sV -T4 "+ip+" -oX "+fn+" 1>/dev/null 2>/dev/null")
 					nmap_data = parse_xml(fn)
 				except Exception as e:
 					print("{}".format(e))
