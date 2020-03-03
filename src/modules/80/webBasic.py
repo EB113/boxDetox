@@ -16,7 +16,7 @@ def target(val=None):
 def flag(val=None):
 	return True
 
-class Module_Ping8(Module):
+class Module_WebBasic(Module):
 
 	opt = {"target":target}#{"target":target,"output":flag}
 
@@ -27,15 +27,15 @@ class Module_Ping8(Module):
 	# Validating user module options
 	def validate(opt_dict):
 		valid = True
-		if len(opt_dict.keys()) == len(Module_Ping8.opt.keys()):
+		if len(opt_dict.keys()) == len(Module_WebBasic.opt.keys()):
 			for k,v in opt_dict.items():
-				valid = valid and Module_Ping8.opt.get(k,None)(v)
+				valid = valid and Module_WebBasic.opt.get(k,None)(v)
 		else:
 			valid = False
 		return valid
 	
 	def getName():
-		return "Module_Ping8"
+		return "Module_WebBasic"
 	
 	def printData(data=None,conn=None):
 		if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True" and conn != None:
@@ -44,15 +44,16 @@ class Module_Ping8(Module):
 			print("{}{}{}{}".format(bcolors.OKBLUE,bcolors.BOLD,data,bcolors.ENDC))
 
 	def run(self):
-		lst = Module_Ping8.targets(self.opt_dict["target"])
-		time.sleep(8)
+		lst = Module_WebBasic.targets(self.opt_dict["target"])
+		time.sleep(20)
 		data = {}
 		for ip in lst:
 			if not self.flag.is_set():
-				proc = os.popen("ping -c 1 " + ip)
+				proc = os.popen("dirb http://" + ip +"/ /usr/share/wordlists/dirb/common.txt > ")
 				out = proc.read()
 				proc.close()
-				if "bytes from" in out:
+				print(out)
+				"""if "bytes from" in out:
 					data[ip]=ip
 
 					if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
@@ -65,7 +66,7 @@ class Module_Ping8(Module):
 					if Config.CLIENTVERBOSE == "True":
 						print("{}[*]{} {}{}{}".format(bcolors.OKBLUE,bcolors.ENDC,bcolors.BOLD,ip,bcolors.ENDC))
 			else:
-				break
+				break"""
 		#Store Data for Global query
-		self.storeDataRegular(data)
+		#self.storeDataRegular(data)
 		return

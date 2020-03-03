@@ -138,7 +138,6 @@ class Profiler(threading.Thread):
 				
 				procList = []
 				timeout_counter = 0
-				timeout_iter = 1
 
 				try:
 					for port in portscan_class.getPorts(self.tpl["tag"],ip):
@@ -154,13 +153,12 @@ class Profiler(threading.Thread):
 									print("Bump!")
 									if timeout_counter > Config.PROFILETIMEOUT:
 										raise Exception("Profile Timeout!")
-									timeout_counter = timeout_counter + timeout_iter
-									time.sleep(timeout_iter)
+									timeout_counter = timeout_counter + 1
+									time.sleep(timeout_counter)
 									for proc in procList[:]:
 										if not proc.isAlive():
 											procList.remove(proc)
 								timeout_counter = 0
-								timeout_iter =1
 
 								if not self.flag.is_set():
 									path_updated = path_updated + "/" + variables["name"]

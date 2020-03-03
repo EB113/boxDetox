@@ -617,6 +617,8 @@ switcher_menu = {"main":{"exit":exit,"help":help,"ls":ls,"config":config,"hosts"
 
 # AUTOCOMPLETE SETUP
 completer = Completer(get_options(State.menu_option,[])+State.global_option+State.config_option)
+delims = readline.get_completer_delims()
+readline.set_completer_delims(delims.replace("/",""))
 readline.set_completer(completer.complete)
 readline.parse_and_bind('tab: complete')
 

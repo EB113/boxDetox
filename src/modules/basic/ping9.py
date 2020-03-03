@@ -45,6 +45,7 @@ class Module_Ping9(Module):
 
 	def run(self):
 		lst = Module_Ping9.targets(self.opt_dict["target"])
+		time.sleep(9)
 		data = {}
 		for ip in lst:
 			if not self.flag.is_set():
@@ -67,5 +68,4 @@ class Module_Ping9(Module):
 				break
 		#Store Data for Global query
 		self.storeDataRegular(data)
-		time.sleep(9)
 		return

@@ -10,8 +10,8 @@
 	},
 	"ports":{
 		"80":{
-			"modules/basic/ping":{
-				"name":"Module_Ping"
+			"modules/80/webBasic":{
+				"name":"Module_WebBasic"
 				},
 			"modules/basic/ping1":{
 				"name":"Module_Ping1"
