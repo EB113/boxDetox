@@ -10,8 +10,11 @@
 	},
 	"ports":{
 		"80":{
-			"modules/80/webBasic":{
-				"name":"Module_WebBasic"
+			"modules/80/HTTPdirb":{
+				"name":"Module_HTTPdirb"
+				},
+			"modules/80/HTTPnikto":{
+				"name":"Module_HTTPnikto"
 				},
 			"modules/basic/ping1":{
 				"name":"Module_Ping1"
@@ -42,14 +45,14 @@
 				}
 			},
 		"443":{
-			"modules/basic/ping":{
-				"name":"Module_Ping"
+			"modules/basic/ping1":{
+				"name":"Module_Ping1"
 				}
 		}
 	},
 	"generic":{
-		"modules/basic/ping":{
-			"name":"Module_Ping"
+		"modules/basic/ping1":{
+			"name":"Module_Ping1"
 			}
 	}
 }

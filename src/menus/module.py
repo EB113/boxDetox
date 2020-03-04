@@ -1,8 +1,6 @@
 import queue
 
 from src.menus.commons import State
-from src.miscellaneous.config import Config,bcolors
-from src.modules.basic.ping import Module_Ping
 
 def module_run(cmd=None):
 	if State.module_class.validate(State.env_option):
@@ -36,4 +34,4 @@ def module_set(cmd=None):
 		print("{}Usage: set <option> <value>{}".format(bcolors.WARNING,bcolors.ENDC))
 	return
 
-switcher_module = {"modules/basic/ping":"Module_Ping","modules/80/webBasic":"Module_WebBasic","modules/basic/ping2":"Module_Ping2","modules/basic/ping3":"Module_Ping3","modules/basic/ping4":"Module_Ping4","modules/basic/ping5":"Module_Ping5","modules/basic/ping6":"Module_Ping6","modules/basic/ping7":"Module_Ping7","modules/basic/ping8":"Module_Ping8","modules/basic/ping9":"Module_Ping9","modules/portscan/basic":"Module_TCPCommon"}
+switcher_module = {"modules/80/HTTPdirb":"Module_HTTPdirb","modules/80/HTTPnikto":"Module_HTTPnikto","modules/basic/ping1":"Module_Ping1","modules/basic/ping2":"Module_Ping2","modules/basic/ping3":"Module_Ping3","modules/basic/ping4":"Module_Ping4","modules/basic/ping5":"Module_Ping5","modules/basic/ping6":"Module_Ping6","modules/basic/ping7":"Module_Ping7","modules/basic/ping8":"Module_Ping8","modules/portscan/basic":"Module_TCPCommon"}

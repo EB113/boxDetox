@@ -69,6 +69,7 @@ class Module_TCPCommon(PortScanner):
 					print("{}".format(traceback.print_exc()))
 
 				data[ip] = nmap_data
+
 			self.storeDataPortscan(data)
 			if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
 				with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
