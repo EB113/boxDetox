@@ -1,0 +1,52 @@
+{
+    "https://10.11.1.8:443/": [
+        {
+            "content-length": 218,
+            "path": "",
+            "redirect": null,
+            "status": 200
+        },
+        {
+            "content-length": 282,
+            "path": ".hta",
+            "redirect": null,
+            "status": 403
+        },
+        {
+            "content-length": 286,
+            "path": "cgi-bin/",
+            "redirect": null,
+            "status": 403
+        },
+        {
+            "content-length": 218,
+            "path": "index.html",
+            "redirect": null,
+            "status": 200
+        },
+        {
+            "content-length": 311,
+            "path": "internal",
+            "redirect": "https://10.11.1.8/internal/",
+            "status": 301
+        },
+        {
+            "content-length": 309,
+            "path": "manual",
+            "redirect": "https://10.11.1.8/manual/",
+            "status": 301
+        },
+        {
+            "content-length": 53,
+            "path": "robots.txt",
+            "redirect": null,
+            "status": 200
+        },
+        {
+            "content-length": 283,
+            "path": "usage",
+            "redirect": null,
+            "status": 403
+        }
+    ]
+}

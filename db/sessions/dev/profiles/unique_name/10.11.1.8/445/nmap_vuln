@@ -1,0 +1,21 @@
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-04-07 16:53 EDT
+Nmap scan report for 10.11.1.8
+Host is up (0.13s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+MAC Address: 00:50:56:89:0E:EC (VMware)
+
+Host script results:
+|_smb-vuln-ms10-054: false
+|_smb-vuln-ms10-061: false
+| smb-vuln-regsvc-dos: 
+|   VULNERABLE:
+|   Service regsvc in Microsoft Windows systems vulnerable to denial of service
+|     State: VULNERABLE
+|       The service regsvc in Microsoft Windows 2000 systems is vulnerable to denial of service caused by a null deference
+|       pointer. This script will crash the service if it is vulnerable. This vulnerability was discovered by Ron Bowes
+|       while working on smb-enum-sessions.
+|_          
+
+Nmap done: 1 IP address (1 host up) scanned in 21.44 seconds

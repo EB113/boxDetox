@@ -1,0 +1,24 @@
+Starting Nmap 7.70 ( https://nmap.org ) at 2020-04-07 16:45 EDT
+Nmap scan report for 10.11.1.5
+Host is up (0.13s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+|_smb-enum-services: ERROR: Script execution failed (use -d to debug)
+MAC Address: 00:50:56:89:65:70 (VMware)
+
+Host script results:
+| smb-enum-shares: 
+|   note: ERROR: Enumerating shares failed, guessing at common ones (SMB: ERROR: Server returned NT_STATUS_PIPE_NOT_AVAILABLE too many times; giving up.)
+|   account_used: <blank>
+|   \\10.11.1.5\ADMIN$: 
+|     warning: Couldn't get details for share: SMB: ERROR: Server returned NT_STATUS_PIPE_NOT_AVAILABLE too many times; giving up.
+|     Anonymous access: <none>
+|   \\10.11.1.5\C$: 
+|     warning: Couldn't get details for share: SMB: ERROR: Server returned NT_STATUS_PIPE_NOT_AVAILABLE too many times; giving up.
+|     Anonymous access: <none>
+|   \\10.11.1.5\IPC$: 
+|     warning: Couldn't get details for share: SMB: ERROR: Server returned NT_STATUS_PIPE_NOT_AVAILABLE too many times; giving up.
+|_    Anonymous access: READ
+
+Nmap done: 1 IP address (1 host up) scanned in 145.30 seconds
