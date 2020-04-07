@@ -83,7 +83,7 @@ def external_search_aux(root,opt,state=None):
 
 	for r, d, f in os.walk(Config.PATH + "/src/"+root):
 		for file in f:
-			if bool(re.match(r"^[a-zA-Z0-9]+"+ext+"$",file)) and (file[:ext_cut] not in ["monitor","module","profiler","portscanner"]):
+			if bool(re.match(r"^[^_][a-zA-Z0-9_]+"+ext+"$",file)) and (file[:ext_cut] not in ["monitor","module","profiler","portscanner"]):
 				path = r.split("src")[1][1:]
 				split_path = path.split("/")
 				split_path.append(file[:ext_cut])

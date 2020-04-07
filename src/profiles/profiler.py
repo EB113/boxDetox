@@ -97,6 +97,11 @@ class Profiler(threading.Thread):
 		elif bool(re.match(r'^([0-9]+\.){3}[0-9]+\/[0-9]+$',val)):
 			for addr in netaddr.IPNetwork(val):
 				out.append(str(addr))
+		elif bool(re.match(r'^([0-9]+\.){3}[0-9]+\-[0-9]+$',val)): #todo x.x.x.x-y
+			for addr in netaddr.IPNetwork(val):
+				out.append(str(addr))
+		elif bool(re.match(r'^((([0-9]+\.){3}[0-9]+\,)+)(([0-9]+\.){3}[0-9]+)$',val)):
+				out.extend(val.split(","))
 		return out
 
 	# Have a look at the best way to forcefully kill a child process
@@ -112,24 +117,29 @@ class Profiler(threading.Thread):
 			except FileExistsError:
 				pass
 
-			portscan = list(self.tpl["portscan"])[0]
-			("src/" + portscan).replace("/",".")
-
-			portscan_module = import_module(("src/" + portscan).replace("/","."))
+			portscan_paths = []
+			portscan_modules = []
+			for path_ in list(self.tpl["portscan"]):
+				portscan_paths.append(path_)
+				portscan_modules.append(import_module(("src/" + path_).replace("/",".")))
 
 			lst = self.targets(self.tpl["globals"]["target"])
 			for ip in lst:
+				self.tpl["globals"]["target"] = ip
 				path_updated = path + "/" + ip
 				try:
 					os.mkdir(path_updated)
 				except FileExistsError:
 					pass
-				self.tpl["portscan"][portscan]["outfile"] = path_updated
 				try:
-					portscan_class = getattr(portscan_module, self.tpl["portscan"][portscan]["name"])
-					scanner = portscan_class({**self.tpl["globals"],**self.tpl["portscan"][portscan]},"profile",portscan_class.getName(),self.tpl["tag"])
-					scanner.start()
-					scanner.join()
+					portscan_classes = []
+					for path_,module in zip(portscan_paths,portscan_modules):
+						self.tpl["portscan"][path_]["outfile"] = path_updated
+						portscan_class = getattr(module, self.tpl["portscan"][path_]["name"])
+						portscan_classes.append(portscan_class)
+						scanner = portscan_class({**self.tpl["globals"],**self.tpl["portscan"][path_]},"profile",portscan_class.getName(),self.tpl["tag"])
+						scanner.start()
+						scanner.join()
 				except Exception as e:
 					print("{}".format(e))
 					print("{}".format(traceback.print_exc()))
@@ -140,7 +150,11 @@ class Profiler(threading.Thread):
 				timeout_counter = 0
 
 				try:
-					for port in portscan_class.getPorts(self.tpl["tag"],ip):
+					ports = []
+					for portscan_class in portscan_classes:
+						ports.extend(portscan_class.getPorts(self.tpl["tag"],ip))
+
+					for port in ports:
 						path_updated = path_updated + "/" + port
 						try:
 							os.mkdir(path_updated)

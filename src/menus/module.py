@@ -1,5 +1,6 @@
 import queue
 
+from src.miscellaneous.config import bcolors
 from src.menus.commons import State
 
 def module_run(cmd=None):
@@ -34,4 +35,19 @@ def module_set(cmd=None):
 		print("{}Usage: set <option> <value>{}".format(bcolors.WARNING,bcolors.ENDC))
 	return
 
-switcher_module = {"modules/80/HTTPdirb":"Module_HTTPdirb","modules/80/HTTPnikto":"Module_HTTPnikto","modules/basic/ping1":"Module_Ping1","modules/basic/ping2":"Module_Ping2","modules/basic/ping3":"Module_Ping3","modules/basic/ping4":"Module_Ping4","modules/basic/ping5":"Module_Ping5","modules/basic/ping6":"Module_Ping6","modules/basic/ping7":"Module_Ping7","modules/basic/ping8":"Module_Ping8","modules/portscan/basic":"Module_TCPCommon"}
+switcher_module = {
+	"modules/http/dirsearch":"Module_HTTP_dirsearch",
+	"modules/http/dirb":"Module_HTTP_dirb",
+	"modules/http/nikto":"Module_HTTP_nikto",
+	"modules/smb/smbmap":"Module_SMB_smbmap",
+	"modules/smb/enum4linux":"Module_SMB_enum4linux",
+	"modules/smb/nbtscan":"Module_SMB_nbtscan",
+	"modules/smb/nmap_vuln":"Module_SMB_nmapvuln",
+	"modules/smb/nmap_enum":"Module_SMB_nmapenum",
+	"modules/smtp/nmap_vuln":"Module_SMTP_nmapvuln",
+	"modules/smtp/nmap_enum":"Module_SMTP_nmapenum",
+	"modules/smtp/smtpvrfy":"Module_SMTP_smtpvrfy",
+	"modules/ping":"Module_Ping",
+	"modules/portscan/tcpcommon":"Module_SCAN_TCPCommon"
+	,"modules/portscan/udpcommon":"Module_SCAN_UDPCommon"
+	}

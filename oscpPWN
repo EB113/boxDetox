@@ -47,6 +47,7 @@ if len(sys.argv) == 1:
 			print("{}Configuring Session Data...{}".format(bcolors.OKGREEN,bcolors.ENDC))
 			os.mkdir(path+"/db/sessions/"+sessID)
 			os.mkdir(path+"/db/sessions/"+sessID+"/profiles")
+			os.mkdir(path+"/db/sessions/"+sessID+"/tmp")
 			configExport(path+"/db/sessions/"+sessID+"/config.json")
 			moduleExport(path+"/db/sessions/"+sessID+"/module.json")
 			profileExport(path+"/db/sessions/"+sessID+"/profile.json")

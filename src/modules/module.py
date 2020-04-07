@@ -45,13 +45,13 @@ class Module(threading.Thread):
 			if self.profile_tag != None:
 				if self.profile_tag not in State.profileData:
 					State.profileData[self.profile_tag] = {}
-					if "portscan" not in State.profileData[self.profile_tag]:
-						State.profileData[self.profile_tag]["portscan"] = {}
-						if self.module_name != None:
-							if self.module_name not in State.profileData[self.profile_tag]["portscan"]:
-								State.profileData[self.profile_tag]["portscan"][self.module_name] = {}
-							for ip in data:
-								State.profileData[self.profile_tag]["portscan"][self.module_name][ip] = data[ip]
+				if "portscan" not in State.profileData[self.profile_tag]:
+					State.profileData[self.profile_tag]["portscan"] = {}
+				if self.module_name != None:
+					if self.module_name not in State.profileData[self.profile_tag]["portscan"]:
+						State.profileData[self.profile_tag]["portscan"][self.module_name] = {}
+					for ip in data:
+						State.profileData[self.profile_tag]["portscan"][self.module_name][ip] = data[ip]
 	
 	def storeDataRegular(self,data):
 		if self.mode == "module":
@@ -84,4 +84,6 @@ class Module(threading.Thread):
 			elif bool(re.match(r'^([0-9]+\.){3}[0-9]+\/[0-9]+$',val)):
 				for addr in netaddr.IPNetwork(val):
 					out.append(str(addr))
+			elif bool(re.match(r'^((([0-9]+\.){3}[0-9]+\,)+)(([0-9]+\.){3}[0-9]+)$',val)):
+				out.extend(val.split(","))
 		return out
