@@ -55,26 +55,26 @@ class Module_HTTP_nikto(Module):
 		for ip in lst:
 			if not self.flag.is_set():
 				if self.opt_dict["secure"] == "False":
-					proc = os.popen("nikto -h  http://" + ip + " | grep -E '^\+ .*$' | sed '1,4d' | tac | sed '1,3d' | tac")
+					proc = os.popen("nikto -h  http://" + ip + " 2>/dev/null | grep -E '^\+ .*$' | sed '1,4d' | tac | sed '1,3d' | tac")
 				else:
-					proc = os.popen("nikto -h  https://" + ip + " | grep -E '^\+ .*$' | sed '1,4d' | tac | sed '1,3d' | tac")
+					proc = os.popen("nikto -h  https://" + ip + " 2>/dev/null | grep -E '^\+ .*$' | sed '1,4d' | tac | sed '1,3d' | tac")
 				out = proc.read()
 				proc.close()
-				self.storeDataRegular(data)
 				if self.mode == "profile": 
 					fd = open(Config.PATH+"/db/sessions/"+Config.SESSID+"/profiles/"+self.profile_tag+"/"+ip+"/"+self.profile_port+"/nikto","w")
 					fd.write(out)
 					fd.close()
 				data[ip] = out
+				self.storeDataRegular(data)
 				if Config.LOGGERSTATUS == "True" and Config.LOGGERVERBOSE == "True":
 					with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 						s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
 						try:
-							s.sendall((bcolors.BOLD+ip+bcolors.ENDC).encode())	
+							s.sendall((bcolors.BOLD+out+bcolors.ENDC).encode())	
 						finally:
 							s.close()
 				if Config.CLIENTVERBOSE == "True":
-					print("{}{}{}".format(bcolors.BOLD,ip,bcolors.ENDC))
+					print("{}{}{}".format(bcolors.BOLD,out,bcolors.ENDC))
 			else:
 				break
 		return

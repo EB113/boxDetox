@@ -1,7 +1,7 @@
 {
 	"tag":"unique_name",
 	"globals":{
-		"target":"10.11.1.5,10.11.1.8"
+		"target":"10.10.10.4"
 		},
 	"portscan":{
 		"modules/portscan/udpcommon":{
@@ -20,19 +20,24 @@
 				}
 		},
 		"53":{
-			"modules/examples/ping":{
-				"name":"Module_Ping"
+			"modules/dns/dnsrecon":{
+				"name":"Module_DNS_dnsrecon"
 				}
 		},
 		"161":{
-			"modules/examples/ping":{
-				"name":"Module_Ping"
+			"modules/snmp/onesixtyone":{
+				"name":"Module_SNMP_onesixtyone",
+				"community":"/usr/share/seclists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt"
+				},
+			"modules/snmp/nmap_nse":{
+				"name":"Module_SNMP_nmapnse",
+				"port":"161"
 				}
 		}
 	},
 	"generic":{
-		"modules/examples/ping":{
-			"name":"Module_Ping"
+		"modules/icmp/ping":{
+			"name":"Module_ICMP_Ping"
 			}
 	}
 }

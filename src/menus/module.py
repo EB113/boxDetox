@@ -46,8 +46,11 @@ switcher_module = {
 	"modules/smb/nmap_enum":"Module_SMB_nmapenum",
 	"modules/smtp/nmap_vuln":"Module_SMTP_nmapvuln",
 	"modules/smtp/nmap_enum":"Module_SMTP_nmapenum",
-	"modules/smtp/smtpvrfy":"Module_SMTP_smtpvrfy",
-	"modules/ping":"Module_Ping",
+	"modules/smtp/smtpvrfy":"Module_SMTP_VRFY",
+	"modules/ssh/userenum":"Module_SSH_userenum",
+	"modules/snmp/onesixtyone":"Module_SNMP_onesixtyone",
+	"modules/dns/dnsrecon":"Module_DNS_dnsrecon",
+	"modules/icmp/ping":"Module_ICMP_Ping",
 	"modules/portscan/tcpcommon":"Module_SCAN_TCPCommon"
 	,"modules/portscan/udpcommon":"Module_SCAN_UDPCommon"
 	}

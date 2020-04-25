@@ -1,7 +1,7 @@
 {
 	"tag":"unique_name",
 	"globals":{
-		"target":"10.11.1.5,10.11.1.8"
+		"target":"10.10.10.4"
 		},
 	"portscan":{
 		"modules/portscan/tcpcommon":{
@@ -9,14 +9,29 @@
 			}
 	},
 	"ports":{
+		"22":{
+			"modules/ssh/userenum":{
+				"name":"Module_SSH_nmapenum",
+				"userfile":"/usr/share/seclists/Usernames/top-usernames-shortlist.txt"
+				}
+			},
 		"25":{
 			"modules/smtp/nmap_enum":{
 				"name":"Module_SMTP_nmapenum",
-				"secure":"False"
+				"port":"25"
 				},
 			"modules/smtp/nmap_vuln":{
 				"name":"Module_SMTP_nmapvuln",
-				"secure":"False"
+				"port":"25"
+				},
+			"modules/smtp/smtpvrfy":{
+				"name":"Module_SMTP_VRFY",
+				"userfile":"/usr/share/seclists/Usernames/top-usernames-shortlist.txt"
+				}
+			},
+		"53":{
+			"modules/dns/dnsrecon":{
+				"name":"Module_DNS_dnsrecon"
 				}
 			},
 		"80":{
@@ -60,8 +75,8 @@
 		}
 	},
 	"generic":{
-		"modules/ping":{
-			"name":"Module_Ping"
+		"modules/icmp/ping":{
+			"name":"Module_ICMP_Ping"
 			}
 	}
 }

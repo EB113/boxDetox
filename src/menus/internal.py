@@ -52,20 +52,7 @@ def share_smb(cmd=None):
 def share_ftp(cmd=None):
     if len(cmd) == 2:
         if cmd[1] == "start":
-            pid = os.fork()
-            if pid:
-                State.share_state["ftp"]["status"] = True
-                State.share_state["ftp"]["pid"] = pid
-                print("{}FTP Server Started!{}".format(bcolors.OKGREEN,bcolors.ENDC))
-            else:
-                try:
-                    os.chdir(Config.PATH+"/db/shares")
-                    ftpServer(Config.HOSTIP,Config.FTPPORT,Config.FTPUSER,Config.FTPPASS)
-                    return
-                except Exception as e:
-                    print("{}".format(e))
-                    print("{}".format(traceback.print_exc()))
-                    print("{}Address already in use!{}".format(bcolors.WARNING,bcolors.ENDC))
+            print("{}Usage: ftp start <windows|linux>{}".format(bcolors.WARNING,bcolors.ENDC))
         elif cmd[1] == "stop":
             if State.share_state["ftp"]["status"]:
                 os.kill(State.share_state["ftp"]["pid"], signal.SIGKILL)
@@ -86,10 +73,28 @@ def share_ftp(cmd=None):
             print("{}echo GET {{file}} >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
             print("{}echo bye >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
             print("{}ftp -v -n -s:ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
-            
         else:
             print("{}Usage: ftp <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
             return
+    elif len(cmd) == 3 and cmd[1] == "start":
+        if cmd[2] == "windows" or cmd[2] == "linux":
+            pid = os.fork()
+            if pid:
+                State.share_state["ftp"]["status"] = True
+                State.share_state["ftp"]["pid"] = pid
+                print("{}FTP Server Started!{}".format(bcolors.OKGREEN,bcolors.ENDC))
+            else:
+                try:
+                    os.chdir(Config.PATH+"/db/shares/"+cmd[2])
+                    ftpServer(Config.HOSTIP,Config.FTPPORT,Config.FTPUSER,Config.FTPPASS)
+                    return
+                except Exception as e:
+                    print("{}".format(e))
+                    print("{}".format(traceback.print_exc()))
+                    print("{}Address already in use!{}".format(bcolors.WARNING,bcolors.ENDC))
+        else:
+            print("{}Usage: ftp start <windows|linux>{}".format(bcolors.WARNING,bcolors.ENDC))
+
     else:
         print("{}Usage: ftp <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
         return

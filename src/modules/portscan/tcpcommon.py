@@ -58,12 +58,12 @@ class Module_SCAN_TCPCommon(PortScanner):
 	def run(self):
 		try:
 			lst = Module_SCAN_TCPCommon.targets(self.opt_dict["target"])
-			fn = Config.PATH+"/db/sessions/"+Config.SESSID+"/tmp/tmp.xml"
+			fn = Config.PATH+"/db/sessions/"+Config.SESSID+"/tmp/tcp_"
 			data = {}
 			for ip in lst:
 				try:
-					os.system("nmap -sT -sV -T4 "+ip+" -oX "+fn+" 1>/dev/null 2>/dev/null")
-					nmap_data = parse_xml(fn)
+					os.system("nmap -sT -sV -T4 "+ip+" -oX "+fn+ip+".xml 1>/dev/null 2>/dev/null")
+					nmap_data = parse_xml(fn+ip+".xml")
 				except Exception as e:
 					print("{}".format(e))
 					print("{}".format(traceback.print_exc()))
