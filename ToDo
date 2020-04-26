@@ -1,7 +1,6 @@
-1 - Dynamic call printData on filters
 2 - Portscanners(4)
 3 - global cmd save status
-4 - Fix Autocompleter (State)
+4 - Fix Autocompleter (Use a decent one instead of static)
 5 - Enum modules for most common ports
 6 - shellz
 7 - buckets

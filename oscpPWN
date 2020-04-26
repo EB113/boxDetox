@@ -47,6 +47,7 @@ if len(sys.argv) == 1:
 			print("{}Configuring Session Data...{}".format(bcolors.OKGREEN,bcolors.ENDC))
 			os.mkdir(path+"/db/sessions/"+sessID)
 			os.mkdir(path+"/db/sessions/"+sessID+"/profiles")
+			os.mkdir(path+"/db/sessions/"+sessID+"/tmp")
 			configExport(path+"/db/sessions/"+sessID+"/config.json")
 			moduleExport(path+"/db/sessions/"+sessID+"/module.json")
 			profileExport(path+"/db/sessions/"+sessID+"/profile.json")
@@ -76,10 +77,10 @@ if len(sys.argv) == 1:
 	
 	# Start main loop
 	Config.SESSID = sessID	
-	state = "main"
-	while state != "exit":
+	action = "main"
+	while action != "exit":
 		try:
-			state = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+state+"]>>> " + bcolors.ENDC))
+			action = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+action+"]>>> " + bcolors.ENDC))
 		except Exception as e:
 			print("{}".format(e))
 			print("{}".format(traceback.print_exc()))
