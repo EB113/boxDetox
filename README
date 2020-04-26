@@ -8,13 +8,21 @@ pip3 install -r requirements.txt
 chmod +x oscpPWN
 ln -sf {PATH}/oscpPWN /usr/bin/oscpPWN
 
-./oscpPWN
+./oscpPWN - open regular program
+./oscpPWN logger - opens another program, Modules log here by default if this is detected when main program launches.
 or
-./start {{proj_name}}
+./start {{proj_name}} - open default tmux setup
 
 -------------------------------------
 This tool intends to aid in exam by reducing painfull stuff.
 This is not a problem solver tool.
+Commands:
+	- ls - list ccurrent menu options
+	- help - list Global menu options
+	- config get - list configuration option, there are a couple but easy to understand.
+	- config set {{option}} value - define config options
+	
+	Note: config set HOSTIP {{youIP}}, make sure you set HOSTIP to the one on the network you are testing.
 
 Features:
 	- Buffer Overflow Helper
@@ -27,7 +35,7 @@ Features:
 		- 445 , smbmap,nbtscan, enum4linux, nmap (vuln,enum)
 		- https same as http;
 		- You can build your own modules following the standard structure of the above;
-	- File Sharing Helper
+	- File Sharing Helper (http,ftp,smb)
 	- Buckets/Notes to keep track of stuff; (ToDo)
 	- Priv Esc Helper (notes only, ToDo)
 
