@@ -18,6 +18,8 @@ src/menus/__pycache__
 src/menus/__pycache__/*
 src/shares/__pycache__
 src/shares/__pycache__/*
+db/shares/windows/share/*
+db/shares/linux/share/*
 *.pyc
 *.swp
 *.swo
