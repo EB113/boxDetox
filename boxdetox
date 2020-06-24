@@ -1,0 +1,115 @@
+#!/usr/bin/python3.7
+
+import traceback,pyfiglet
+import sys,os
+import socket
+
+from src.miscellaneous.config import bcolors, Config
+from src.menus.menu import configExport,configImport,moduleExport,moduleImport,profileExport,profileImport
+
+
+# Check if boxDetox logger is on!
+def checkLogger():
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	try:
+		s.connect((Config.CONFIG['LOGGER']['LOGGERIP'],int(Config.CONFIG['LOGGER']['LOGGERPORT'])))
+		s.shutdown(2)
+		return True
+	except:
+		return False
+
+# Get running PATH
+path = os.getcwd()
+
+if len(sys.argv) == 1:
+	# BANNER
+	print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("boxDETOX"),bcolors.ENDC))	
+	
+	# Get directories under ./db/sessions
+	first = True
+	print("\nSessions Available:")
+	for subdirs,dirs,files in os.walk(path+"/db/sessions/"):
+		if first:
+			first = False
+			continue
+		session = subdirs.split("/db/sessions/")
+		session = session[1].split("/")
+		if len(session) == 1:
+			print("[*] {}".format(session[0]))
+	try:
+		sessID = input("Choose/Create a Session:\n>>> ")
+	except:
+		exit()
+	
+	# Setup files as directories, load configs
+	try:
+		if not os.path.isdir(path+"/db/sessions/"+sessID):
+			print("{}Configuring Session Data...{}".format(bcolors.OKGREEN,bcolors.ENDC))
+			os.mkdir(path+"/db/sessions/"+sessID)
+			os.mkdir(path+"/db/sessions/"+sessID+"/profile")
+			os.mkdir(path+"/db/sessions/"+sessID+"/tmp")
+			os.mkdir(path+"/db/sessions/"+sessID+"/portscans")
+			configExport(path+"/db/sessions/"+sessID+"/config.json")
+			moduleExport(path+"/db/sessions/"+sessID+"/module.json")
+			profileExport(path+"/db/sessions/"+sessID+"/profile.json")
+		else:
+			print("{}Importing Session Data...{}".format(bcolors.OKGREEN,bcolors.ENDC))
+			configImport(path+"/db/sessions/"+sessID+"/config.json")
+			moduleImport(path+"/db/sessions/"+sessID+"/module.json")
+			profileImport(path+"/db/sessions/"+sessID+"/profile.json")
+		Config.CONFIG['GENERAL']['PATH'] = path
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))
+		print("{}Error initiating session! Check {}/db/sessions permissions.{}".format(bcolors.WARNING,Config.CONFIG['GENERAL']['PATH'],bcolors.ENDC))
+		exit()
+		
+	print("{}Checking Logger Status...{}".format(bcolors.OKGREEN,bcolors.ENDC))
+	status = checkLogger()
+	if status:
+		Config.CONFIG['LOGGER']['LOGGERSTATUS'] = "True"
+		print("{}----->Listening IP: {}{}".format(bcolors.OKGREEN,Config.CONFIG['LOGGER']['LOGGERIP'],bcolors.ENDC))	
+		print("{}----->Listening Port: {}{}".format(bcolors.OKGREEN,Config.CONFIG['LOGGER']['LOGGERPORT'],bcolors.ENDC))	
+	else:
+		print("{}{}LOGGER not found!IP:{}{} {}{}Port:{}{}".format(bcolors.BOLD,bcolors.FAIL,bcolors.ENDC,Config.CONFIG['LOGGER']['LOGGERIP'],bcolors.BOLD,bcolors.FAIL,bcolors.ENDC,Config.CONFIG['LOGGER']['LOGGERPORT']))	
+		Config.CONFIG['LOGGER']['LOGGERSTATUS'] = "False"	
+	
+	from src.menus.menu import parse,watchdog
+	
+	# Start main loop
+	Config.CONFIG['GENERAL']['SESSID'] = sessID	
+	action = "main"
+	while action != "exit":
+		try:
+			action = parse(input(bcolors.BOLD + bcolors.OKGREEN + "["+action+"]>>> " + bcolors.ENDC))
+		except Exception as e:
+			print("{}".format(e))
+			print("{}".format(traceback.print_exc()))
+			break
+
+	Config.CONFIG['LOGGER']['LOGGERSTATUS'] = False
+	watchdog.flag.set()
+	watchdog.join()
+	del watchdog
+	try:
+		configExport(Config.CONFIG['GENERAL']['PATH']+"/db/sessions/"+sessID+"/config.json")
+		moduleExport(Config.CONFIG['GENERAL']['PATH']+"/db/sessions/"+sessID+"/module.json")
+		profileExport(Config.CONFIG['GENERAL']['PATH']+"/db/sessions/"+sessID+"/profile.json")
+	except Exception as e:
+		print("{}".format(e))
+		print("{}".format(traceback.print_exc()))
+		print("{}Error saving session data!{}".format(bcolors.WARNING,bcolors.ENDC))
+
+elif len(sys.argv) == 2:
+	if sys.argv[1] == "config":
+		os.system(Config.CONFIG['GENERAL']['EDITOR']+" "+path+"/src/miscellaneous/config.py")
+	elif sys.argv[1] == "logger":
+		from src import logger
+	else:
+		print("{}Oy, Wat u Doink m8! ./boxdetox or ./boxdetox <config||logger>{}".format(bcolors.WARNING,bcolors.ENDC))
+		exit()
+
+else:
+	print("{}Oy, Wat u Doink m8! ./boxdetox or ./boxdetox <config||logger>{}".format(bcolors.WARNING,bcolors.ENDC))
+
+exit()
