@@ -20,6 +20,7 @@ src/shares/__pycache__
 src/shares/__pycache__/*
 db/shares/windows/*
 db/shares/linux/*
+db/buckets/*
 *.pyc
 *.swp
 *.swo
