@@ -10,30 +10,39 @@ class bcolors:
 	UNDERLINE = '\033[4m'
 
 class Config:
-	# COMMAND OPTION VALUES
-	SESSID = ""
-	EDITOR = "vim"
-	PATH   = "" 
 
-	#CONCURRENCY THROTTLING
-	MAXMODULES  = 3
-	MAXPROFILES = 5 
-	PROFILETIMEOUT = 300 #Seconds
-	
-	HOSTIP   = "127.0.0.1"
-	HTTPPORT = "80"
-	FTPPORT  = "21"
-	FTPUSER  = "user"
-	FTPPASS  = "user"
-	SMBPORT  = "445"
-	SMBUSER  = "user"
-	SMBPASS  = "user"
-	
-	SHELLPORT = "80"
-	
-	LOGGERIP 	 = "127.0.0.1"
-	LOGGERPORT   = "9999"
-	LOGGERSTATUS = "False"
-
-	LOGGERVERBOSE = "True"
-	CLIENTVERBOSE = "False"
+	CONFIG = {
+		"GENERAL" : {
+			"SESSID" : "",
+			"EDITOR" : "vim",
+			"PATH"   : "",
+			"HOSTIP" : "127.0.0.1",
+		},
+		"CONCURRENCY" : {
+			"MAXMODULES"  		: 3,
+			"MAXPROFILES" 		: 5, 
+			"PROFILETIMEOUT" 	: 300 #Seconds
+		},
+		"SHARES" : {	
+			"HTTPPORT" : "80",
+			"FTPPORT"  : "21",
+			"FTPUSER"  : "user",
+			"FTPPASS"  : "user",
+			"SMBPORT"  : "445",
+			"SMBUSER"  : "user",
+			"SMBPASS"  : "user"
+		},
+		"SHELLZ" : {
+			"SHELLPORT" : "80"
+		},
+		"LOGGER" : {
+			"LOGGERIP" 	   : "127.0.0.1",
+			"LOGGERPORT"   : "9999",
+			"LOGGERSTATUS" : "False"
+		},
+		"OUTPUT" : {
+			"LOGGERVERBOSE" : "True",
+			"CLIENTVERBOSE" : "False",
+			"OUTMODE"	: "0"
+		}
+	}

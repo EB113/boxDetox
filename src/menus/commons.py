@@ -8,7 +8,7 @@ class State:
 	module_state = ""
 	module_class = ""
 	actual_option = []
-	global_option = ["profiles","modules","services","hosts","config","load","save","help","ls","back","exit"]
+	global_option = ["profile","module","service","host","config","load","save","help","ls","back","exit"]
 	config_option = ["SESSID","EDITOR","PATH","MAXMODULES","MAXPROFILES","MAXPROFILES","HTTPPORT","FTPPORT","FTPUSER","FTPPASS","SMBPORT","SMBUSER","SMBPASS","SHELLPORT","LOGGERIP","LOGGERPORT","LOGGERSTATUS","LOGGERVERBOSE","CLIENTVERBOSE"]
 	menu_option = {
 		"main": {
@@ -33,6 +33,7 @@ class State:
 					"notes":{}
 					},
 				"use":{},
+				"edit":{},
 				"search":{}
 			},
 			"bof" : {
@@ -43,13 +44,7 @@ class State:
 				"nasm":{},
 				"nops":{},
 				"notes":{}
-			},
-			"buckets":{
-				"open":{},
-				"list":{},
-				"add":{},
-				"del":{}
-				}
+			}
 		}
 	}
 	env_option = {}
@@ -58,7 +53,7 @@ class State:
 				"set":{},
 				"go":{}
 			}
-	procs = queue.Queue(maxsize=Config.MAXMODULES)
+	procs = queue.Queue(maxsize=Config.CONFIG['CONCURRENCY']['MAXMODULES'])
 	share_state = {
 			"smb":{
 				"status":False,

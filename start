@@ -17,14 +17,14 @@ else
 		#tmux new-window -t $SESSION:0 -n oscpPWN
 
 		tmux split-window -h -t $SESSION:0
-		tmux send-keys -t $SESSION:0.1 "oscpPWN logger" Enter
+		tmux send-keys -t $SESSION:0.1 "./boxdetox logger" Enter
 		tmux split-window -v -t $SESSION:0.0
 		tmux send-keys -t $SESSION:0.1 "msfconsole" Enter
 		tmux send-keys -t $SESSION:0.1 "use exploit/multi/handler" Enter
 		tmux split-window -h -t $SESSION:0.0
 		sleep 1
-		tmux send-keys -t $SESSION:0.1 "oscpPWN" Enter
-		tmux send-keys -t $SESSION:0.1 "lab" Enter
+		tmux send-keys -t $SESSION:0.1 "./boxdetox" Enter
+		tmux send-keys -t $SESSION:0.1 $SESSION Enter
 	fi
 	tmux attach-session -d -t $SESSION
 fi

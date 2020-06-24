@@ -24,16 +24,16 @@ class ClientThread(threading.Thread):
 			print(data.decode())
 		self.conn.close()
 
-print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("oscpPWN"),bcolors.ENDC))
-print("{}Listening IP: {}{}".format(bcolors.OKGREEN,Config.LOGGERIP,bcolors.ENDC))
-print("{}Listening Port: {}{}".format(bcolors.OKGREEN,Config.LOGGERPORT,bcolors.ENDC))
+print("{}{}{}".format(bcolors.HEADER,pyfiglet.figlet_format("boxDETOX"),bcolors.ENDC))
+print("{}Listening IP: {}{}".format(bcolors.OKGREEN,Config.CONFIG['LOGGER']['LOGGERIP'],bcolors.ENDC))
+print("{}Listening Port: {}{}".format(bcolors.OKGREEN,Config.CONFIG['LOGGER']['LOGGERPORT'],bcolors.ENDC))
 
 try:
 	print_lock = threading.Lock()
 
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		s.bind((Config.LOGGERIP,int(Config.LOGGERPORT)))
+		s.bind((Config.CONFIG['LOGGER']['LOGGERIP'],int(Config.CONFIG['LOGGER']['LOGGERPORT'])))
 
 		s.listen(5)
 		while True:

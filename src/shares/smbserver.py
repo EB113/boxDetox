@@ -20,7 +20,7 @@ def smbServer(HOST="127.0.0.1",PORT="445",USER="user",PASS="user",SHAREPATH="/op
     lmhash = compute_lmhash(PASS)
     nthash = compute_nthash(PASS)
 
-    server.addCredential(USER, 0, lmhash, nthash)
+    #server.addCredential(USER, 0, lmhash, nthash)
 
     # Here you can set a custom SMB challenge in hex format
     # If empty defaults to '4141414141414141'
