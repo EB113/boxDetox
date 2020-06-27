@@ -57,6 +57,20 @@ def validate_ports(val):
 			return False
 	return True
 
+def validate_services(val):
+	for k,v in val.items():
+		#	Add More Services
+		if type(k) == str and k in ["http","https","ftp","snmp"]:
+			if type(v) == dict:
+				for k1,v1 in v.items():
+					if not validate_module(k1,v1):
+						return False
+		else:
+			# Send Error, print in menu.py
+			print("Not String!")
+			return False
+	return True
+
 def validate_generic(val):
 	if type(val) == dict:
 		for k,v in val.items():
@@ -68,7 +82,7 @@ def validate_generic(val):
 
 class Profiler(threading.Thread):
 
-	switcher_static  = {"tag":validate_tag, "globals":validate_variables, "portscan":validate_portscan, "ports":validate_ports}
+	switcher_static  = {"tag":validate_tag, "globals":validate_variables, "portscan":validate_portscan, "ports":validate_ports, "services":validate_services}
 	switcher_dynamic = {"generic":validate_generic}
 
 	def __init__(self,json):
@@ -113,7 +127,6 @@ class Profiler(threading.Thread):
 				path = Config.CONFIG['GENERAL']['PATH'] + "/db/sessions/" + Config.CONFIG['GENERAL']['SESSID'] + "/profile/" + self.tpl["tag"]
 			
 			try:
-				print(path)
 				os.mkdir(path)
 			except FileExistsError:
 				pass
@@ -151,17 +164,18 @@ class Profiler(threading.Thread):
 				timeout_counter = 0
 
 				try:
-					ports = []
+					# [(port,service)]
+					tuples = []
 					for portscan_class in portscan_classes:
-						ports.extend(portscan_class.getPorts(self.tpl["tag"],ip))
+						tuples.extend(portscan_class.getPortsServices(self.tpl["tag"],ip))
 
-					for port in ports:
+					for port,service in tuples:
 						path_updated = path_updated + "/" + port
 						try:
 							os.mkdir(path_updated)
 						except FileExistsError:
 							pass
-						if port in self.tpl["ports"]:
+						if port in self.tpl["ports"] or service in self.tpl["services"]:
 							for name,variables in self.tpl["ports"][port].items():
 								# QUEUE for Threads
 								while len(procList) >= Config.CONFIG['CONCURRENCY']['MAXPROFILES']:
@@ -182,7 +196,6 @@ class Profiler(threading.Thread):
 									regular = regular_class({**self.tpl["globals"],**variables},"profile",regular_class.getName(),self.tpl["tag"],port)
 									regular.start()
 									procList.append(regular)
-
 						path_updated = path_updated[:-(len(port)+1)]
 
 				except Exception as e:

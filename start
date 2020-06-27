@@ -19,11 +19,11 @@ else
 		tmux split-window -h -t $SESSION:0
 		tmux send-keys -t $SESSION:0.1 "./boxdetox logger" Enter
 		tmux split-window -v -t $SESSION:0.0
-		tmux send-keys -t $SESSION:0.1 "msfconsole" Enter
-		tmux send-keys -t $SESSION:0.1 "use exploit/multi/handler" Enter
+		tmux send-keys -t $SESSION:0.0 "msfconsole" Enter
+		tmux send-keys -t $SESSION:0.0 "use exploit/multi/handler" Enter
 		sleep 1
-		tmux send-keys -t $SESSION:0.0 "./boxdetox" Enter
-		tmux send-keys -t $SESSION:0.0 $SESSION Enter
+		tmux send-keys -t $SESSION:0.1 "./boxdetox" Enter
+		tmux send-keys -t $SESSION:0.1 $SESSION Enter
 	fi
 	tmux attach-session -d -t $SESSION
 fi

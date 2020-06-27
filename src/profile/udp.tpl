@@ -5,7 +5,7 @@
 		},
 	"portscan":{
 		"module/portscan/udpcommon":{
-			"name":"Module_SCAN_UDPCommon"
+			"name":"Module_SCAN_UDP"
 			}
 	},
 	"ports":{
@@ -34,6 +34,8 @@
 				"port":"161"
 				}
 		}
+	},
+	"services":{
 	},
 	"generic":{
 		"module/icmp/ping":{

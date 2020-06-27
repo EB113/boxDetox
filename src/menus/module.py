@@ -61,6 +61,6 @@ switcher_module = {
 	"module/snmp/onesixtyone":"Module_SNMP_onesixtyone",
 	"module/dns/dnsrecon":"Module_DNS_dnsrecon",
 	"module/icmp/ping":"Module_ICMP_Ping",
-	"module/portscan/tcpcommon":"Module_SCAN_TCPCommon",
-	"module/portscan/udpcommon":"Module_SCAN_UDPCommon"
+	"module/portscan/tcp":"Module_SCAN_TCP",
+	"module/portscan/udp":"Module_SCAN_UDP"
 	}

@@ -33,7 +33,7 @@ class Config:
 			"SMBPASS"  : "user"
 		},
 		"SHELLZ" : {
-			"SHELLPORT" : "80"
+			"SHELLPORT" : "443"
 		},
 		"LOGGER" : {
 			"LOGGERIP" 	   : "127.0.0.1",

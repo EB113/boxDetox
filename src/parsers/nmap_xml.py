@@ -196,3 +196,15 @@ def parseNmapPort(data):
 		if len(row) >=6:
 			ports.append(row[4])
 	return ports
+def parseNmapService(data):
+	ports = []
+	for row in data:
+		if len(row) >=6:
+			ports.append(row[5])
+	return ports
+def parseNmapPortService(data):
+	ports = []
+	for row in data:
+		if len(row) >=6:
+			ports.append((row[4],row[5]))
+	return ports

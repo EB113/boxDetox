@@ -5,7 +5,8 @@
     },
     "portscan":{
         "module/portscan/tcp":{
-            "name":"Module_SCAN_TCP"
+            "name":"Module_SCAN_TCP",
+            "maxport":"10000"
         }
     },
 	"services":{

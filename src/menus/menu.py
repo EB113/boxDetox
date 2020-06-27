@@ -270,9 +270,9 @@ def profile(cmd=None):
 									continue
 							
 								if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
-									print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
+									print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,bcolors.ENDC))
 									print("{}{}Name: {}{}".format(bcolors.BOLD,bcolors.OKGREEN,mod,bcolors.ENDC))
-									print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
+									print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,bcolors.ENDC))
 								if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
 									s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
 									s.sendall((bcolors.BOLD+bcolors.OKGREEN+"Name:"+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+" "+mod+bcolors.ENDC+"\n").encode())
@@ -322,20 +322,26 @@ def module(cmd=None):
 	
 		if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "portscan"):
 			if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
-				print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
-				print("{}Type: Portscan{}".format(bcolors.OKBLUE,bcolors.ENDC))
+				print("{}------------------------------------{}".format(bcolors.FAIL,bcolors.ENDC))
+				print("{}{}Type:{} {}{}Portscan{}".format(bcolors.BOLD,bcolors.FAIL,bcolors.ENDC,bcolors.BOLD,bcolors.OKBLUE,bcolors.ENDC))
+				print("{}------------------------------------{}".format(bcolors.FAIL,bcolors.ENDC))
 			if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
-				s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
-				s.sendall((bcolors.OKBLUE+"Type: Portscan"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.FAIL+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.BOLD+bcolors.FAIL+"Type: "+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+"Portscan"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.FAIL+"------------------------------------"+bcolors.ENDC+"\n").encode())
 			
 			for m,d in State.moduleData["portscan"].items():
 				if "name" in filters_valid and filters_valid["name"] != m:
 					continue
 				
 				if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
-					print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
+					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
+					print("{}{}Name: {}{}".format(bcolors.BOLD,bcolors.OKGREEN,mod,bcolors.ENDC))
+					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
 				if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
-					s.sendall((bcolors.OKBLUE+"Name: "+m+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.BOLD+bcolors.OKGREEN+"Name:"+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+" "+mod+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
 				
 				for ip,v in d.items():
 					if "ip" in filters_valid and filters_valid["ip"] != ip:
@@ -346,6 +352,13 @@ def module(cmd=None):
 						module_class = getattr(importlib.import_module(("src/"+module_path).replace("/",".")),m)
 						module_class.printData(v,s)
 		
+
+		if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
+			print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,bcolors.ENDC))
+		if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
+			s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
+
+
 		if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
 			print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
 		if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
@@ -353,20 +366,26 @@ def module(cmd=None):
 				
 		if "type" not in filters_valid or ("type" in filters_valid and filters_valid["type"] == "regular"):
 			if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
-				print("{}------------------------------------{}".format(bcolors.OKBLUE,bcolors.ENDC))
-				print("{}Type: Regular{}".format(bcolors.OKBLUE,bcolors.ENDC))
+				print("{}------------------------------------{}".format(bcolors.FAIL,bcolors.ENDC))
+				print("{}{}Type:{} {}{}Regular{}".format(bcolors.BOLD,bcolors.FAIL,bcolors.ENDC,bcolors.BOLD,bcolors.OKBLUE,bcolors.ENDC))
+				print("{}------------------------------------{}".format(bcolors.FAIL,bcolors.ENDC))
 			if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
-				s.sendall((bcolors.OKBLUE+"------------------------------------"+bcolors.ENDC+"\n").encode())
-				s.sendall((bcolors.OKBLUE+"Type: Regular"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.FAIL+"------------------------------------"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.BOLD+bcolors.FAIL+"Type:"+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+" Regular"+bcolors.ENDC+"\n").encode())
+				s.sendall((bcolors.FAIL+"------------------------------------"+bcolors.ENDC+"\n").encode())
 			
 			for m,d in State.moduleData["regular"].items():
 				if "name" in filters_valid and filters_valid["name"] != m:
 					continue
 				
 				if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
-					print("{}Name: {}{}".format(bcolors.OKBLUE,m,bcolors.ENDC))
+					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
+					print("{}{}Name: {}{}".format(bcolors.BOLD,bcolors.OKGREEN,mod,bcolors.ENDC))
+					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
 				if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
-					s.sendall((bcolors.OKBLUE+"Name: "+m+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.BOLD+bcolors.OKGREEN+"Name:"+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+" "+mod+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
 				
 				for ip,v in d.items():
 					if "ip" in filters_valid and filters_valid["ip"] != ip:
@@ -378,9 +397,9 @@ def module(cmd=None):
 						module_class.printData(v,s)
 		
 		if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
-			print("{}------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
+			print("{}----------------------------------------------------------------{}".format(bcolors.WARNING,bcolors.ENDC))
 		if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
-			s.sendall((bcolors.WARNING+"------------------------------------"+bcolors.ENDC+"\n").encode())
+			s.sendall((bcolors.WARNING+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
 	finally:
 		if s != None:
 			s.close()
