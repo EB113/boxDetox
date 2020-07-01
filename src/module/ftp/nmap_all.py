@@ -28,7 +28,8 @@ def flag(val=None):
 
 class Module_FTP_nmapall(Module):
 
-    opt = {"target":target,"port":port}#{"target":target,"output":flag}
+    opt_static = {"target":target,"port":port}#{"target":target,"output":flag}
+    opt_dynamic = {"target":target,"port":port}#{"target":target,"output":flag}
 
     def __init__(self,opt_dict,mode,module_name,profile_tag=None,profile_port=None):
         threading.Thread.__init__(self)

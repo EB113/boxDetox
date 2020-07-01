@@ -1,7 +1,7 @@
 {
     "tag":"unique_name",
 	"globals":{
-        "target":"10.11.1.5"
+        "target":"192.168.49.84,192.168.49.95,192.168.49.96,192.168.49.152"
     },
     "portscan":{
         "module/portscan/tcp":{
@@ -28,6 +28,24 @@
             "module/http/nikto":{
                 "name":"Module_HTTP_nikto",
                 "secure":"True"
+                }
+			},
+		"ajp13":{
+			"module/ajp/nmap_all":{
+                "name":"Module_AJP_nmapall",
+                "port":"8009"
+                }
+			},
+		"pop3":{
+			"module/pop3/nmap_all":{
+                "name":"Module_POP3_nmapall",
+                "port":"110"
+                }
+			},
+		"imap":{
+			"module/imap/nmap_all":{
+                "name":"Module_IMAP_nmapall",
+                "port":"143"
                 }
 			}
 	},

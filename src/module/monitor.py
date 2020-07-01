@@ -25,28 +25,28 @@ class Monitor(threading.Thread):
 			# Check for finished tasks
 			for proc in self.procList[:]:
 				if not proc[1].isAlive():
-					if Config.Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True":
+					if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True":
 						with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 							s.connect((Config.CONFIG['LOGGER']['LOGGERIP'],int(Config.CONFIG['LOGGER']['LOGGERPORT'])))
 							try:
-								s.sendall((bcolors.BOLD+bcolors.OKGREEN+"Task "+proc[0]+" Finished!"+bcolors.ENDC+"\n").encode())
+								s.sendall((bcolors.BOLD+bcolors.WARNING+"Task "+proc[0]+" Finished!"+bcolors.ENDC+"\n").encode())
 							finally:
 								s.close()
 					else:
-						print("{}{}Task {} Finished!{}\n".format(bcolors.BOLD,bcolors.OKGREEN,proc[0],bcolors.ENDC))
+						print("{}{}Task {} Finished!{}\n".format(bcolors.BOLD,bcolors.WARNING,proc[0],bcolors.ENDC))
 					self.procList.remove(proc)
 			# Check for new tasks
 			try:
 				req = self.reqList.get_nowait()
-				if Config.Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True":
+				if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True":
 					with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 						s.connect((Config.CONFIG['LOGGER']['LOGGERIP'],int(Config.CONFIG['LOGGER']['LOGGERPORT'])))
 						try:
-							s.sendall(("\n"+bcolors.BOLD+bcolors.OKGREEN+"Task "+req[0]+" Started!\n"+bcolors.ENDC).encode())
+							s.sendall(("\n"+bcolors.BOLD+bcolors.WARNING+"Task "+req[0]+" Started!\n"+bcolors.ENDC).encode())
 						finally:
 							s.close()
 				else:
-					print("\n{}{}Task {} Started!{}\n".format(bcolors.BOLD,bcolors.OKGREEN,req[0],bcolors.ENDC))
+					print("\n{}{}Task {} Started!{}\n".format(bcolors.BOLD,bcolors.WARNING,req[0],bcolors.ENDC))
 				req[1].start()
 				self.procList.append(req)
 			except Exception as e:

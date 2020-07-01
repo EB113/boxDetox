@@ -39,6 +39,9 @@ class Module(threading.Thread):
     def validate(cls,opt_dict=None):
         valid = True
         opt = dict(cls.opt_static)
+		#Fix Parameter check not entering for Missing all
+
+
         if opt_dict != None and len(opt_dict.keys()) >= len(cls.opt_static.keys()):
             for k,v in opt_dict.items():
                 if k in cls.opt_static:

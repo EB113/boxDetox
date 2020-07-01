@@ -1,11 +1,12 @@
 {
 	"tag":"unique_name",
 	"globals":{
-		"target":"10.10.10.4"
+		"target":"192.168.49.95,192.168.49.152"
 		},
 	"portscan":{
-		"module/portscan/udpcommon":{
-			"name":"Module_SCAN_UDP"
+		"module/portscan/udp":{
+			"name":"Module_SCAN_UDP",
+			"maxport":"1000"
 			}
 	},
 	"ports":{

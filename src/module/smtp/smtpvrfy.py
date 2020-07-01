@@ -68,7 +68,7 @@ class Module_SMTP_VRFY(Module):
                 s.close()
                 if len(gem) == 0:
                     gem.append("No valid user!")
-                data[ip] = gem
+                data[ip] = "\n".join(gem)
 
                 if self.mode == "profile":
                     fd = open(Config.CONFIG['GENERAL']['PATH'] + "/db/sessions/" + Config.CONFIG['GENERAL']['SESSID']+"/profile/"+self.profile_tag+"/"+ip+"/"+self.profile_port+"/smtpvrfy","w")

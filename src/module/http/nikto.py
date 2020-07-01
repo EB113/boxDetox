@@ -37,9 +37,9 @@ class Module_HTTP_nikto(Module):
 		for ip in lst:
 			if not self.flag.is_set():
 				if self.opt_dict["secure"] == "False":
-					proc = os.popen("nikto -h  http://" + ip + " 2>/dev/null | grep -E '^\+ .*$' | sed '1,4d' | tac | sed '1,3d' | tac")
+					proc = os.popen("nikto -h  http://" + ip +":"+ self.profile_port +" 2>/dev/null | grep -E '^\+ .*$' | sed '1,4d' | tac | sed '1,3d' | tac")
 				else:
-					proc = os.popen("nikto -h  https://" + ip + " 2>/dev/null | grep -E '^\+ .*$' | sed '1,4d' | tac | sed '1,3d' | tac")
+					proc = os.popen("nikto -h  https://" + ip +":"+ self.profile_port +" 2>/dev/null | grep -E '^\+ .*$' | sed '1,4d' | tac | sed '1,3d' | tac")
 				out = proc.read()
 				proc.close()
 				if self.mode == "profile": 

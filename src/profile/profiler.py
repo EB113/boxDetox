@@ -60,7 +60,7 @@ def validate_ports(val):
 def validate_services(val):
 	for k,v in val.items():
 		#	Add More Services
-		if type(k) == str and k in ["http","https","ftp","snmp"]:
+		if type(k) == str and k in ["http","https","ftp","snmp","ajp13","pop3","imap"]:
 			if type(v) == dict:
 				for k1,v1 in v.items():
 					if not validate_module(k1,v1):
@@ -160,6 +160,7 @@ class Profiler(threading.Thread):
 					print("Error Portscan!")
 					return
 				
+				iterDitc = {}
 				procList = []
 				timeout_counter = 0
 
@@ -171,12 +172,18 @@ class Profiler(threading.Thread):
 
 					for port,service in tuples:
 						path_updated = path_updated + "/" + port
-						try:
-							os.mkdir(path_updated)
-						except FileExistsError:
-							pass
 						if port in self.tpl["ports"] or service in self.tpl["services"]:
-							for name,variables in self.tpl["ports"][port].items():
+							try:
+								os.mkdir(path_updated)
+							except FileExistsError:
+								pass
+
+							if port in self.tpl["ports"]:
+								iterDict = self.tpl["ports"][port]
+							else:
+								iterDict = self.tpl["services"][service]
+
+							for name,variables in iterDict.items():
 								# QUEUE for Threads
 								while len(procList) >= Config.CONFIG['CONCURRENCY']['MAXPROFILES']:
 									if timeout_counter > Config.CONFIG['CONCURRENCY']['PROFILETIMEOUT']:

@@ -27,7 +27,7 @@ def outfile():
 def flag(val=None):
     return True
 
-class Module_SCAN_UDPCommon(PortScanner):
+class Module_SCAN_UDP(PortScanner):
 
     opt_static = {"target":target}#,"outfile":outfile}#{"target":target,"output":flag}
     opt_dynamic = {"minport":port,"maxport":port}
@@ -38,7 +38,7 @@ class Module_SCAN_UDPCommon(PortScanner):
 
     def run(self):
         try:
-            lst = Module_SCAN_UDPCommon.targets(self.opt_dict["target"])
+            lst = self.targets(self.opt_dict["target"])
             fn = Config.CONFIG['GENERAL']['PATH'] + "/db/sessions/" + Config.CONFIG['GENERAL']['SESSID']+"/portscans/"
             data = {}
             for ip in lst:
@@ -48,13 +48,13 @@ class Module_SCAN_UDPCommon(PortScanner):
                     
                     if "minport" in self.opt_dict:
                         if "maxport" in self.opt_dict:
-                            os.system("nmap -p "+self.opt_dict["minport"]+"-"+self.opt_dict["maxport"]+" -sU -sV -T4 "+ip+" -oA "+fn+ip+"/udp_"+ip+" 1>/dev/null 2>/dev/null")
+                            os.system("nmap -p "+self.opt_dict["minport"]+"-"+self.opt_dict["maxport"]+" -sUV -T4 "+ip+" -oA "+fn+ip+"/udp_"+ip+" 1>/dev/null 2>/dev/null")
                         else:                       
-                            os.system("nmap -p "+self.opt_dict["minport"]+"-65535 -sU -sV -T4 "+ip+" -oA "+fn+ip+"/udp_"+ip+" 1>/dev/null 2>/dev/null")
+                            os.system("nmap -p "+self.opt_dict["minport"]+"-65535 -sUV -T4 "+ip+" -oA "+fn+ip+"/udp_"+ip+" 1>/dev/null 2>/dev/null")
                     elif "maxport" in self.opt_dict:
-                        os.system("nmap -p 0-"+self.opt_dict["maxport"]+" -sU -sV -T4 "+ip+" -oA "+fn+ip+"/udp_"+ip+" 1>/dev/null 2>/dev/null")
+                        os.system("nmap --top-ports "+self.opt_dict["maxport"]+" -sUV -T4 "+ip+" -oA "+fn+ip+"/udp_"+ip+" 1>/dev/null 2>/dev/null")
                     else:
-                        os.system("nmap -p- -sU -sV -T4 "+ip+" -oA "+fn+ip+"/udp_"+ip+" 1>/dev/null 2>/dev/null")
+                        os.system("nmap -p- -sUV -T4 "+ip+" -oA "+fn+ip+"/udp_"+ip+" 1>/dev/null 2>/dev/null")
                     
                     nmap_data = parse_xml(fn+ip+"/udp_"+ip+".xml")
                 except Exception as e:
@@ -68,12 +68,12 @@ class Module_SCAN_UDPCommon(PortScanner):
                     s.connect((Config.CONFIG['LOGGER']['LOGGERIP'],int(Config.CONFIG['LOGGER']['LOGGERPORT'])))
                     try:
                         for val in data.values():
-                            Module_SCAN_UDPCommon.printData(val,s,True)
+                            self.printData(val,s,True)
                     finally:
                         s.close()
             if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
                 for val in data.values():
-                    Module_SCAN_UDPCommon.printData(val,enclose=True)
+                    self.printData(val,enclose=True)
 
         except Exception as e:
             print("{}".format(e))

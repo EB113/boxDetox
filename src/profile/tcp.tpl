@@ -28,6 +28,12 @@
                 "name":"Module_HTTP_nikto",
                 "secure":"True"
                 }
+			},
+		"ajp13":{
+			"module/ajp/nmap_all":{
+                "name":"Module_AJP_nmapall",
+                "port":"21"
+                }
 			}
 	},
     "ports":{

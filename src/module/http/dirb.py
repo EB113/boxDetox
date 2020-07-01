@@ -18,14 +18,20 @@ def secure(val=None):
 	else:
 		return (val == "True" or val == "False")
 
+def wlist(val=None):
+	if val != None and type(val)==str and val in ["small","common","big"]:
+		return True
+	else:
+		return False
+
 #Need to see how to deal with multiple flags
 def flag(val=None):
 	return True
 
 class Module_HTTP_dirb(Module):
 
-	opt_static = {"target":target,"secure":secure}#{"target":target,"output":flag}
-	opt_dynamic = {}
+	opt_static = {"target":target,"secure":secure}
+	opt_dynamic = {"wlist":wlist}
 
 	def __init__(self,opt_dict,mode,module_name,profile_tag=None,profile_port=None):
 		threading.Thread.__init__(self)
@@ -37,9 +43,15 @@ class Module_HTTP_dirb(Module):
 		for ip in lst:
 			if not self.flag.is_set():
 				if self.opt_dict["secure"] == "False":
-					proc = os.popen("/bin/bash -c 'dirb http://" + ip +"/ /usr/share/wordlists/dirb/common.txt | grep -E \"^[^ ]+\" | sed \"1,10d\" | tac | sed \"1,3d\" | tac | grep -v \"^--> .*$\"'")
+					if "wlist" in self.opt_dict and self.opt_dict["wlist"] is not None:
+							proc = os.popen("/bin/bash -c 'dirb http://" + ip +"/ /usr/share/wordlists/dirb/big.txt | grep -E \"^[^ ]+\" | sed \"1,10d\" | tac | sed \"1,3d\" | tac | grep -v \"^--> .*$\"'")
+					else:
+						proc = os.popen("/bin/bash -c 'dirb http://" + ip +"/ /usr/share/wordlists/dirb/common.txt | grep -E \"^[^ ]+\" | sed \"1,10d\" | tac | sed \"1,3d\" | tac | grep -v \"^--> .*$\"'")
 				else:
-					proc = os.popen("/bin/bash -c 'dirb https://" + ip +"/ /usr/share/wordlists/dirb/common.txt | grep -E \"^[^ ]+\" | sed \"1,10d\" | tac | sed \"1,3d\" | tac | grep -v \"^--> .*$\"'")
+					if "wlist" in self.opt_dict and self.opt_dict["wlist"] is not None:
+						proc = os.popen("/bin/bash -c 'dirb https://" + ip +"/ /usr/share/wordlists/dirb/big.txt | grep -E \"^[^ ]+\" | sed \"1,10d\" | tac | sed \"1,3d\" | tac | grep -v \"^--> .*$\"'")
+					else:
+						proc = os.popen("/bin/bash -c 'dirb https://" + ip +"/ /usr/share/wordlists/dirb/common.txt | grep -E \"^[^ ]+\" | sed \"1,10d\" | tac | sed \"1,3d\" | tac | grep -v \"^--> .*$\"'")
 				
 				#out = subproccess.Popen(
 				out = proc.read()

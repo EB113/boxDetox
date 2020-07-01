@@ -20,7 +20,7 @@ def share_smb(cmd=None):
             else:
                 try:
                     os.chdir(Config.CONFIG['GENERAL']['PATH']+"/db/shares")
-                    smbServer(Config.CONFIG['GENERAL']['PATH']+"/db/shares")
+                    smbServer(Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['SMBPORT'],Config.CONFIG['SHARES']['SMBUSER'],Config.CONFIG['SHARES']['SMBPASS'],Config.CONFIG['GENERAL']['PATH']+"/db/shares")
                     return
                 except Exception as e:
                     print("{}".format(e))
@@ -40,7 +40,7 @@ def share_smb(cmd=None):
             else:
                 print("{}SMB Server Inactive!{}".format(bcolors.WARNING,bcolors.ENDC))
         elif cmd[1] == "cmd":
-            print("{}net use Z: \\{}\SHARES /USER:\{} {} /PERSISTENT:YES{}".format(bcolors.OKBLUE,Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['SMBUSER'],Config.CONFIG['SHARES']['SMBPASSD'],bcolors.ENDC))
+            print("{}net use Z: \\{}\SHARES /USER:\{} {} /PERSISTENT:YES{}".format(bcolors.OKBLUE,Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['SMBUSER'],Config.CONFIG['SHARES']['SMBPASS'],bcolors.ENDC))
         else:
             print("{}Usage: smb <start|stop|status|cmd>{}".format(bcolors.WARNING,bcolors.ENDC))
             return
@@ -68,7 +68,7 @@ def share_ftp(cmd=None):
                 print("{}FTP Server Inactive!{}".format(bcolors.WARNING,bcolors.ENDC))
         elif cmd[1] == "cmd":
             print("{}echo open {} {} > ftp.txt{}".format(bcolors.OKBLUE,Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['FTPPORT'],bcolors.ENDC))
-            print("{}echo USER {} {} >> ftp.txt{}".format(bcolors.OKBLUE,Config.CONFIG['SHARES']['FTPUSER'],Config.CONFIG['SHARES']['FTPPASSD'],bcolors.ENDC))
+            print("{}echo USER {} {} >> ftp.txt{}".format(bcolors.OKBLUE,Config.CONFIG['SHARES']['FTPUSER'],Config.CONFIG['SHARES']['FTPPASS'],bcolors.ENDC))
             print("{}echo bin >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
             print("{}echo GET {{file}} >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
             print("{}echo bye >> ftp.txt{}".format(bcolors.OKBLUE,bcolors.ENDC))
@@ -86,7 +86,7 @@ def share_ftp(cmd=None):
             else:
                 try:
                     os.chdir(Config.CONFIG['GENERAL']['PATH']+"/db/shares/"+cmd[2])
-                    ftpServer(Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['FTPPORT'],Config.CONFIG['SHARES']['FTPUSER'],Config.CONFIG['SHARES']['FTPPASSD'])
+                    ftpServer(Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['FTPPORT'],Config.CONFIG['SHARES']['FTPUSER'],Config.CONFIG['SHARES']['FTPPASS'])
                     return
                 except Exception as e:
                     print("{}".format(e))
@@ -111,7 +111,7 @@ def share_http(cmd=None):
             else:
                 try:
                     os.chdir(Config.CONFIG['GENERAL']['PATH']+"/db/shares")
-                    httpServer(Config.CONFIG['GENERAL']['HOSTIP'],Config.Config.CONFIG['SHARES']['HTTPPORT'])
+                    httpServer(Config.CONFIG['GENERAL']['HOSTIP'],Config.CONFIG['SHARES']['HTTPPORT'])
                     return
                 except Exception as e:
                     print("{}".format(e))

@@ -4,7 +4,7 @@ import netaddr,os,subprocess,re
 from src.miscellaneous.config import Config,bcolors
 from src.module.module import Module
 
-import json,time
+import json,time,traceback
 
 def target(val=None):
 	if val is None:
@@ -18,6 +18,22 @@ def secure(val=None):
 	else:
 		return (val == "True" or val == "False")
 
+def wlist(val=None):
+	if val is not None and type(val)==str and val in ["small","common","big"]:
+		return True
+	else:
+		return False
+
+def port(val=None):
+    if val is None:
+        return False
+    else:
+        try:
+            int(val)
+            return True
+        except:
+            return False
+
 #Need to see how to deal with multiple flags
 def flag(val=None):
 	return True
@@ -27,9 +43,8 @@ def parseJSON(path=None):
 	with open(path,"r") as json_file:
 		try:
 			json_data = json.load(json_file)
-		except:
-			print("{}".format(e))
-			print("{}".format(traceback.print_exc()))
+		except Exception as e:
+			print("{}{}DirSearch: CONNECTION TIMEOUT{}".format(bcolors.BOLD,bcolors.FAIL,bcolors.ENDC))
 			return None
 			
 	return json_data
@@ -37,7 +52,7 @@ def parseJSON(path=None):
 class Module_HTTP_dirsearch(Module):
 
 	opt_static = {"target":target,"secure":secure}#{"target":target,"output":flag}
-	opt_dynamic = {}#{"target":target,"output":flag}
+	opt_dynamic = {"port":port,"wlist":wlist}#{"target":target,"output":flag}
 
 	def __init__(self,opt_dict,mode,module_name,profile_tag=None,profile_port=None):
 		threading.Thread.__init__(self)
@@ -49,12 +64,27 @@ class Module_HTTP_dirsearch(Module):
 		data = {}
 		for ip in lst:
 			if not self.flag.is_set():
-				if self.opt_dict["secure"] == "False":
-					proc = os.popen("/bin/bash -c 'python3 "+ Config.CONFIG['GENERAL']['PATH'] +"/3rd/dirsearch/dirsearch.py -u http://"+ ip +":"+self.profile_port+"/ -E -w /usr/share/wordlists/dirb/common.txt --json-report="+ fn+"'")
+				#Fix tTHIS!!!!!!!! PORT PROFILE AND NOT MODULE IDIOT
+				if "port" in self.opt_dict:
+					port = self.opt_dict["port"]
 				else:
-					proc = os.popen("/bin/bash -c 'python3 "+ Config.CONFIG['GENERAL']['PATH'] +"/3rd/dirsearch/dirsearch.py -u https://"+ ip +":"+self.profile_port+"/ -E -w /usr/share/wordlists/dirb/common.txt --json-report="+ fn+"'")
+					port = self.profile_port
+
+				if self.opt_dict["secure"] == "False":
+					if ("wlist" in self.opt_dict) and (self.opt_dict["wlist"] is not None):
+						proc = os.popen("/bin/bash -c 'python3 "+ Config.CONFIG['GENERAL']['PATH'] +"/3rd/dirsearch/dirsearch.py -u http://"+ ip +":"+port+"/ -E -w /usr/share/wordlists/dirb/"+self.opt_dict["wlist"]+".txt --json-report="+ fn+"'")
+					else:
+						proc = os.popen("/bin/bash -c 'python3 "+ Config.CONFIG['GENERAL']['PATH'] +"/3rd/dirsearch/dirsearch.py -u http://"+ ip +":"+port+"/ -E -w /usr/share/wordlists/dirb/common.txt --json-report="+ fn+"'")
+				else:
+					if ("wlist" in self.opt_dict) and (self.opt_dict["wlist"] is not None):
+						proc = os.popen("/bin/bash -c 'python3 "+ Config.CONFIG['GENERAL']['PATH'] +"/3rd/dirsearch/dirsearch.py -u https://"+ ip +":"+port+"/ -E -w /usr/share/wordlists/dirb/"+self.opt_dict["wlist"]+".txt --json-report="+ fn+"'")
+					else:
+						proc = os.popen("/bin/bash -c 'python3 "+ Config.CONFIG['GENERAL']['PATH'] +"/3rd/dirsearch/dirsearch.py -u https://"+ ip +":"+self.profile_port+"/ -E -w /usr/share/wordlists/dirb/common.txt --json-report="+ fn+"'")
 				proc.read()
 				proc.close()
+				jsonOut = parseJSON(fn)
+				if jsonOut is None:
+					return
 				out = json.dumps(parseJSON(fn), indent=4, sort_keys=True)
 				if self.mode == "profile": 
 					fd = open(Config.CONFIG['GENERAL']['PATH'] + "/db/sessions/" + Config.CONFIG['GENERAL']['SESSID']+"/profile/"+self.profile_tag+"/"+ip+"/"+self.profile_port+"/dirsearch","w")

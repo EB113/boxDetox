@@ -48,13 +48,13 @@ class Module_SCAN_TCP(PortScanner):
                         os.mkdir(fn+ip)
                     if "minport" in self.opt_dict:
                         if "maxport" in self.opt_dict:
-                            os.system("nmap -p "+self.opt_dict["minport"]+"-"+self.opt_dict["maxport"]+" -sT -sV -T4 "+ip+" -oA "+fn+ip+"/tcp_"+ip+" 1>/dev/null 2>/dev/null")
+                            os.system("nmap -p "+self.opt_dict["minport"]+"-"+self.opt_dict["maxport"]+" -O -sTV -T4 "+ip+" -oA "+fn+ip+"/tcp_"+ip+" 1>/dev/null 2>/dev/null")
                         else:                       
-                            os.system("nmap -p "+self.opt_dict["minport"]+"-65535 -sT -sV -T4 "+ip+" -oA "+fn+ip+"/tcp_"+ip+" 1>/dev/null 2>/dev/null")
+                            os.system("nmap -p "+self.opt_dict["minport"]+"-65535 -O -sTV -T4 "+ip+" -oA "+fn+ip+"/tcp_"+ip+" 1>/dev/null 2>/dev/null")
                     elif "maxport" in self.opt_dict:
-                        os.system("nmap -p 0-"+self.opt_dict["maxport"]+" -sT -sV -T4 "+ip+" -oA "+fn+ip+"/tcp_"+ip+" 1>/dev/null 2>/dev/null")
+                        os.system("nmap --top-ports "+self.opt_dict["maxport"]+" -O -sTV -T4 "+ip+" -oA "+fn+ip+"/tcp_"+ip+" 1>/dev/null 2>/dev/null")
                     else:
-                        os.system("nmap -p- -sT -sV -T4 "+ip+" -oA "+fn+ip+"/tcp_"+ip+" 1>/dev/null 2>/dev/null")
+                        os.system("nmap -p- -O -sTV -T4 "+ip+" -oA "+fn+ip+"/tcp_"+ip+" 1>/dev/null 2>/dev/null")
 
                     nmap_data = parse_xml(fn+ip+"/tcp_"+ip+".xml")
                 except Exception as e:
