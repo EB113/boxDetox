@@ -1,5 +1,5 @@
-impacket==0.9.20
 netaddr==0.7.19
+impacket==0.9.20
 clipboard==0.0.4
-pyftpdlib==1.5.6
 pyfiglet==0.8.post1
+pyftpdlib==1.5.6
