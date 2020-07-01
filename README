@@ -53,6 +53,7 @@ Adding new Module:
  - Check /src/modules for module file structure examples.
  - Write your own;
  - Add module entry in src/menus/module.py switcher_module variable following the examples.
+ - Success you now have added a new custom Module!
 
 Data Filtering:
 Global Cmds:
