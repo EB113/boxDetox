@@ -1,21 +1,18 @@
 OSCP tool helper.
 
-** Python 3.7+ Required **
+** Python 3.8+ Required **
 #Setup guide#
-apt install python3-pip
-pip3 install -r requirements.txt
+./setup
 
-chmod +x oscpPWN
-ln -sf {PATH}/oscpPWN /usr/bin/oscpPWN
-
-./oscpPWN - open regular program
-./oscpPWN logger - opens another program, Modules log here by default if this is detected when main program launches.
+./boxdetox - open regular program
+./boxdetox logger - opens another program, Modules log here by default if this is detected when main program launches.
 or
+apt install tmux
 ./start {{proj_name}} - open default tmux setup
 
 -------------------------------------
 This tool intends to aid in exam by reducing painfull stuff.
-This is not a problem solver tool.
+
 Commands:
 	- ls - list ccurrent menu options
 	- help - list Global menu options
@@ -36,8 +33,6 @@ Features:
 		- https same as http;
 		- You can build your own modules following the standard structure of the above;
 	- File Sharing Helper (http,ftp,smb)
-	- Buckets/Notes to keep track of stuff; (ToDo)
-	- Priv Esc Helper (notes only, ToDo)
 
 The main goal is to allow the user to create their own enumeration by using python scripts.
 Program is threaded so you can perform the above tasks simultaneously.
@@ -49,7 +44,8 @@ Relevant Classes:
 	- /src/modules/portscan/portscanner.py Portscanner (Specfic type of Module)
 	- /src/profiles/profiler.py Profiler
 Relevant Files:
-	- tcp.tpl 
+	- tcp.tpl
+	- tcp10k.tpl
 	- udp.tpl
 	(json structure to automate enumeration, user specifies a portscan module and specifies which modules run on specific ports. Modules only run if port is open. And it is a threaded application with the ability to limit)
 
