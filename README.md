@@ -1,11 +1,11 @@
-HackTheBox & OSCP tool helper.
+HackTheBox & OSCP tool helper. <br/>
 
-Pwn all your machines good luck!
-Please resort to INFO file for further information in customisation.
+Pwn all your machines good luck! </br>
+Please resort to INFO file for further information in customisation. <br/>
 
-** Python 3.8+ Required **
-#Setup guide#
-./setup
+** Python 3.8+ Required ** <br/>
+#Setup guide# <br/>
+./setup <br/>
 
 ./boxdetox - open regular program <br/>
 ./boxdetox logger - opens another program, Modules log here by default if this is detected when main program launches.<br/>
