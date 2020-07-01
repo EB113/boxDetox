@@ -12,3 +12,5 @@ Please resort to INFO file for further information in customisation.
 or
 apt install tmux
 ./start {{proj_name}} - open default tmux setup
+
+![Alt text](./example.png?raw=true "Showcase Menu")
