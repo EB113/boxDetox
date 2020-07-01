@@ -25,5 +25,3 @@ db/sessions/*
 *.pyc
 *.swp
 *.swo
-3rd/
-3rd/*

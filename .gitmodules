@@ -1,0 +1,3 @@
+[submodule "3rd/dirsearch"]
+	path = 3rd/dirsearch
+	url = https://github.com/maurosoria/dirsearch.git
