@@ -61,6 +61,8 @@ Global Cmds:
 	- services (filters data from runned portscan modules, either via manual or via tpl file, type "services help" for filter list, e.g services ip=127.0.0.1)
 	- hosts (filters ips from global data, type "hosts help" e.g hosts module=Module_Ping)
 
+NOTE: Read over the profile .tpl file, exisitng have dependencies on apt install seclists for path '/usr/share/seclists/Usernames/top-usernames-shortlist.txt'.
+change the current profile template files or create your own.
 
 WIP..
 
