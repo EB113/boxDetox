@@ -35,7 +35,7 @@ Relevant Files: <br/>
 	- tcp.tpl <br/>
 	- tcp10k.tpl <br/>
 	- udp.tpl <br/>
-	(json structure to automate enumeration, user specifies a portscan module and specifies which modules run on specific ports. Modules only run if port is open. And it is a threaded application with the ability to limit) <br/>
+	(json structure to automate enumeration, user specifies a portscan module and specifies which modules run on specific ports or services. Modules only run if port is open or service is running. And it is a threaded application with configuration ability) <br/>
 
 Adding new Module: <br/>
  - Check /src/modules for module file structure examples. <br/>
