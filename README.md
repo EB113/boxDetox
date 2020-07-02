@@ -1,10 +1,16 @@
-HackTheBox & OSCP tool helper. <br/>
+**HackTheBox & OSCP tool helper.** <br/>
 
 Pwn all your machines good luck! </br>
 Please resort to INFO file for further information in customisation. <br/>
 
+**Features:** <br/>
+- Automated multi-threaded enumeration(Profiler); <br/>
+- Enumeration customiser with template files (Profiles); <br/>
+- File sharing utility (HTTP, FTP, SMB); <br/>
+- Buffer Overflow helper. <br/>
+
+**#Setup guide#** <br/>
 ** Python 3.8+ Required ** <br/>
-#Setup guide# <br/>
 ./setup <br/>
 
 ./boxdetox - open regular program <br/>
