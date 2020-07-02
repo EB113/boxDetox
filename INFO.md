@@ -1,4 +1,4 @@
-------------------------------------- <br/>
+-------------------------------------
 This tool intends to aid in exam by reducing painfull stuff.
 <br/>
 Commands: <br/>
