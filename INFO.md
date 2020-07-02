@@ -15,10 +15,9 @@ Features: <br/>
 - SSH User enum; <br/>
 - SMTP VRFY + nmap scans (vuln,enum); <br/>
 - DNS rECON; <br/>
-- http dirsearch,nikto; <br/>
+- HTTP/HTTPS dirsearch,nikto; <br/>
 - SNMP onesixtyone + nmap scans (vuln,enum) <br/>
 - 445 , smbmap,nbtscan, enum4linux, nmap (vuln,enum) <br/>
-- https same as http; <br/>
 - You can build your own modules following the standard structure of the above; <br/>
 - File Sharing Helper (http,ftp,smb) <br/>
 
