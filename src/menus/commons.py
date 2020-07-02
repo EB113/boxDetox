@@ -8,21 +8,10 @@ class State:
 	module_state = ""
 	module_class = ""
 	actual_option = []
-	global_option = ["profile","module","service","host","config","load","save","help","ls","back","exit"]
+	global_option = ["profile","module","service","hosts","config","load","save","help","ls","back","exit"]
 	config_option = ["SESSID","EDITOR","PATH","MAXMODULES","MAXPROFILES","MAXPROFILES","HTTPPORT","FTPPORT","FTPUSER","FTPPASS","SMBPORT","SMBUSER","SMBPASS","SHELLPORT","LOGGERIP","LOGGERPORT","LOGGERSTATUS","LOGGERVERBOSE","CLIENTVERBOSE"]
 	menu_option = {
 		"main": {
-			"internal":{
-				"share":{
-					"smb":{},
-					"ftp":{},
-					"http":{},
-					"powershell":{},
-					"vbscript":{}
-					},
-				"linux":{},
-				"windows":{}
-			},
 			"external":{
 				"shellZ":{
 					"linux_x86":{},
@@ -44,6 +33,13 @@ class State:
 				"nasm":{},
 				"nops":{},
 				"notes":{}
+			},
+			"shares":{
+				"smb":{},
+				"ftp":{},
+				"http":{},
+				"powershell":{},
+				"vbscript":{}
 			}
 		}
 	}
