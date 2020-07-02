@@ -1,26 +1,27 @@
--------------------------------------<br/>
+------------------------------------- <br/>
 This tool intends to aid in exam by reducing painfull stuff.
 <br/>
 Commands: <br/>
-	- ls - list ccurrent menu options <br/>
-	- help - list Global menu options <br/>
-	- config get - list configuration option, there are a couple but easy to understand. <br/>
-	- config set {{option}} value - define config options <br/>
-	<br/>
-	Note: config set HOSTIP {{youIP}}, make sure you set HOSTIP to the one on the network you are testing. <br/>
+- ls: list ccurrent menu options <br/>
+- help: list Global menu options <br/>
+- config get: list configuration option, there are a couple but easy to understand. <br/>
+- config set: {{option}} value - define config options <br/>
+<br/>
+Note: config set HOSTIP {{youIP}}, make sure you set HOSTIP to the one on the network you are testing. <br/>
 <br/>
 Features: <br/>
-	- Buffer Overflow Helper <br/>
-	- Enumeration Automation Helper (Threaded): <br/>
-		- SSH User enum; <br/>
-		- SMTP VRFY + nmap scans (vuln,enum); <br/>
-		- DNS rECON; <br/>
-		- http dirsearch,nikto; <br/>
-		- SNMP onesixtyone + nmap scans (vuln,enum) <br/>
-		- 445 , smbmap,nbtscan, enum4linux, nmap (vuln,enum) <br/>
-		- https same as http; <br/>
-		- You can build your own modules following the standard structure of the above; <br/>
-	- File Sharing Helper (http,ftp,smb) <br/>
+- Buffer Overflow Helper <br/>
+- Enumeration Automation Helper (Threaded): <br/>
+- SSH User enum; <br/>
+- SMTP VRFY + nmap scans (vuln,enum); <br/>
+- DNS rECON; <br/>
+- http dirsearch,nikto; <br/>
+- SNMP onesixtyone + nmap scans (vuln,enum) <br/>
+- 445 , smbmap,nbtscan, enum4linux, nmap (vuln,enum) <br/>
+- https same as http; <br/>
+- You can build your own modules following the standard structure of the above; <br/>
+- File Sharing Helper (http,ftp,smb) <br/>
+
 <br/>
 The main goal is to allow the user to create their own enumeration by using python scripts. <br/>
 Program is threaded so you can perform the above tasks simultaneously. <br/>
