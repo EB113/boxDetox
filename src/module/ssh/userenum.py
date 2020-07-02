@@ -44,7 +44,7 @@ class Module_SSH_userenum(Module):
             if not self.flag.is_set():
                 gem = []
                 for user in users:
-                    proc = os.popen("python2 {}/3rd/enumSSH.py {} {}".format(Config.CONFIG['GENERAL']['PATH'],ip,user))
+                    proc = os.popen("python3 {}/3rd/enumSSH.py {} {}".format(Config.CONFIG['GENERAL']['PATH'],ip,user))
                     out = proc.read()
                     if re.match("^\[\+\] [a-zA-Z0-9-_ ]+$", out):
                         gem.append(out)
