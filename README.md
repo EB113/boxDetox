@@ -9,8 +9,8 @@ Please resort to INFO file for further information in customisation. <br/>
 - File sharing utility (HTTP, FTP, SMB); <br/>
 - Buffer Overflow helper. <br/>
 
-**#Setup guide#** <br/>
-** Python 3.8+ Required ** <br/>
+**Setup guide** <br/>
+Note:Python 3.8+ Required <br/>
 ./setup <br/>
 
 ./boxdetox - open regular program <br/>
