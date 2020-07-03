@@ -1,5 +1,6 @@
 #!/bin/bash
 
+apt install nfs-common
 apt install seclists
 apt install python3-pip
 pip3 install -r requirements.txt
