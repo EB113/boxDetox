@@ -26,7 +26,7 @@ def port(val=None):
 def flag(val=None):
     return True
 
-class Module_TFTP_nmapall(Module):
+class Module_IMAP_nmap(Module):
 
     opt_static = {"target":target,"port":port}#{"target":target,"output":flag}
     opt_dynamic = {}#{"target":target,"output":flag}
@@ -40,10 +40,10 @@ class Module_TFTP_nmapall(Module):
         data = {}
         for ip in lst:
             if not self.flag.is_set():
-                proc = os.popen("/bin/bash -c 'nmap -sU -p "+ self.opt_dict["port"] +" --script=tftp* "+ip+"'")
+                proc = os.popen("/bin/bash -c 'nmap -p "+ self.opt_dict["port"] +" --script=imap-* "+ip+"'")
                 out = proc.read()
                 proc.close()
-                if self.mode == "profile":
+                if self.mode == "profile": 
                     fd = open(Config.CONFIG['GENERAL']['PATH'] + "/db/sessions/" + Config.CONFIG['GENERAL']['SESSID']+"/profile/"+self.profile_tag+"/"+ip+"/"+self.profile_port+"/nmap_all","w")
                     fd.write(out)
                     fd.close()

@@ -26,7 +26,7 @@ def port(val=None):
 def flag(val=None):
     return True
 
-class Module_IMAP_nmapall(Module):
+class Module_NFS_nmap(Module):
 
     opt_static = {"target":target,"port":port}#{"target":target,"output":flag}
     opt_dynamic = {}#{"target":target,"output":flag}
@@ -40,7 +40,7 @@ class Module_IMAP_nmapall(Module):
         data = {}
         for ip in lst:
             if not self.flag.is_set():
-                proc = os.popen("/bin/bash -c 'nmap -p "+ self.opt_dict["port"] +" --script=imap-* "+ip+"'")
+                proc = os.popen("/bin/bash -c 'nmap -p "+ self.opt_dict["port"] +" --script=nfs-showmount "+ip+"'")
                 out = proc.read()
                 proc.close()
                 if self.mode == "profile": 

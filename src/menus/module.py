@@ -45,11 +45,12 @@ def module_set(cmd=None):
 	return
 
 switcher_module = {
-	"module/imap/nmap_all":"Module_IMAP_nmapall",
-	"module/pop3/nmap_all":"Module_POP3_nmapall",
-	"module/tftp/nmap_all":"Module_TFTP_nmapall",
-	"module/ajp/nmap_all":"Module_AJP_nmapall",
-	"module/ftp/nmap_all":"Module_FTP_nmapall",
+	"module/nfs/nmap":"Module_NFS_nmap",
+	"module/imap/nmap":"Module_IMAP_nmap",
+	"module/pop3/nmap":"Module_POP3_nmap",
+	"module/tftp/nmap":"Module_TFTP_nmap",
+	"module/ajp/nmap":"Module_AJP_nmap",
+	"module/ftp/nmap":"Module_FTP_nmap",
 	"module/http/dirsearch":"Module_HTTP_dirsearch",
 	"module/http/dirb":"Module_HTTP_dirb",
 	"module/http/nikto":"Module_HTTP_nikto",

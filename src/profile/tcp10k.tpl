@@ -31,28 +31,35 @@
                 }
 			},
 		"ajp13":{
-			"module/ajp/nmap_all":{
-                "name":"Module_AJP_nmapall",
+			"module/ajp/nmap":{
+                "name":"Module_AJP_nmap",
                 "port":"8009"
                 }
 			},
 		"pop3":{
-			"module/pop3/nmap_all":{
-                "name":"Module_POP3_nmapall",
+			"module/pop3/nmap":{
+                "name":"Module_POP3_nmap",
                 "port":"110"
                 }
 			},
 		"imap":{
-			"module/imap/nmap_all":{
-                "name":"Module_IMAP_nmapall",
+			"module/imap/nmap":{
+                "name":"Module_IMAP_nmap",
                 "port":"143"
                 }
+			},
+		"nfs_acl":{
+			"module/nfs/nmap":{
+                "name":"Module_NFS_nmap",
+                "port":"111"
+                }
 			}
+
 	},
     "ports":{
         "21":{
-            "module/ftp/nmap_all":{
-                "name":"Module_FTP_nmapall",
+            "module/ftp/nmap":{
+                "name":"Module_FTP_nmap",
                 "port":"21"
                 }
             },

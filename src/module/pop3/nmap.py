@@ -26,21 +26,21 @@ def port(val=None):
 def flag(val=None):
     return True
 
-class Module_FTP_nmapall(Module):
+class Module_POP3_nmap(Module):
 
     opt_static = {"target":target,"port":port}#{"target":target,"output":flag}
-    opt_dynamic = {"target":target,"port":port}#{"target":target,"output":flag}
+    opt_dynamic = {}#{"target":target,"output":flag}
 
     def __init__(self,opt_dict,mode,module_name,profile_tag=None,profile_port=None):
         threading.Thread.__init__(self)
         super().__init__(opt_dict,mode,module_name,profile_tag,profile_port)
 
     def run(self):
-        lst = Module_FTP_nmapall.targets(self.opt_dict["target"])
+        lst = self.targets(self.opt_dict["target"])
         data = {}
         for ip in lst:
             if not self.flag.is_set():
-                proc = os.popen("/bin/bash -c 'nmap -p "+ self.opt_dict["port"] +" --script=ftp-* "+ip+"'")
+                proc = os.popen("/bin/bash -c 'nmap -p "+ self.opt_dict["port"] +" --script=pop3-* "+ip+"'")
                 out = proc.read()
                 proc.close()
                 if self.mode == "profile": 

@@ -30,16 +30,16 @@
                 }
 			},
 		"ajp13":{
-			"module/ajp/nmap_all":{
-                "name":"Module_AJP_nmapall",
+			"module/ajp/nmap":{
+                "name":"Module_AJP_nmap",
                 "port":"21"
                 }
 			}
 	},
     "ports":{
         "21":{
-            "module/ftp/nmap_all":{
-                "name":"Module_FTP_nmapall",
+            "module/ftp/nmap":{
+                "name":"Module_FTP_nmap",
                 "port":"21"
                 }
             },
