@@ -10,6 +10,10 @@ from src.shares.ftpserver import ftpServer
 from src.shares.smbserver import smbServer
 
 def share_smb(cmd=None):
+    if Config.CONFIG["GENERAL"]["HOSTIP"] == "127.0.0.1":
+        print("{}Configure your Listening IP address! cmd:config set HOSTIP {{value}}{}".format(bcolors.WARNING,bcolors.ENDC))
+        return
+
     if len(cmd) == 2:
         if cmd[1] == "start":
             pid = os.fork()
@@ -50,6 +54,10 @@ def share_smb(cmd=None):
     return
 
 def share_ftp(cmd=None):
+    if Config.CONFIG["GENERAL"]["HOSTIP"] == "127.0.0.1":
+        print("{}Configure your Listening IP address! cmd:config set HOSTIP {{value}}{}".format(bcolors.WARNING,bcolors.ENDC))
+        return
+    
     if len(cmd) == 2:
         if cmd[1] == "start":
             print("{}Usage: ftp start <windows|linux>{}".format(bcolors.WARNING,bcolors.ENDC))
@@ -101,6 +109,10 @@ def share_ftp(cmd=None):
     return
 
 def share_http(cmd=None):
+    if Config.CONFIG["GENERAL"]["HOSTIP"] == "127.0.0.1":
+        print("{}Configure your Listening IP address! cmd:config set HOSTIP {{value}}{}".format(bcolors.WARNING,bcolors.ENDC))
+        return
+    
     if len(cmd) == 2:
         if cmd[1] == "start":
             pid = os.fork()

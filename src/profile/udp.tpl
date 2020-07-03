@@ -1,7 +1,7 @@
 {
 	"tag":"unique_name",
 	"globals":{
-		"target":"192.168.49.95,192.168.49.152"
+		"target":"192.168.154.130"
 		},
 	"portscan":{
 		"module/portscan/udp":{
