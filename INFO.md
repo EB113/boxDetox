@@ -12,13 +12,8 @@ Note: config set HOSTIP {{youIP}}, make sure you set HOSTIP to the one on the ne
 Features: <br/>
  - Buffer Overflow Helper <br/>
  - Enumeration Automation Helper (Threaded): <br/>
- - SSH User enum; <br/>
- - SMTP VRFY + nmap scans (vuln,enum); <br/>
- - DNS rECON; <br/>
- - HTTP/HTTPS dirsearch,nikto; <br/>
- - SNMP onesixtyone + nmap scans (vuln,enum) <br/>
- - 445 , smbmap,nbtscan, enum4linux, nmap (vuln,enum) <br/>
- - You can build your own modules following the standard structure of the above; <br/>
+ - Enum Modules (SSH,SMTP,DNS,SNMP,IMAP,POP3,TFTP,SMB,HTTP,HTTPS,NFS,AJP) <br/>
+ - You can build your own modules following the standard structure of pre-existing on ./src/module; <br/>
  - File Sharing Helper (http,ftp,smb) <br/>
 
 <br/>
