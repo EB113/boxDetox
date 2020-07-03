@@ -60,7 +60,7 @@ def validate_ports(val):
 def validate_services(val):
 	for k,v in val.items():
 		#	Add More Services
-		if type(k) == str and k in ["http","https","ftp","snmp","ajp13","pop3","imap"]:
+		if type(k) == str and k in ["http","https","ftp","snmp","ajp13","pop3","imap","nfs_acl"]:
 			if type(v) == dict:
 				for k1,v1 in v.items():
 					if not validate_module(k1,v1):
