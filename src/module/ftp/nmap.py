@@ -36,7 +36,7 @@ class Module_FTP_nmap(Module):
         super().__init__(opt_dict,mode,module_name,profile_tag,profile_port)
 
     def run(self):
-        lst = Module_FTP_nmapall.targets(self.opt_dict["target"])
+        lst = self.targets(self.opt_dict["target"])
         data = {}
         for ip in lst:
             if not self.flag.is_set():
@@ -44,7 +44,7 @@ class Module_FTP_nmap(Module):
                 out = proc.read()
                 proc.close()
                 if self.mode == "profile": 
-                    fd = open(Config.CONFIG['GENERAL']['PATH'] + "/db/sessions/" + Config.CONFIG['GENERAL']['SESSID']+"/profile/"+self.profile_tag+"/"+ip+"/"+self.profile_port+"/nmap_all","w")
+                    fd = open(Config.CONFIG['GENERAL']['PATH'] + "/db/sessions/" + Config.CONFIG['GENERAL']['SESSID']+"/profile/"+self.profile_tag+"/"+ip+"/"+self.profile_port+"/nmap","w")
                     fd.write(out)
                     fd.close()
                 data[ip] = out
