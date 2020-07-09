@@ -335,12 +335,12 @@ def module(cmd=None):
 					continue
 				
 				if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
-					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
-					print("{}{}Name: {}{}".format(bcolors.BOLD,bcolors.OKGREEN,mod,bcolors.ENDC))
-					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
+					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,bcolors.ENDC))
+					print("{}{}Name: {}{}".format(bcolors.BOLD,bcolors.OKGREEN,m,bcolors.ENDC))
+					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,bcolors.ENDC))
 				if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
 					s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
-					s.sendall((bcolors.BOLD+bcolors.OKGREEN+"Name:"+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+" "+mod+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.BOLD+bcolors.OKGREEN+"Name:"+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+" "+m+bcolors.ENDC+"\n").encode())
 					s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
 				
 				for ip,v in d.items():
@@ -379,12 +379,12 @@ def module(cmd=None):
 					continue
 				
 				if Config.CONFIG['OUTPUT']['CLIENTVERBOSE'] == "True":
-					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
+					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,bcolors.ENDC))
 					print("{}{}Name: {}{}".format(bcolors.BOLD,bcolors.OKGREEN,mod,bcolors.ENDC))
-					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,mod,bcolors.ENDC))
+					print("{}----------------------------------------------------------------{}".format(bcolors.OKGREEN,bcolors.ENDC))
 				if Config.CONFIG['LOGGER']['LOGGERSTATUS'] == "True" and Config.CONFIG['OUTPUT']['LOGGERVERBOSE'] == "True":
 					s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
-					s.sendall((bcolors.BOLD+bcolors.OKGREEN+"Name:"+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+" "+mod+bcolors.ENDC+"\n").encode())
+					s.sendall((bcolors.BOLD+bcolors.OKGREEN+"Name:"+bcolors.ENDC+bcolors.BOLD+bcolors.OKBLUE+" "+m+bcolors.ENDC+"\n").encode())
 					s.sendall((bcolors.OKGREEN+"----------------------------------------------------------------"+bcolors.ENDC+"\n").encode())
 				
 				for ip,v in d.items():
