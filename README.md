@@ -4,10 +4,11 @@ Pwn all your machines good luck! </br>
 Please resort to INFO file for further information in customisation. <br/>
 
 **Features:** <br/>
-- Automated multi-threaded enumeration(Profiler); <br/>
-- Enumeration customiser with template files (Profiles); <br/>
-- File sharing utility (HTTP, FTP, SMB); <br/>
-- Buffer Overflow helper. <br/>
+- <external> Automated multi-threaded enumeration(Profiler); <br/>
+- <external> Enumeration customiser with template files (Profiles); <br/>
+- <external> One-Shot Enumeration Modules (Similar usage to Metasploit) <br/>
+- <shares> File sharing utility (HTTP, FTP, SMB); <br/>
+- <bof> Buffer Overflow helper. <br/>
 
 **Setup guide** <br/>
 Note:Python 3.8+ Required <br/>
